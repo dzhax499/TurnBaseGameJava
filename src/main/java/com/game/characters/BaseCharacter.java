@@ -1,7 +1,12 @@
-package main.java.com.game.characters;
+package com.game.characters;
 
+import com.game.skills.Skill;
+import com.game.effects.StatusEffect;
+import com.game.effects.FreezeEffect;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
+import java.util.Random;
 
 /**
  * Kelas abstrak yang menjadi dasar untuk semua karakter dalam game.
@@ -16,25 +21,39 @@ public abstract class BaseCharacter {
     
     private int attackPower;
     private int defense;
-    private int magicPower;
     private int speed;
+    
+    // FP (Focus Points) untuk penggunaan Skill
+    private int focusPoints;
+    private int maxFocusPoints;
     
     // Daftar Skill yang akan menampung objek turunan Skill (Polimorfisme)
     private final List<Skill> skills;
+    
+    // Daftar efek status aktif pada karakter
+    private final List<StatusEffect> activeEffects;
+    
+    // Random number generator untuk dodge & crit
+    private static final Random random = new Random();
 
     // ====================================================================
     // 2. KONSTRUKTOR
     // ====================================================================
 
-    public BaseCharacter(String name, int maxHp, int attack, int defense, int magic, int speed) {
+    public BaseCharacter(String name, int maxHp, int attack, int defense, int speed) {
         this.name = name;
         this.maxHealthPoints = maxHp;
         this.healthPoints = maxHp; // HP awal diatur ke maksimal
         this.attackPower = attack;
         this.defense = defense;
-        this.magicPower = magic;
         this.speed = speed;
+        
+        // Inisialisasi FP default (bisa disesuaikan nanti)
+        this.maxFocusPoints = 50; 
+        this.focusPoints = 50; 
+        
         this.skills = new ArrayList<>();
+        this.activeEffects = new ArrayList<>();
         
         // Panggil metode abstrak. Subclass wajib mengisi daftar skill-nya di sini.
         initializeSkills(); 
@@ -55,8 +74,8 @@ public abstract class BaseCharacter {
     // ====================================================================
 
     /**
-     * Logika dasar saat karakter menerima kerusakan.
-     * Menggunakan nilai 'defense' untuk mengurangi 'rawDamage'.
+     * Logika dasar saat karakter menerima kerusakan (tanpa mekanik dodge/crit).
+     * Digunakan untuk efek seperti Burn yang bypass dodge.
      */
     public void takeDamage(int rawDamage) {
         int finalDamage = Math.max(0, rawDamage - this.defense);
@@ -65,6 +84,52 @@ public abstract class BaseCharacter {
             this.healthPoints = 0;
         }
         System.out.println(this.name + " menerima " + finalDamage + " kerusakan.");
+    }
+    
+    /**
+     * Versi takeDamage dengan mekanik Dodge dan Critical Hit.
+     */
+    public void takeDamageWithMechanics(int rawDamage, BaseCharacter attacker) {
+        // 1. Cek Dodge
+        double dodgeChance = calculateDodgeChance(attacker);
+        if (random.nextDouble() * 100 < dodgeChance) {
+            System.out.println(this.name + " menghindari serangan! (Dodge)");
+            return;
+        }
+        
+        // 2. Cek Critical Hit
+        double critChance = attacker.calculateCritChance();
+        boolean isCrit = random.nextDouble() * 100 < critChance;
+        
+        int finalDamage = rawDamage;
+        if (isCrit) {
+            finalDamage = (int) (rawDamage * 1.5);
+            System.out.println(attacker.getName() + " melakukan Critical Hit!");
+        }
+        
+        // 3. Apply Defense
+        finalDamage = Math.max(0, finalDamage - this.defense);
+        this.healthPoints -= finalDamage;
+        if (this.healthPoints < 0) {
+            this.healthPoints = 0;
+        }
+        
+        System.out.println(this.name + " menerima " + finalDamage + " kerusakan." + (isCrit ? " (CRIT!)" : ""));
+    }
+    
+    /**
+     * Menghitung dodge chance berdasarkan Speed.
+     */
+    private double calculateDodgeChance(BaseCharacter attacker) {
+        double chance = (this.speed - attacker.getSpeed()) / 100.0 * 100;
+        return Math.min(30, Math.max(0, chance));
+    }
+    
+    /**
+     * Menghitung critical hit chance berdasarkan Speed.
+     */
+    private double calculateCritChance() {
+        return Math.min(25, this.speed / 4.0);
     }
     
     /**
@@ -77,6 +142,72 @@ public abstract class BaseCharacter {
             this.healthPoints = this.maxHealthPoints;
         }
         System.out.println(this.name + " menyembuhkan diri sebesar " + healAmount + " HP.");
+    }
+
+    /**
+     * Mengurangi FP saat menggunakan skill.
+     * Mengembalikan true jika FP cukup, false jika tidak.
+     */
+    public boolean useFocusPoints(int amount) {
+        if (this.focusPoints >= amount) {
+            this.focusPoints -= amount;
+            return true;
+        }
+        System.out.println(this.name + " tidak cukup FP!");
+        return false;
+    }
+
+    /**
+     * Regenerasi FP.
+     */
+    public void regenFocusPoints(int amount) {
+        this.focusPoints += amount;
+        if (this.focusPoints > this.maxFocusPoints) {
+            this.focusPoints = this.maxFocusPoints;
+        }
+    }
+    
+    /**
+     * Menambahkan efek status ke karakter.
+     */
+    public void addEffect(StatusEffect effect) {
+        this.activeEffects.add(effect);
+        effect.apply(this);
+    }
+    
+    /**
+     * Memproses semua efek aktif. Dipanggil setiap awal giliran.
+     */
+    public void processEffects() {
+        Iterator<StatusEffect> iterator = activeEffects.iterator();
+        while (iterator.hasNext()) {
+            StatusEffect effect = iterator.next();
+            effect.tick(this);
+            
+            if (!effect.decreaseDuration()) {
+                effect.remove(this);
+                iterator.remove();
+            }
+        }
+    }
+    
+    /**
+     * Cek apakah karakter bisa bergerak (tidak terkena Freeze).
+     */
+    public boolean canMove() {
+        for (StatusEffect effect : activeEffects) {
+            if (effect instanceof FreezeEffect) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
+     * Mendapatkan daftar efek aktif (untuk display).
+     */
+    public List<StatusEffect> getActiveEffects() {
+        return new ArrayList<>(activeEffects);
     }
 
     // Cek Status
@@ -99,18 +230,17 @@ public abstract class BaseCharacter {
     public int getMaxHealthPoints() { return maxHealthPoints; }
     public int getAttackPower() { return attackPower; }
     public int getDefense() { return defense; }
-    public int getMagicPower() { return magicPower; }
     public int getSpeed() { return speed; }
-    public List<Skill> getSkills() { return skills; } // Polimorfisme di sini
+    public int getFocusPoints() { return focusPoints; }
+    public int getMaxFocusPoints() { return maxFocusPoints; }
+    public List<Skill> getSkills() { return skills; }
 
-    // Setters (Contoh untuk stats yang dapat diubah oleh buff/debuff)
+    // Setters
     public void setAttackPower(int attackPower) { this.attackPower = attackPower; }
-    // Setters (Contoh untuk stats yang dapat diubah oleh buff/debuff)
-
-}
-
- // Simple Skill interface added to same package to avoid missing external dependency.
-interface Skill {
-    String getName();
-    void use(BaseCharacter user, BaseCharacter target);
+    public void setDefense(int defense) { this.defense = defense; }
+    public void setSpeed(int speed) { this.speed = speed; }
+    public void setMaxFocusPoints(int maxFp) { 
+        this.maxFocusPoints = maxFp; 
+        this.focusPoints = maxFp; 
+    }
 }

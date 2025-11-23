@@ -9,7 +9,7 @@ import com.game.characters.BaseCharacter;
 public interface Skill {
     
     String getName();
-    int getManaCost();
+    int getFpCost();
 
     /**
      * Metode utama untuk mengeksekusi skill.
