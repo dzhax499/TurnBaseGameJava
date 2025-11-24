@@ -1,8 +1,8 @@
 package com.game.characters;
 
 import com.game.skills.Skill;
-import com.game.effects.StatusEffect;
-import com.game.effects.FreezeEffect;
+import com.game.skills.effects.StatusEffect;
+import com.game.skills.effects.FreezeEffect;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
@@ -18,21 +18,21 @@ public abstract class BaseCharacter {
     private String name;
     private int healthPoints;
     private int maxHealthPoints;
-    
+
     private int attackPower;
     private int defense;
     private int speed;
-    
+
     // FP (Focus Points) untuk penggunaan Skill
     private int focusPoints;
     private int maxFocusPoints;
-    
+
     // Daftar Skill yang akan menampung objek turunan Skill (Polimorfisme)
     private final List<Skill> skills;
-    
+
     // Daftar efek status aktif pada karakter
     private final List<StatusEffect> activeEffects;
-    
+
     // Random number generator untuk dodge & crit
     private static final Random random = new Random();
 
@@ -47,27 +47,27 @@ public abstract class BaseCharacter {
         this.attackPower = attack;
         this.defense = defense;
         this.speed = speed;
-        
+
         // Inisialisasi FP default (bisa disesuaikan nanti)
-        this.maxFocusPoints = 50; 
-        this.focusPoints = 50; 
-        
+        this.maxFocusPoints = 50;
+        this.focusPoints = 50;
+
         this.skills = new ArrayList<>();
         this.activeEffects = new ArrayList<>();
-        
+
         // Panggil metode abstrak. Subclass wajib mengisi daftar skill-nya di sini.
-        initializeSkills(); 
+        initializeSkills();
     }
-    
+
     // ====================================================================
     // 3. METODE ABSTRAK (Diharuskan ada di subclass - Abstraksi)
     // ====================================================================
-    
+
     /**
      * Metode ini harus diimplementasikan oleh setiap subclass (Warrior, Mage, dsb.)
      * untuk menambahkan 4 skill spesifik mereka ke dalam daftar 'skills'.
      */
-    protected abstract void initializeSkills(); 
+    protected abstract void initializeSkills();
 
     // ====================================================================
     // 4. METODE KONKRET (Dapat digunakan oleh semua subclass)
@@ -85,7 +85,7 @@ public abstract class BaseCharacter {
         }
         System.out.println(this.name + " menerima " + finalDamage + " kerusakan.");
     }
-    
+
     /**
      * Versi takeDamage dengan mekanik Dodge dan Critical Hit.
      */
@@ -96,27 +96,27 @@ public abstract class BaseCharacter {
             System.out.println(this.name + " menghindari serangan! (Dodge)");
             return;
         }
-        
+
         // 2. Cek Critical Hit
         double critChance = attacker.calculateCritChance();
         boolean isCrit = random.nextDouble() * 100 < critChance;
-        
+
         int finalDamage = rawDamage;
         if (isCrit) {
             finalDamage = (int) (rawDamage * 1.5);
             System.out.println(attacker.getName() + " melakukan Critical Hit!");
         }
-        
+
         // 3. Apply Defense
         finalDamage = Math.max(0, finalDamage - this.defense);
         this.healthPoints -= finalDamage;
         if (this.healthPoints < 0) {
             this.healthPoints = 0;
         }
-        
+
         System.out.println(this.name + " menerima " + finalDamage + " kerusakan." + (isCrit ? " (CRIT!)" : ""));
     }
-    
+
     /**
      * Menghitung dodge chance berdasarkan Speed.
      */
@@ -124,14 +124,14 @@ public abstract class BaseCharacter {
         double chance = (this.speed - attacker.getSpeed()) / 100.0 * 100;
         return Math.min(30, Math.max(0, chance));
     }
-    
+
     /**
      * Menghitung critical hit chance berdasarkan Speed.
      */
     private double calculateCritChance() {
         return Math.min(25, this.speed / 4.0);
     }
-    
+
     /**
      * Logika dasar untuk menyembuhkan HP.
      * Tidak akan melebihi maxHealthPoints.
@@ -166,7 +166,7 @@ public abstract class BaseCharacter {
             this.focusPoints = this.maxFocusPoints;
         }
     }
-    
+
     /**
      * Menambahkan efek status ke karakter.
      */
@@ -174,7 +174,7 @@ public abstract class BaseCharacter {
         this.activeEffects.add(effect);
         effect.apply(this);
     }
-    
+
     /**
      * Memproses semua efek aktif. Dipanggil setiap awal giliran.
      */
@@ -183,14 +183,14 @@ public abstract class BaseCharacter {
         while (iterator.hasNext()) {
             StatusEffect effect = iterator.next();
             effect.tick(this);
-            
+
             if (!effect.decreaseDuration()) {
                 effect.remove(this);
                 iterator.remove();
             }
         }
     }
-    
+
     /**
      * Cek apakah karakter bisa bergerak (tidak terkena Freeze).
      */
@@ -202,7 +202,7 @@ public abstract class BaseCharacter {
         }
         return true;
     }
-    
+
     /**
      * Mendapatkan daftar efek aktif (untuk display).
      */
@@ -214,33 +214,68 @@ public abstract class BaseCharacter {
     public boolean isAlive() {
         return this.healthPoints > 0;
     }
-    
+
     // Helper untuk menambahkan skill (dipanggil dari initializeSkills() subclass)
     protected void addSkill(Skill skill) {
         this.skills.add(skill);
     }
-    
+
     // ====================================================================
     // 5. GETTERS & SETTERS (Akses data yang Terenkapsulasi)
     // ====================================================================
 
     // Getters
-    public String getName() { return name; }
-    public int getHealthPoints() { return healthPoints; }
-    public int getMaxHealthPoints() { return maxHealthPoints; }
-    public int getAttackPower() { return attackPower; }
-    public int getDefense() { return defense; }
-    public int getSpeed() { return speed; }
-    public int getFocusPoints() { return focusPoints; }
-    public int getMaxFocusPoints() { return maxFocusPoints; }
-    public List<Skill> getSkills() { return skills; }
+    public String getName() {
+        return name;
+    }
+
+    public int getHealthPoints() {
+        return healthPoints;
+    }
+
+    public int getMaxHealthPoints() {
+        return maxHealthPoints;
+    }
+
+    public int getAttackPower() {
+        return attackPower;
+    }
+
+    public int getDefense() {
+        return defense;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public int getFocusPoints() {
+        return focusPoints;
+    }
+
+    public int getMaxFocusPoints() {
+        return maxFocusPoints;
+    }
+
+    public List<Skill> getSkills() {
+        return skills;
+    }
 
     // Setters
-    public void setAttackPower(int attackPower) { this.attackPower = attackPower; }
-    public void setDefense(int defense) { this.defense = defense; }
-    public void setSpeed(int speed) { this.speed = speed; }
-    public void setMaxFocusPoints(int maxFp) { 
-        this.maxFocusPoints = maxFp; 
-        this.focusPoints = maxFp; 
+    public void setAttackPower(int attackPower) {
+        this.attackPower = attackPower;
+    }
+
+    public void setDefense(int defense) {
+        this.defense = defense;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public void setMaxFocusPoints(int maxFp) {
+        this.maxFocusPoints = maxFp;
+        this.focusPoints = maxFp;
     }
 }
