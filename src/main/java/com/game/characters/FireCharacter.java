@@ -19,8 +19,13 @@ public class FireCharacter extends BaseCharacter {
         this.addSkill(new AttackSkill());
         this.addSkill(new GuardSkill());
         this.addSkill(new HealSkill());
-        
+
         // 1 Unique Skill
         this.addSkill(new FireballSkill());
+    }
+
+    @Override
+    public ElementType getElementType() {
+        return ElementType.FIRE;
     }
 }

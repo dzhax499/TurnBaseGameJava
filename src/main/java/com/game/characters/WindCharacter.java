@@ -20,4 +20,9 @@ public class WindCharacter extends BaseCharacter {
         this.addSkill(new HealSkill());
         this.addSkill(new AirSlashSkill());
     }
+
+    @Override
+    public ElementType getElementType() {
+        return ElementType.WIND;
+    }
 }

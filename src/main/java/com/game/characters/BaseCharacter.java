@@ -69,6 +69,14 @@ public abstract class BaseCharacter {
      */
     protected abstract void initializeSkills();
 
+    /**
+     * Mendapatkan tipe elemen karakter.
+     * Harus diimplementasikan oleh setiap subclass.
+     * 
+     * @return ElementType karakter (FIRE, WATER, EARTH, WIND, atau NEUTRAL)
+     */
+    public abstract ElementType getElementType();
+
     // ====================================================================
     // 4. METODE KONKRET (Dapat digunakan oleh semua subclass)
     // ====================================================================
@@ -87,7 +95,7 @@ public abstract class BaseCharacter {
     }
 
     /**
-     * Versi takeDamage dengan mekanik Dodge dan Critical Hit.
+     * Versi takeDamage dengan mekanik Dodge, Critical Hit, dan Elemental Advantage.
      */
     public void takeDamageWithMechanics(int rawDamage, BaseCharacter attacker) {
         // 1. Cek Dodge
@@ -107,7 +115,21 @@ public abstract class BaseCharacter {
             System.out.println(attacker.getName() + " melakukan Critical Hit!");
         }
 
-        // 3. Apply Defense
+        // 3. Apply Elemental Advantage
+        double elementalMultiplier = ElementalAdvantage.getMultiplier(
+                attacker.getElementType(),
+                this.getElementType());
+        finalDamage = (int) (finalDamage * elementalMultiplier);
+
+        // Display effectiveness message
+        String effectivenessMsg = ElementalAdvantage.getEffectivenessMessage(
+                attacker.getElementType(),
+                this.getElementType());
+        if (!effectivenessMsg.isEmpty()) {
+            System.out.println(effectivenessMsg);
+        }
+
+        // 4. Apply Defense
         finalDamage = Math.max(0, finalDamage - this.defense);
         this.healthPoints -= finalDamage;
         if (this.healthPoints < 0) {

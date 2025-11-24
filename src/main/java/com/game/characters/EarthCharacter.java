@@ -20,4 +20,9 @@ public class EarthCharacter extends BaseCharacter {
         this.addSkill(new HealSkill());
         this.addSkill(new RockThrowSkill());
     }
+
+    @Override
+    public ElementType getElementType() {
+        return ElementType.EARTH;
+    }
 }

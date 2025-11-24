@@ -20,4 +20,9 @@ public class WaterCharacter extends BaseCharacter {
         this.addSkill(new HealSkill());
         this.addSkill(new IceBlastSkill());
     }
+
+    @Override
+    public ElementType getElementType() {
+        return ElementType.WATER;
+    }
 }
