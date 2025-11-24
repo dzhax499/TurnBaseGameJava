@@ -1,7 +1,8 @@
-package main.java.com.game.characters;
+package com.game.characters;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.game.skills.Skill;
 
 /**
  * Kelas abstrak yang menjadi dasar untuk semua karakter dalam game.
@@ -107,10 +108,4 @@ public abstract class BaseCharacter {
     public void setAttackPower(int attackPower) { this.attackPower = attackPower; }
     // Setters (Contoh untuk stats yang dapat diubah oleh buff/debuff)
 
-}
-
- // Simple Skill interface added to same package to avoid missing external dependency.
-interface Skill {
-    String getName();
-    void use(BaseCharacter user, BaseCharacter target);
 }
