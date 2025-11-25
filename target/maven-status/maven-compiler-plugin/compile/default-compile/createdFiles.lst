@@ -1,0 +1,5 @@
+com\game\gui\GameWindow.class
+com\game\utils\ResourceLoader.class
+com\game\skills\Skill.class
+com\game\characters\BaseCharacter.class
+com\game\gui\StatusPanel.class
