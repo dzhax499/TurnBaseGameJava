@@ -232,6 +232,26 @@ public abstract class BaseCharacter {
         return new ArrayList<>(activeEffects);
     }
 
+    /**
+     * Mendapatkan nama-nama efek aktif sebagai List<String>.
+     * Digunakan untuk display di battle UI.
+     */
+    public List<String> getActiveEffectNames() {
+        List<String> effectNames = new ArrayList<>();
+        for (StatusEffect effect : activeEffects) {
+            effectNames.add(effect.getName());
+        }
+        return effectNames;
+    }
+
+    /**
+     * Update status effects (alias untuk processEffects).
+     * Digunakan untuk memproses semua efek aktif setiap turn.
+     */
+    public void updateStatusEffects() {
+        processEffects();
+    }
+
     // Cek Status
     public boolean isAlive() {
         return this.healthPoints > 0;

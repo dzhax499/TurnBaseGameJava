@@ -2,6 +2,7 @@ package com.game.skills.common;
 
 import com.game.characters.BaseCharacter;
 import com.game.skills.Skill;
+import com.game.skills.effects.GuardEffect;
 
 public class GuardSkill implements Skill {
 
@@ -12,14 +13,17 @@ public class GuardSkill implements Skill {
 
     @Override
     public int getFpCost() {
-        return 0;
+        return 0; // Guard gratis
     }
 
     @Override
     public void use(BaseCharacter user, BaseCharacter target) {
-        // Guard biasanya meningkatkan defense sementara atau skip turn dengan mitigasi damage.
-        // Karena sistem buff belum kompleks, kita simulasikan dengan pesan saja atau regenerasi FP sedikit.
+        // Guard memberikan GuardEffect untuk mengurangi damage yang diterima
         System.out.println(user.getName() + " bersiap menahan serangan! (Guard)");
-        user.regenFocusPoints(5); // Bonus regen FP saat guard
+        System.out.println("   Defense ditingkatkan 50% untuk 2 turn!");
+        
+        // Tambahkan Guard Effect
+        GuardEffect guardEffect = new GuardEffect();
+        user.addEffect(guardEffect);
     }
 }

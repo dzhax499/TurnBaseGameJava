@@ -17,12 +17,12 @@ public class HealSkill implements Skill {
 
     @Override
     public void use(BaseCharacter user, BaseCharacter target) {
-        // Heal menggunakan Attack × 1.5
-        int healAmount = (int) (user.getAttackPower() * 1.5);
+        // Heal menggunakan Attack × 0.8 + 10 (lebih balanced, tidak terlalu besar)
+        int healAmount = (int) (user.getAttackPower() * 0.8) + 10;
         
         if (user.useFocusPoints(getFpCost())) {
-            System.out.println(user.getName() + " menggunakan Heal pada " + target.getName() + "!");
-            target.heal(healAmount);
+            System.out.println(user.getName() + " menggunakan Heal pada dirinya sendiri!");
+            user.heal(healAmount);
         }
     }
 }
