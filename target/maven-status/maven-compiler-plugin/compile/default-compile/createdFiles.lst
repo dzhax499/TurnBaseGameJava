@@ -1,13 +1,4 @@
-com\game\gui\GameWindow.class
-com\game\gui\MainMenuPanel$1.class
-com\game\gui\BattlePanel.class
-com\game\gui\MainMenuPanel.class
-com\game\characters\BaseCharacter.class
-com\game\gui\BattlePanel$1.class
-com\game\gui\GameWindow$2.class
-com\game\gui\BattlePanel$SkillActionListener.class
-com\game\gui\MainMenuPanel$CharacterSelectionListener.class
-com\game\gui\GameWindow$1.class
 com\game\utils\ResourceLoader.class
 com\game\skills\Skill.class
+com\game\characters\BaseCharacter.class
 com\game\gui\StatusPanel.class
