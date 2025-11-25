@@ -13,7 +13,7 @@ public class FireballSkill implements Skill {
 
     @Override
     public int getFpCost() {
-        return 20; // High cost
+        return 15; // BALANCED: Reduced from 20 to 15
     }
 
     @Override

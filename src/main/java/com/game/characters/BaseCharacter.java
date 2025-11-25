@@ -141,17 +141,22 @@ public abstract class BaseCharacter {
 
     /**
      * Menghitung dodge chance berdasarkan Speed.
+     * BALANCED: Reduced speed impact untuk gameplay yang lebih fair.
      */
     private double calculateDodgeChance(BaseCharacter attacker) {
-        double chance = (this.speed - attacker.getSpeed()) / 100.0 * 100;
-        return Math.min(30, Math.max(0, chance));
+        double speedDiff = this.speed - attacker.getSpeed();
+        double chance = speedDiff / 200.0 * 100; // Reduced from /100 to /200
+        return Math.min(20, Math.max(0, chance)); // Cap reduced from 30% to 20%
     }
 
     /**
      * Menghitung critical hit chance berdasarkan Speed.
+     * BALANCED: Added base crit untuk semua karakter, reduced speed impact.
      */
     private double calculateCritChance() {
-        return Math.min(25, this.speed / 4.0);
+        double baseCrit = 5.0; // Everyone gets 5% base crit
+        double speedBonus = this.speed / 8.0; // Reduced from /4 to /8
+        return Math.min(20, baseCrit + speedBonus); // Cap reduced from 25% to 20%
     }
 
     /**

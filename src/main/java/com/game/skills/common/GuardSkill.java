@@ -13,7 +13,7 @@ public class GuardSkill implements Skill {
 
     @Override
     public int getFpCost() {
-        return 0; // Guard gratis
+        return 8; // BALANCED: Changed from 0 to 8 to prevent spam
     }
 
     @Override
@@ -21,7 +21,7 @@ public class GuardSkill implements Skill {
         // Guard memberikan GuardEffect untuk mengurangi damage yang diterima
         System.out.println(user.getName() + " bersiap menahan serangan! (Guard)");
         System.out.println("   Defense ditingkatkan 50% untuk 2 turn!");
-        
+
         // Tambahkan Guard Effect
         GuardEffect guardEffect = new GuardEffect();
         user.addEffect(guardEffect);

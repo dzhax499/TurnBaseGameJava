@@ -121,7 +121,10 @@ public class Main {
         BaseCharacter winner = battle.getWinner();
         if (winner != null) {
             battleStats.recordWin(winner.getName());
-            battleStats.recordLoss(battle.getOpponentPlayer().getName());
+            // Tentukan loser dengan benar (bukan menggunakan getOpponentPlayer yang tidak
+            // reliable)
+            BaseCharacter loser = (winner == battle.getPlayer1()) ? battle.getPlayer2() : battle.getPlayer1();
+            battleStats.recordLoss(loser.getName());
         }
     }
 
@@ -134,7 +137,7 @@ public class Main {
     private static BaseCharacter selectCharacter(String playerName) {
         clearScreen();
         System.out.println("\n" + playerName + ", PILIH KARAKTERMU:\n");
-        
+
         System.out.println("┌─────────────────────────────────────────────────────────────┐");
         System.out.println("│ 1. 🔥 FIRE CHARACTER (Penyerang)                             │");
         System.out.println("│    HP: 100 | ATK: 35⭐ | DEF: 15 | SPD: 30                   │");
@@ -164,11 +167,11 @@ public class Main {
         }
 
         BaseCharacter character = createCharacter(choice, characterName);
-        
+
         clearScreen();
         System.out.println("\n✅ " + playerName + " memilih " + character.getName() + "!");
         pause("Tekan ENTER untuk melanjutkan...");
-        
+
         return character;
     }
 
@@ -206,7 +209,7 @@ public class Main {
             // Cek apakah pemain saat ini bisa bergerak
             if (!battle.getCurrentPlayer().canMove()) {
                 System.out.println("❄️  " + battle.getCurrentPlayerName() + " terkena Freeze!");
-                System.out.println("    Tidak bisa bergerak tahun ini!\n");
+                System.out.println("    Tidak bisa bergerak turn ini!\n");
                 pause("Tekan ENTER untuk skip turn...");
                 battle.endTurn();
                 continue;
@@ -224,7 +227,7 @@ public class Main {
                 System.out.println("\n⚠️  Konfirmasi Surrender!");
                 System.out.print("Apakah " + battle.getCurrentPlayerName() + " benar-benar ingin menyerah? (y/n): ");
                 String confirm = scanner.nextLine().toLowerCase();
-                
+
                 if (confirm.equals("y") || confirm.equals("yes")) {
                     battle.surrender();
                     break;
@@ -436,7 +439,8 @@ public class Main {
         System.out.println("║                                                              ║");
         System.out.println("║         👋 TERIMA KASIH TELAH BERMAIN! SAMPAI JUMPA! 👋      ║");
         System.out.println("║                                                              ║");
-        System.out.println("║              Total Pertarungan: " + String.format("%-32d", battleStats.getTotalBattles()) + "║");
+        System.out.println(
+                "║              Total Pertarungan: " + String.format("%-32d", battleStats.getTotalBattles()) + "║");
         System.out.println("║                                                              ║");
         System.out.println("╚══════════════════════════════════════════════════════════════╝\n");
     }
@@ -475,7 +479,7 @@ public class Main {
         try {
             int input = scanner.nextInt();
             scanner.nextLine(); // Clear buffer
-            
+
             if (input >= min && input <= max) {
                 return input;
             } else {
