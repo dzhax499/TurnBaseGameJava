@@ -1,33 +1,21 @@
-C:\TurnBaseGameJava\src\main\java\com\game\characters\WaterCharacter.java
-C:\TurnBaseGameJava\src\main\java\com\game\characters\FireCharacter.java
-C:\TurnBaseGameJava\src\main\java\com\game\characters\WindCharacter.java
-C:\TurnBaseGameJava\src\main\java\com\utils\Constants.java
-C:\TurnBaseGameJava\src\main\java\com\game\characters\EarthCharacter.java
-C:\TurnBaseGameJava\src\main\java\com\game\battle\BattleState.java
-C:\TurnBaseGameJava\src\main\java\com\game\battle\BattleSimulator.java
-C:\TurnBaseGameJava\src\main\java\com\game\battle\Battle.java
-C:\TurnBaseGameJava\src\main\java\com\game\characters\ElementalAdvantage.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\elemental\AirSlashSkill.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\effects\StatusEffect.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\effects\AttackBuffEffect.java
-C:\TurnBaseGameJava\src\main\java\com\game\gui\StatusPanel.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\common\AttackSkill.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\elemental\IceBlastSkill.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\elemental\RockThrowSkill.java
-C:\TurnBaseGameJava\src\main\java\com\game\characters\BaseCharacter.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\common\HealSkill.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\effects\EffectType.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\effects\FreezeEffect.java
-C:\TurnBaseGameJava\src\main\java\com\game\Main.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\common\GuardSkill.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\effects\GuardEffect.java
-C:\TurnBaseGameJava\src\main\java\com\game\gui\GameWindow.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\Skill.java
-C:\TurnBaseGameJava\src\main\java\com\game\battle\BattleAction.java
-C:\TurnBaseGameJava\src\main\java\com\game\test\ElementalAdvantageTest.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\effects\BurnEffect.java
-C:\TurnBaseGameJava\src\main\java\com\game\skills\elemental\FireballSkill.java
-C:\TurnBaseGameJava\src\main\java\com\game\battle\BattleDemo.java
-C:\TurnBaseGameJava\src\main\java\com\game\BattleStats.java
-C:\TurnBaseGameJava\src\main\java\com\game\battle\BattleLog.java
-C:\TurnBaseGameJava\src\main\java\com\game\characters\ElementType.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\gui\StatusPanel.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\characters\EarthCharacter.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\skills\SpecialSkill.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\battle\EnemyTurnState.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\battle\Battlle.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\battle\PlayerTurnState.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\characters\WindCharacter.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\skills\Skill.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\main\Main.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\characters\BaseCharacter.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\utils\Constants.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\characters\WaterCharacter.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\gui\BattlePanel.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\characters\FireCharacter.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\gui\GameWindow.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\battle\BatlleState.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\skills\AttackSkill.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\skills\HealSkill.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\utils\ResourceLoader.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\gui\MainMenuPanel.java
+D:\SEMESTER 3 TEKNIK INFORMATIKA\PEMROGRAMAN-BERORIENTASI-OBJECT\GIT\Tugas-Besar\TurnBaseGameJava\src\main\java\com\game\characters\Character.java
