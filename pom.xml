@@ -27,7 +27,24 @@
 					<release>11</release>
 				</configuration>
 			</plugin>
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <configuration>
+            <mainClass>com.game.gui.GameWindow</mainClass>
+            </configuration>
+        </plugin>
 		</plugins>
+                <resources>
+                    <resource>
+                        <directory>src/main/java/resources</directory>
+                        <filtering>false</filtering>
+                        <includes>
+                            <include>**/*</include>
+                        </includes>
+                    </resource>
+                </resources>
 	</build>
 
 </project>
