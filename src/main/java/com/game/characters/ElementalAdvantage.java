@@ -7,9 +7,9 @@ package com.game.characters;
 public class ElementalAdvantage {
 
     // Damage multipliers
-    private static final double ADVANTAGE_MULTIPLIER = 1.5;
+    private static final double ADVANTAGE_MULTIPLIER = 1.2;
     private static final double NEUTRAL_MULTIPLIER = 1.0;
-    private static final double DISADVANTAGE_MULTIPLIER = 0.75;
+    private static final double DISADVANTAGE_MULTIPLIER = 0.9;
 
     /**
      * Menghitung damage multiplier berdasarkan elemental matchup.

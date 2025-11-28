@@ -4,12 +4,18 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.List;
 import javax.swing.*;
+import com.game.characters.BaseCharacter;
 import com.game.utils.ResourceLoader;
 
 /**
- * Enhanced Battle Panel dengan visual yang lebih baik dan integrasi penuh.
- * Menampilkan HP, FP, status effects, dan battle log.
+ * Enhanced Battle Panel dengan visual Pokemon-style.
+ * Fitur:
+ * - Toggleable bottom panel (Skills vs Battle Text)
+ * - 2x2 Skill Grid
+ * - Status Effect Icons
+ * - Clean layout
  */
 public class BattlePanel extends JPanel {
     private BufferedImage background;
@@ -17,17 +23,15 @@ public class BattlePanel extends JPanel {
     private BufferedImage enemySprite;
 
     // Battle State
-    private String player1Name = "Player1";
-    private String player2Name = "Player2";
-    private int player1HP = 100;
-    private int player1MaxHP = 100;
-    private int player1FP = 50;
-    private int player1MaxFP = 50;
-    private int player2HP = 100;
-    private int player2MaxHP = 100;
-    private int player2FP = 50;
-    private int player2MaxFP = 50;
+    private BaseCharacter player1;
+    private BaseCharacter player2;
     private String currentTurn = "Player1";
+
+    // Bottom Panel Components
+    private JPanel bottomPanel;
+    private CardLayout bottomCardLayout;
+    private JPanel skillPanel;
+    private JPanel textPanel;
 
     // Skill Buttons
     private JButton skill1Button;
@@ -36,15 +40,17 @@ public class BattlePanel extends JPanel {
     private JButton skill4Button;
     private JButton surrenderButton;
 
-    // Battle Log
-    private JTextArea battleLog;
-    private JScrollPane logScrollPane;
+    // Battle Text
+    private JTextArea battleTextArea;
+    private JButton continueButton;
 
-    // Turn indicator
-    private JLabel turnLabel;
+    // Constants
+    private static final String CARD_SKILLS = "SKILLS";
+    private static final String CARD_TEXT = "TEXT";
 
-    // Listener untuk skill action
+    // Listeners
     private SkillActionListener skillListener;
+    private ActionListener continueListener;
 
     public interface SkillActionListener {
         void onSkillUsed(int skillIndex);
@@ -60,79 +66,112 @@ public class BattlePanel extends JPanel {
     }
 
     private void initializeComponents() {
-        // Turn Indicator
-        turnLabel = new JLabel("PLAYER 1 TURN", SwingConstants.CENTER);
+        // Turn Indicator (Top Center)
+        JLabel turnLabel = new JLabel("BATTLE START", SwingConstants.CENTER);
         turnLabel.setFont(new Font("Arial", Font.BOLD, 22));
         turnLabel.setForeground(Color.YELLOW);
         turnLabel.setBounds(280, 15, 260, 30);
         add(turnLabel);
 
-        // Battle Log Area (right side)
-        battleLog = new JTextArea();
-        battleLog.setEditable(false);
-        battleLog.setFont(new Font("Monospaced", Font.PLAIN, 11));
-        battleLog.setBackground(new Color(20, 20, 20, 220));
-        battleLog.setForeground(Color.CYAN);
-        battleLog.setText("=== Battle Log ===\n");
-        battleLog.setLineWrap(true);
-        battleLog.setWrapStyleWord(true);
+        // Initialize Bottom Panel (CardLayout)
+        bottomCardLayout = new CardLayout();
+        bottomPanel = new JPanel(bottomCardLayout);
+        bottomPanel.setBounds(0, 450, 820, 170);
+        bottomPanel.setOpaque(false);
+        add(bottomPanel);
 
-        logScrollPane = new JScrollPane(battleLog);
-        logScrollPane.setBounds(540, 60, 260, 300);
-        logScrollPane.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.CYAN, 2),
-                "Battle Log",
-                0,
-                0,
-                new Font("Arial", Font.BOLD, 12),
-                Color.CYAN));
-        add(logScrollPane);
+        // 1. Skill Panel (2x2 Grid + Surrender)
+        createSkillPanel();
+        bottomPanel.add(skillPanel, CARD_SKILLS);
 
-        // Skill Buttons Panel (bottom)
-        int buttonWidth = 160;
-        int buttonHeight = 70;
-        int buttonY = 490;
-        int startX = 30;
-        int spacing = 15;
+        // 2. Text Panel (Battle Log + Continue)
+        createTextPanel();
+        bottomPanel.add(textPanel, CARD_TEXT);
 
-        Color[] skillColors = {
-                new Color(220, 50, 50), // Red
-                new Color(255, 165, 0), // Orange
-                new Color(50, 200, 50), // Green
-                new Color(150, 50, 200) // Purple
-        };
+        // Show skills by default
+        showSkills();
+    }
 
-        skill1Button = createSkillButton("Skill 1", "Basic", skillColors[0],
-                startX, buttonY, buttonWidth, buttonHeight);
+    private void createSkillPanel() {
+        skillPanel = new JPanel(null);
+        skillPanel.setBackground(new Color(30, 30, 50));
+        skillPanel.setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, Color.WHITE));
+
+        int btnWidth = 260;
+        int btnHeight = 60;
+        int startX = 20;
+        int startY = 20;
+        int gapX = 20;
+        int gapY = 15;
+
+        // Skill 1 (Top Left)
+        skill1Button = createSkillButton("Skill 1", "Basic", new Color(220, 50, 50),
+                startX, startY, btnWidth, btnHeight);
         skill1Button.addActionListener(e -> useSkill(0));
-        add(skill1Button);
+        skillPanel.add(skill1Button);
 
-        skill2Button = createSkillButton("Skill 2", "Special", skillColors[1],
-                startX + (buttonWidth + spacing), buttonY, buttonWidth, buttonHeight);
+        // Skill 2 (Top Right)
+        skill2Button = createSkillButton("Skill 2", "Special", new Color(255, 165, 0),
+                startX + btnWidth + gapX, startY, btnWidth, btnHeight);
         skill2Button.addActionListener(e -> useSkill(1));
-        add(skill2Button);
+        skillPanel.add(skill2Button);
 
-        skill3Button = createSkillButton("Skill 3", "Support", skillColors[2],
-                startX + (buttonWidth + spacing) * 2, buttonY, buttonWidth, buttonHeight);
+        // Skill 3 (Bottom Left)
+        skill3Button = createSkillButton("Skill 3", "Support", new Color(50, 200, 50),
+                startX, startY + btnHeight + gapY, btnWidth, btnHeight);
         skill3Button.addActionListener(e -> useSkill(2));
-        add(skill3Button);
+        skillPanel.add(skill3Button);
 
-        skill4Button = createSkillButton("Skill 4", "Ultimate", skillColors[3],
-                startX + (buttonWidth + spacing) * 3, buttonY, buttonWidth, buttonHeight);
+        // Skill 4 (Bottom Right)
+        skill4Button = createSkillButton("Skill 4", "Ultimate", new Color(150, 50, 200),
+                startX + btnWidth + gapX, startY + btnHeight + gapY, btnWidth, btnHeight);
         skill4Button.addActionListener(e -> useSkill(3));
-        add(skill4Button);
+        skillPanel.add(skill4Button);
 
-        // Surrender Button
-        surrenderButton = new JButton("⚐ Surrender");
+        // Surrender Button (Far Right)
+        surrenderButton = new JButton("SURRENDER");
         surrenderButton.setFont(new Font("Arial", Font.BOLD, 14));
         surrenderButton.setBackground(new Color(100, 100, 100));
         surrenderButton.setForeground(Color.WHITE);
         surrenderButton.setFocusPainted(false);
         surrenderButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-        surrenderButton.setBounds(720, 490, 80, 70);
+        surrenderButton.setBounds(620, 45, 160, 80);
         surrenderButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         surrenderButton.addActionListener(e -> surrender());
-        add(surrenderButton);
+        skillPanel.add(surrenderButton);
+    }
+
+    private void createTextPanel() {
+        textPanel = new JPanel(null);
+        textPanel.setBackground(new Color(20, 20, 20));
+        textPanel.setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, Color.WHITE));
+
+        // Text Area
+        battleTextArea = new JTextArea();
+        battleTextArea.setEditable(false);
+        battleTextArea.setFont(new Font("Monospaced", Font.BOLD, 18));
+        battleTextArea.setForeground(Color.WHITE);
+        battleTextArea.setBackground(new Color(20, 20, 20));
+        battleTextArea.setLineWrap(true);
+        battleTextArea.setWrapStyleWord(true);
+        battleTextArea.setBounds(30, 20, 650, 130);
+        textPanel.add(battleTextArea);
+
+        // Continue Button
+        continueButton = new JButton("▼");
+        continueButton.setFont(new Font("Arial", Font.BOLD, 24));
+        continueButton.setBackground(new Color(50, 50, 200));
+        continueButton.setForeground(Color.WHITE);
+        continueButton.setFocusPainted(false);
+        continueButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        continueButton.setBounds(700, 50, 80, 70);
+        continueButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        continueButton.addActionListener(e -> {
+            if (continueListener != null) {
+                continueListener.actionPerformed(e);
+            }
+        });
+        textPanel.add(continueButton);
     }
 
     private JButton createSkillButton(String title, String description, Color color,
@@ -146,14 +185,14 @@ public class BattlePanel extends JPanel {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setLayout(new BorderLayout());
 
-        // Title label
         JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        titleLabel.setForeground(Color.WHITE);
         button.add(titleLabel, BorderLayout.NORTH);
 
-        // Description label
         JLabel descLabel = new JLabel(description, SwingConstants.CENTER);
-        descLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+        descLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        descLabel.setForeground(Color.WHITE);
         button.add(descLabel, BorderLayout.CENTER);
 
         // Hover effect
@@ -174,6 +213,64 @@ public class BattlePanel extends JPanel {
         return button;
     }
 
+    // ==========================================
+    // Toggle Methods
+    // ==========================================
+
+    public void showSkills() {
+        bottomCardLayout.show(bottomPanel, CARD_SKILLS);
+    }
+
+    public void showBattleText(String text) {
+        battleTextArea.setText(text);
+        bottomCardLayout.show(bottomPanel, CARD_TEXT);
+    }
+
+    public void setContinueButtonListener(ActionListener listener) {
+        this.continueListener = listener;
+    }
+
+    // ==========================================
+    // Update Methods
+    // ==========================================
+
+    public void updateCharacters(BaseCharacter p1, BaseCharacter p2) {
+        this.player1 = p1;
+        this.player2 = p2;
+        repaint();
+    }
+
+    public void updateSkillButtons(String[] skillNames, String[] skillDescriptions) {
+        JButton[] buttons = { skill1Button, skill2Button, skill3Button, skill4Button };
+
+        for (int i = 0; i < buttons.length && i < skillNames.length; i++) {
+            JButton button = buttons[i];
+            button.removeAll();
+            button.setLayout(new BorderLayout());
+
+            JLabel titleLabel = new JLabel(skillNames[i], SwingConstants.CENTER);
+            titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            titleLabel.setForeground(Color.WHITE);
+            button.add(titleLabel, BorderLayout.NORTH);
+
+            JLabel descLabel = new JLabel(skillDescriptions[i], SwingConstants.CENTER);
+            descLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+            descLabel.setForeground(Color.WHITE);
+            button.add(descLabel, BorderLayout.CENTER);
+
+            button.revalidate();
+            button.repaint();
+        }
+    }
+
+    public void setSkillButtonsEnabled(boolean enabled) {
+        skill1Button.setEnabled(enabled);
+        skill2Button.setEnabled(enabled);
+        skill3Button.setEnabled(enabled);
+        skill4Button.setEnabled(enabled);
+        surrenderButton.setEnabled(enabled);
+    }
+
     private void useSkill(int skillIndex) {
         if (skillListener != null) {
             skillListener.onSkillUsed(skillIndex);
@@ -189,39 +286,13 @@ public class BattlePanel extends JPanel {
                 JOptionPane.WARNING_MESSAGE);
 
         if (choice == JOptionPane.YES_OPTION) {
-            addBattleLogMessage(currentTurn + " surrendered!");
-            // Trigger surrender logic through listener
-        }
-    }
-
-    public void setSkillButtonsEnabled(boolean enabled) {
-        skill1Button.setEnabled(enabled);
-        skill2Button.setEnabled(enabled);
-        skill3Button.setEnabled(enabled);
-        skill4Button.setEnabled(enabled);
-        surrenderButton.setEnabled(enabled);
-    }
-
-    public void updateSkillButtons(String[] skillNames, String[] skillDescriptions) {
-        JButton[] buttons = { skill1Button, skill2Button, skill3Button, skill4Button };
-
-        for (int i = 0; i < buttons.length && i < skillNames.length; i++) {
-            JButton button = buttons[i];
-            button.removeAll();
-            button.setLayout(new BorderLayout());
-
-            JLabel titleLabel = new JLabel(skillNames[i], SwingConstants.CENTER);
-            titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
-            titleLabel.setForeground(Color.WHITE);
-            button.add(titleLabel, BorderLayout.NORTH);
-
-            JLabel descLabel = new JLabel(skillDescriptions[i], SwingConstants.CENTER);
-            descLabel.setFont(new Font("Arial", Font.PLAIN, 11));
-            descLabel.setForeground(Color.WHITE);
-            button.add(descLabel, BorderLayout.CENTER);
-
-            button.revalidate();
-            button.repaint();
+            // Trigger surrender logic through listener (handled by GameWindow via skill
+            // index -1 or separate method)
+            // For simplicity, we can use a special index or add a surrender listener
+            // Using skill index -1 for surrender
+            if (skillListener != null) {
+                skillListener.onSkillUsed(-1);
+            }
         }
     }
 
@@ -229,55 +300,9 @@ public class BattlePanel extends JPanel {
         this.skillListener = listener;
     }
 
-    // Update methods
-    public void updatePlayerHP(int hp, int maxHP) {
-        this.player1HP = hp;
-        this.player1MaxHP = maxHP;
-        repaint();
-    }
-
-    public void updateEnemyHP(int hp, int maxHP) {
-        this.player2HP = hp;
-        this.player2MaxHP = maxHP;
-        repaint();
-    }
-
-    public void updatePlayerFP(int fp, int maxFP) {
-        this.player1FP = fp;
-        this.player1MaxFP = maxFP;
-        repaint();
-    }
-
-    public void updateEnemyFP(int fp, int maxFP) {
-        this.player2FP = fp;
-        this.player2MaxFP = maxFP;
-        repaint();
-    }
-
-    public void updateplayer1Name(String name) {
-        this.player1Name = name;
-        repaint();
-    }
-
-    public void updateplayer2Name(String name) {
-        this.player2Name = name;
-        repaint();
-    }
-
-    public void updateCurrentTurn(String playerName) {
-        this.currentTurn = playerName;
-        turnLabel.setText(playerName.toUpperCase() + " TURN");
-        repaint();
-    }
-
-    public void addBattleLogMessage(String message) {
-        battleLog.append(message + "\n");
-        battleLog.setCaretPosition(battleLog.getDocument().getLength());
-    }
-
-    public void clearBattleLog() {
-        battleLog.setText("=== Battle Log ===\n");
-    }
+    // ==========================================
+    // Painting
+    // ==========================================
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -294,11 +319,13 @@ public class BattlePanel extends JPanel {
         }
 
         // Dark overlay
-        g2.setColor(new Color(0, 0, 0, 120));
+        g2.setColor(new Color(0, 0, 0, 100));
         g2.fillRect(0, 0, getWidth(), getHeight());
 
-        // Draw character sprites and stats
-        drawCharacterArea(g2);
+        // Draw characters if available
+        if (player1 != null && player2 != null) {
+            drawCharacterArea(g2);
+        }
 
         g2.dispose();
     }
@@ -306,67 +333,61 @@ public class BattlePanel extends JPanel {
     private void drawCharacterArea(Graphics2D g2) {
         int midY = 220;
 
-        // Player 1 (left side)
+        // Player 1 (Left) - Horizontal Position
         drawCharacterSprite(g2, heroSprite, 80, midY - 60, true);
-        drawCharacterStats(g2, player1Name, player1HP, player1MaxHP, player1FP, player1MaxFP,
-                30, 360, true);
+        drawCharacterStats(g2, player1, 30, 360, true);
 
         // VS Label
         g2.setFont(new Font("Arial", Font.BOLD, 36));
         g2.setColor(Color.RED);
-        FontMetrics fm = g2.getFontMetrics();
         String vsText = "VS";
-        int vsWidth = fm.stringWidth(vsText);
+        int vsWidth = g2.getFontMetrics().stringWidth(vsText);
         g2.drawString(vsText, (getWidth() - vsWidth) / 2, 240);
 
-        // Player 2 (right side)
-        drawCharacterSprite(g2, enemySprite, getWidth() - 200, midY - 60, false);
-        drawCharacterStats(g2, player2Name, player2HP, player2MaxHP, player2FP, player2MaxFP,
-                getWidth() - 270, 360, false);
+        // Player 2 (Right) - Horizontal Position
+        // Adjusted X to 500 to avoid overlap (though battle log is gone now, still good
+        // to keep safe)
+        drawCharacterSprite(g2, enemySprite, 620, midY - 60, false);
+        drawCharacterStats(g2, player2, 550, 360, false);
     }
 
     private void drawCharacterSprite(Graphics2D g2, BufferedImage sprite, int x, int y, boolean isPlayer) {
         if (sprite != null) {
             g2.drawImage(sprite, x, y, 120, 120, null);
         } else {
-            // Placeholder
-            g2.setColor(isPlayer ? new Color(100, 150, 255, 200) : new Color(255, 100, 100, 200));
+            g2.setColor(isPlayer ? new Color(100, 150, 255) : new Color(255, 100, 100));
             g2.fillOval(x, y, 120, 120);
-
-            g2.setColor(Color.WHITE);
-            g2.setFont(new Font("Arial", Font.BOLD, 16));
-            FontMetrics fm = g2.getFontMetrics();
-            String text = isPlayer ? "P1" : "P2";
-            int textWidth = fm.stringWidth(text);
-            g2.drawString(text, x + 60 - textWidth / 2, y + 65);
         }
     }
 
-    private void drawCharacterStats(Graphics2D g2, String name, int hp, int maxHP, int fp, int maxFP,
-            int x, int y, boolean isPlayer) {
+    private void drawCharacterStats(Graphics2D g2, BaseCharacter character, int x, int y, boolean isPlayer) {
         // Name
         g2.setFont(new Font("Arial", Font.BOLD, 18));
         g2.setColor(Color.WHITE);
-        g2.drawString(name, x, y);
+        g2.drawString(character.getName(), x, y);
 
         // HP Bar
         y += 25;
-        drawStatBar(g2, "HP", hp, maxHP, x, y, 240, 25, Color.GREEN, Color.RED);
+        drawStatBar(g2, "HP", character.getHealthPoints(), character.getMaxHealthPoints(),
+                x, y, 240, 25, Color.GREEN, Color.RED);
 
         // FP Bar
         y += 35;
-        drawStatBar(g2, "FP", fp, maxFP, x, y, 240, 20, Color.CYAN, new Color(0, 100, 150));
+        drawStatBar(g2, "FP", character.getFocusPoints(), character.getMaxFocusPoints(),
+                x, y, 240, 20, Color.CYAN, new Color(0, 100, 150));
+
+        // Status Icons
+        y += 25;
+        drawStatusIcons(g2, character, x, y);
     }
 
     private void drawStatBar(Graphics2D g2, String label, int current, int max,
-            int x, int y, int width, int height,
-            Color goodColor, Color badColor) {
+            int x, int y, int width, int height, Color goodColor, Color badColor) {
         // Label
         g2.setFont(new Font("Arial", Font.BOLD, 14));
         g2.setColor(Color.WHITE);
         g2.drawString(label + ":", x, y + height - 5);
 
-        // Bar position
         int barX = x + 35;
         int barWidth = width - 35;
 
@@ -374,20 +395,11 @@ public class BattlePanel extends JPanel {
         g2.setColor(new Color(40, 40, 40));
         g2.fillRect(barX, y, barWidth, height);
 
-        // Fill bar
+        // Fill
         float percent = (float) current / max;
         int fillWidth = (int) (barWidth * percent);
 
-        // Color based on percentage
-        Color fillColor;
-        if (percent > 0.6f) {
-            fillColor = goodColor;
-        } else if (percent > 0.3f) {
-            fillColor = Color.ORANGE;
-        } else {
-            fillColor = badColor;
-        }
-
+        Color fillColor = percent > 0.5 ? goodColor : (percent > 0.2 ? Color.ORANGE : badColor);
         g2.setColor(fillColor);
         g2.fillRect(barX, y, fillWidth, height);
 
@@ -397,10 +409,72 @@ public class BattlePanel extends JPanel {
 
         // Text
         g2.setFont(new Font("Arial", Font.BOLD, 12));
-        String text = current + " / " + max;
-        FontMetrics fm = g2.getFontMetrics();
-        int textWidth = fm.stringWidth(text);
         g2.setColor(Color.WHITE);
+        String text = current + " / " + max;
+        int textWidth = g2.getFontMetrics().stringWidth(text);
         g2.drawString(text, barX + barWidth / 2 - textWidth / 2, y + height - 6);
     }
+
+    private void drawStatusIcons(Graphics2D g2, BaseCharacter character, int x, int y) {
+        List<String> effects = character.getActiveEffectNames();
+        if (effects.isEmpty())
+            return;
+
+        g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 20)); // Use font supporting emojis
+        int iconX = x;
+
+        for (String effect : effects) {
+            String icon = getEffectIcon(effect);
+            g2.drawString(icon, iconX, y);
+
+            // Draw text label small
+            g2.setFont(new Font("Arial", Font.PLAIN, 10));
+            g2.drawString(effect, iconX + 25, y - 5);
+            g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 20)); // Reset font
+
+            iconX += 80;
+        }
+    }
+
+    private String getEffectIcon(String effectName) {
+        if (effectName.contains("Burn"))
+            return "🔥";
+        if (effectName.contains("Freeze"))
+            return "❄️";
+        if (effectName.contains("Guard"))
+            return "🛡️";
+        return "⚡";
+    }
+
+    // Helper methods for GameWindow to update specific fields if needed
+    // But updateCharacters() is preferred
+    public void updatePlayerHP(int hp, int max) {
+        repaint();
+    }
+
+    public void updateEnemyHP(int hp, int max) {
+        repaint();
+    }
+
+    public void updatePlayerFP(int fp, int max) {
+        repaint();
+    }
+
+    public void updateEnemyFP(int fp, int max) {
+        repaint();
+    }
+
+    public void updateplayer1Name(String name) {
+        repaint();
+    }
+
+    public void updateplayer2Name(String name) {
+        repaint();
+    }
+
+    public void clearBattleLog() {
+        /* No op as log is transient now */ }
+
+    public void addBattleLogMessage(String msg) {
+        /* No op */ }
 }
