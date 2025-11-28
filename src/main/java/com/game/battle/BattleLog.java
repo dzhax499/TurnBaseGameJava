@@ -1,5 +1,6 @@
 package com.game.battle;
 
+import com.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public class BattleLog {
     private List<BattleAction> actions;
-    private static final int MAX_LOG_SIZE = 100;
+    private static final int MAX_LOG_SIZE = Constants.MAX_BATTLE_LOG_ENTRIES;
 
     public BattleLog() {
         this.actions = new ArrayList<>();

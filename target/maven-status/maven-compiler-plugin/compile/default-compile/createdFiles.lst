@@ -14,7 +14,6 @@ com\game\skills\elemental\AirSlashSkill.class
 com\game\skills\elemental\RockThrowSkill.class
 com\game\battle\BattleLog.class
 com\game\characters\WaterCharacter.class
-com\game\gui\BattlePanel$SurrenderListener.class
 com\game\gui\BattlePanel$SkillActionListener.class
 com\game\gui\MainMenuPanel$CharacterSelectionListener.class
 com\game\skills\common\HealSkill.class
@@ -31,11 +30,11 @@ com\game\skills\common\AttackSkill.class
 com\game\skills\common\GuardSkill.class
 com\game\skills\effects\BurnEffect.class
 com\game\battle\BattleState.class
+com\utils\Constants.class
 com\game\gui\MainMenuPanel.class
 com\game\battle\BattleSimulator.class
 com\game\gui\CharacterSelectionPanel$SelectionListener.class
 com\game\gui\CharacterSelectionPanel.class
-com\game\gui\BattlePanel$2.class
 com\game\gui\CharacterSelectionPanel$1.class
 com\game\characters\ElementalAdvantage$1.class
 com\game\battle\BattleDemo.class

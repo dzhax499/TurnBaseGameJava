@@ -2,6 +2,7 @@ package com.game.skills.elemental;
 
 import com.game.characters.BaseCharacter;
 import com.game.skills.Skill;
+import com.utils.Constants;
 
 public class AirSlashSkill implements Skill {
 
@@ -12,13 +13,13 @@ public class AirSlashSkill implements Skill {
 
     @Override
     public int getFpCost() {
-        return 15; // BALANCED: Reduced from 20 to 15
+        return Constants.AIR_SLASH_FP_COST; // REBALANCED: 12 FP (spam skill!)
     }
 
     @Override
     public void use(BaseCharacter user, BaseCharacter target) {
-        // Damage = Attack × 1.2
-        int damage = (int) (user.getAttackPower() * 1.2);
+        // REBALANCED: Damage = Attack × 1.5 (buffed!)
+        int damage = (int) (user.getAttackPower() * Constants.AIR_SLASH_DAMAGE_MULTIPLIER);
 
         if (user.useFocusPoints(getFpCost())) {
             System.out.println(user.getName() + " menyayat " + target.getName() + " dengan angin!");

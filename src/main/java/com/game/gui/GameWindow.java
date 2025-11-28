@@ -142,6 +142,9 @@ public class GameWindow {
 		battlePanel.updateplayer2Name(player2.getName());
 		battlePanel.updatePlayerHP(player1.getHealthPoints(), player1.getMaxHealthPoints());
 		battlePanel.updateEnemyHP(player2.getHealthPoints(), player2.getMaxHealthPoints());
+		// ✅ FIX: Update FP di GUI
+		battlePanel.updatePlayerFP(player1.getFocusPoints(), player1.getMaxFocusPoints());
+		battlePanel.updateEnemyFP(player2.getFocusPoints(), player2.getMaxFocusPoints());
 
 		// Start battle
 		currentBattle.start();
@@ -204,6 +207,10 @@ public class GameWindow {
 		// Update HP
 		battlePanel.updatePlayerHP(player1.getHealthPoints(), player1.getMaxHealthPoints());
 		battlePanel.updateEnemyHP(player2.getHealthPoints(), player2.getMaxHealthPoints());
+
+		// ✅ FIX: Update FP (CRITICAL - was missing!)
+		battlePanel.updatePlayerFP(player1.getFocusPoints(), player1.getMaxFocusPoints());
+		battlePanel.updateEnemyFP(player2.getFocusPoints(), player2.getMaxFocusPoints());
 
 		// Update skill buttons for current player
 		BaseCharacter currentPlayer = currentBattle.getCurrentPlayer();

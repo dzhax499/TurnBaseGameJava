@@ -3,10 +3,11 @@ package com.game.characters;
 import com.game.skills.Skill;
 import com.game.skills.effects.StatusEffect;
 import com.game.skills.effects.FreezeEffect;
+import com.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Kelas abstrak yang menjadi dasar untuk semua karakter dalam game.
@@ -33,24 +34,45 @@ public abstract class BaseCharacter {
     // Daftar efek status aktif pada karakter
     private final List<StatusEffect> activeEffects;
 
-    // Random number generator untuk dodge & crit
-    private static final Random random = new Random();
-
     // ====================================================================
     // 2. KONSTRUKTOR
     // ====================================================================
 
     public BaseCharacter(String name, int maxHp, int attack, int defense, int speed) {
-        this.name = name;
+        // Input validation
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Nama karakter tidak boleh kosong");
+        }
+        if (name.length() > Constants.MAX_NAME_LENGTH) {
+            throw new IllegalArgumentException(
+                    "Nama karakter terlalu panjang (max " + Constants.MAX_NAME_LENGTH + " karakter)");
+        }
+        if (maxHp < Constants.MIN_HP || maxHp > Constants.MAX_HP) {
+            throw new IllegalArgumentException("Max HP harus antara " + Constants.MIN_HP + " dan " + Constants.MAX_HP);
+        }
+        if (attack < Constants.MIN_STAT || attack > Constants.MAX_STAT) {
+            throw new IllegalArgumentException(
+                    "Attack harus antara " + Constants.MIN_STAT + " dan " + Constants.MAX_STAT);
+        }
+        if (defense < Constants.MIN_STAT || defense > Constants.MAX_STAT) {
+            throw new IllegalArgumentException(
+                    "Defense harus antara " + Constants.MIN_STAT + " dan " + Constants.MAX_STAT);
+        }
+        if (speed < Constants.MIN_STAT || speed > Constants.MAX_STAT) {
+            throw new IllegalArgumentException(
+                    "Speed harus antara " + Constants.MIN_STAT + " dan " + Constants.MAX_STAT);
+        }
+
+        this.name = name.trim();
         this.maxHealthPoints = maxHp;
         this.healthPoints = maxHp; // HP awal diatur ke maksimal
         this.attackPower = attack;
         this.defense = defense;
         this.speed = speed;
 
-        // Inisialisasi FP default (bisa disesuaikan nanti)
-        this.maxFocusPoints = 50;
-        this.focusPoints = 50;
+        // Inisialisasi FP dari Constants
+        this.maxFocusPoints = Constants.DEFAULT_MAX_FP;
+        this.focusPoints = Constants.DEFAULT_STARTING_FP;
 
         this.skills = new ArrayList<>();
         this.activeEffects = new ArrayList<>();
@@ -98,20 +120,20 @@ public abstract class BaseCharacter {
      * Versi takeDamage dengan mekanik Dodge, Critical Hit, dan Elemental Advantage.
      */
     public void takeDamageWithMechanics(int rawDamage, BaseCharacter attacker) {
-        // 1. Cek Dodge
+        // 1. Cek Dodge (using ThreadLocalRandom for thread safety)
         double dodgeChance = calculateDodgeChance(attacker);
-        if (random.nextDouble() * 100 < dodgeChance) {
+        if (ThreadLocalRandom.current().nextDouble() * 100 < dodgeChance) {
             System.out.println(this.name + " menghindari serangan! (Dodge)");
             return;
         }
 
-        // 2. Cek Critical Hit
+        // 2. Cek Critical Hit (using ThreadLocalRandom for thread safety)
         double critChance = attacker.calculateCritChance();
-        boolean isCrit = random.nextDouble() * 100 < critChance;
+        boolean isCrit = ThreadLocalRandom.current().nextDouble() * 100 < critChance;
 
         int finalDamage = rawDamage;
         if (isCrit) {
-            finalDamage = (int) (rawDamage * 1.5);
+            finalDamage = (int) (rawDamage * Constants.CRIT_DAMAGE_MULTIPLIER);
             System.out.println(attacker.getName() + " melakukan Critical Hit!");
         }
 
@@ -145,8 +167,8 @@ public abstract class BaseCharacter {
      */
     private double calculateDodgeChance(BaseCharacter attacker) {
         double speedDiff = this.speed - attacker.getSpeed();
-        double chance = speedDiff / 200.0 * 100; // Reduced from /100 to /200
-        return Math.min(20, Math.max(0, chance)); // Cap reduced from 30% to 20%
+        double chance = speedDiff / Constants.DODGE_SPEED_DIVISOR * 100;
+        return Math.min(Constants.MAX_DODGE_CHANCE, Math.max(0, chance));
     }
 
     /**
@@ -154,9 +176,9 @@ public abstract class BaseCharacter {
      * BALANCED: Added base crit untuk semua karakter, reduced speed impact.
      */
     private double calculateCritChance() {
-        double baseCrit = 5.0; // Everyone gets 5% base crit
-        double speedBonus = this.speed / 8.0; // Reduced from /4 to /8
-        return Math.min(20, baseCrit + speedBonus); // Cap reduced from 25% to 20%
+        double baseCrit = Constants.BASE_CRIT_CHANCE;
+        double speedBonus = this.speed / Constants.CRIT_SPEED_DIVISOR;
+        return Math.min(Constants.MAX_CRIT_CHANCE, baseCrit + speedBonus);
     }
 
     /**
@@ -305,7 +327,8 @@ public abstract class BaseCharacter {
     }
 
     public List<Skill> getSkills() {
-        return skills;
+        // Defensive copy untuk mencegah external modification
+        return new ArrayList<>(skills);
     }
 
     // Setters

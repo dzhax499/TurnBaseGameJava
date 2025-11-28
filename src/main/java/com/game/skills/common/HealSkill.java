@@ -2,6 +2,7 @@ package com.game.skills.common;
 
 import com.game.characters.BaseCharacter;
 import com.game.skills.Skill;
+import com.utils.Constants;
 
 public class HealSkill implements Skill {
 
@@ -12,13 +13,13 @@ public class HealSkill implements Skill {
 
     @Override
     public int getFpCost() {
-        return 12; // BALANCED: Adjusted from 10 to 12
+        return Constants.HEAL_SKILL_FP_COST; // REBALANCED: 12 FP
     }
 
     @Override
     public void use(BaseCharacter user, BaseCharacter target) {
-        // Heal menggunakan Attack × 0.8 + 10 (lebih balanced, tidak terlalu besar)
-        int healAmount = (int) (user.getAttackPower() * 0.8) + 10;
+        // REBALANCED: Fixed heal amount
+        int healAmount = Constants.HEAL_SKILL_AMOUNT;
 
         if (user.useFocusPoints(getFpCost())) {
             System.out.println(user.getName() + " menggunakan Heal pada dirinya sendiri!");

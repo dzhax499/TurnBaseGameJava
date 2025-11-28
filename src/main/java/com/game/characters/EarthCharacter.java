@@ -4,13 +4,15 @@ import com.game.skills.common.AttackSkill;
 import com.game.skills.common.GuardSkill;
 import com.game.skills.common.HealSkill;
 import com.game.skills.elemental.RockThrowSkill;
+import com.utils.Constants;
 
 public class EarthCharacter extends BaseCharacter {
 
     public EarthCharacter(String name) {
         // HP, Attack, Defense, Speed
         // Earth: Tank - High HP & Defense, Low Speed
-        super(name, 140, 25, 30, 5);
+        super(name, Constants.EARTH_MAX_HP, Constants.EARTH_ATTACK,
+                Constants.EARTH_DEFENSE, Constants.EARTH_SPEED);
     }
 
     @Override

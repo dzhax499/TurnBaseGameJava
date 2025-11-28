@@ -3,6 +3,7 @@ package com.game.skills.elemental;
 import com.game.characters.BaseCharacter;
 import com.game.skills.Skill;
 import com.game.skills.effects.FreezeEffect;
+import com.utils.Constants;
 
 public class IceBlastSkill implements Skill {
 
@@ -13,20 +14,20 @@ public class IceBlastSkill implements Skill {
 
     @Override
     public int getFpCost() {
-        return 15; // BALANCED: Reduced from 20 to 15
+        return Constants.ICE_BLAST_FP_COST; // REBALANCED: 20 FP
     }
 
     @Override
     public void use(BaseCharacter user, BaseCharacter target) {
-        // Damage = Attack × 1.5
-        int damage = (int) (user.getAttackPower() * 1.5);
+        // REBALANCED: Damage = Attack × 1.3
+        int damage = (int) (user.getAttackPower() * Constants.ICE_BLAST_DAMAGE_MULTIPLIER);
 
         if (user.useFocusPoints(getFpCost())) {
             System.out.println(user.getName() + " membekukan " + target.getName() + " dengan Ice Blast!");
             target.takeDamageWithMechanics(damage, user);
 
             // Tambahkan efek Freeze (1 giliran)
-            target.addEffect(new FreezeEffect(1));
+            target.addEffect(new FreezeEffect(Constants.FREEZE_DEFAULT_DURATION));
         }
     }
 }

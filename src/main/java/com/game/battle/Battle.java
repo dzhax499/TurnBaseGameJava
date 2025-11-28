@@ -2,6 +2,7 @@ package com.game.battle;
 
 import com.game.characters.BaseCharacter;
 import com.game.skills.Skill;
+import com.utils.Constants;
 import java.util.List;
 import java.util.Random;
 
@@ -43,6 +44,11 @@ public class Battle {
      * @param player2 Karakter pemain 2
      */
     public Battle(BaseCharacter player1, BaseCharacter player2) {
+        // Validation
+        if (player1 == null || player2 == null) {
+            throw new IllegalArgumentException("Player tidak boleh null");
+        }
+
         this.player1 = player1;
         this.player2 = player2;
         this.currentState = BattleState.WAITING;
@@ -122,7 +128,7 @@ public class Battle {
     private void displayCharacterStatus(BaseCharacter character, String label) {
         int maxHp = character.getMaxHealthPoints();
         int currentHp = character.getHealthPoints();
-        int hpPercent = (currentHp * 100) / maxHp;
+        // Removed unused hpPercent variable
 
         // HP Bar
         System.out.print(label + " " + character.getName());
@@ -206,6 +212,27 @@ public class Battle {
         BaseCharacter attacker = getCurrentPlayer();
         BaseCharacter defender = getOpponentPlayer();
 
+        // ✅ FIX: Process status effects FIRST (at start of turn)
+        System.out.println("\n⚡ Memproses Status Effects...");
+        attacker.updateStatusEffects();
+
+        // ✅ FIX: Check if can move (Freeze check)
+        if (!attacker.canMove()) {
+            System.out.println("❄️ " + attacker.getName() + " terkena Freeze! Skip turn!");
+
+            // Log freeze action
+            BattleAction freezeAction = new BattleAction(
+                    attacker.getName(),
+                    "FROZEN",
+                    "Terkena Freeze",
+                    "");
+            freezeAction.setDescription("Tidak bisa bergerak karena terkena efek Freeze!");
+            battleLog.addAction(freezeAction);
+            battleLog.displayLastAction();
+
+            return true; // Turn berhasil tapi tidak bisa action
+        }
+
         List<Skill> skills = attacker.getSkills();
 
         // Validasi index
@@ -216,12 +243,8 @@ public class Battle {
 
         Skill selectedSkill = skills.get(skillIndex - 1);
 
-        // Cek FP cukup
-        if (attacker.getFocusPoints() < selectedSkill.getFpCost()) {
-            System.out.println(
-                    "❌ " + attacker.getName() + " tidak punya cukup FP! Butuh " + selectedSkill.getFpCost() + " FP.");
-            return false;
-        }
+        // Note: FP check dan deduction dilakukan di dalam skill.use()
+        // Ini memastikan consistency dan skills punya kontrol penuh atas FP usage
 
         // Log aksi
         BattleAction action = new BattleAction(
@@ -230,21 +253,22 @@ public class Battle {
                 selectedSkill.getName(),
                 defender.getName());
 
-        // Simpan HP dan FP sebelum aksi
+        // ✅ FIX: Simpan HP attacker DAN defender untuk tracking healing
         int defenderHpBefore = defender.getHealthPoints();
-        int attackerFpBefore = attacker.getFocusPoints();
+        int attackerHpBefore = attacker.getHealthPoints();
 
         // Eksekusi skill
         System.out.println();
         selectedSkill.use(attacker, defender);
         System.out.println();
 
-        // Hitung damage/healing
+        // ✅ FIX: Hitung damage DAN healing dengan benar
         int damageDealt = defenderHpBefore - defender.getHealthPoints();
-        if (damageDealt < 0) {
-            // Negative berarti healing
-            action.setHealingDone(-damageDealt);
-        } else {
+        int healingDone = attacker.getHealthPoints() - attackerHpBefore;
+
+        if (healingDone > 0) {
+            action.setHealingDone(healingDone);
+        } else if (damageDealt > 0) {
             action.setDamageDealt(damageDealt);
         }
 
@@ -255,8 +279,8 @@ public class Battle {
 
         battleLog.addAction(action);
 
-        // Proses status effects setiap turn
-        processStatusEffects();
+        // ✅ FIX: Display battle log action immediately
+        battleLog.displayLastAction();
 
         return true;
     }
@@ -282,19 +306,6 @@ public class Battle {
     }
 
     /**
-     * Memproses status effects pada setiap karakter.
-     */
-    private void processStatusEffects() {
-        System.out.println("\n⚡ Memproses Status Effects...");
-
-        // Process player1 effects
-        player1.updateStatusEffects();
-
-        // Process player2 effects
-        player2.updateStatusEffects();
-    }
-
-    /**
      * Pindah ke giliran berikutnya.
      */
     public void endTurn() {
@@ -313,7 +324,7 @@ public class Battle {
      * BALANCED: Increased regen untuk lebih banyak strategic options.
      */
     private void regenerateFocusPoints() {
-        int fpRegenAmount = 7; // Increased from 5 to 7
+        int fpRegenAmount = Constants.FP_REGEN_PER_TURN;
         player1.regenFocusPoints(fpRegenAmount);
         player2.regenFocusPoints(fpRegenAmount);
     }
@@ -409,7 +420,12 @@ public class Battle {
      * Mendapatkan pemain yang sedang bermain saat ini.
      */
     public BaseCharacter getCurrentPlayer() {
-        return currentState == BattleState.PLAYER1_TURN ? player1 : player2;
+        if (currentState == BattleState.PLAYER1_TURN) {
+            return player1;
+        } else if (currentState == BattleState.PLAYER2_TURN) {
+            return player2;
+        }
+        throw new IllegalStateException("Invalid battle state: " + currentState);
     }
 
     /**

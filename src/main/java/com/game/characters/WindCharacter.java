@@ -4,13 +4,15 @@ import com.game.skills.elemental.AirSlashSkill;
 import com.game.skills.common.AttackSkill;
 import com.game.skills.common.GuardSkill;
 import com.game.skills.common.HealSkill;
+import com.utils.Constants;
 
 public class WindCharacter extends BaseCharacter {
 
     public WindCharacter(String name) {
         // HP, Attack, Defense, Speed
         // Wind: Speedster - High Speed, Low HP & Defense
-        super(name, 90, 30, 10, 50);
+        super(name, Constants.WIND_MAX_HP, Constants.WIND_ATTACK,
+                Constants.WIND_DEFENSE, Constants.WIND_SPEED);
     }
 
     @Override
