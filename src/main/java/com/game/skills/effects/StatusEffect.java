@@ -33,11 +33,10 @@ public abstract class StatusEffect {
     public abstract void remove(BaseCharacter target);
 
     /**
-     * Mengurangi durasi efek. Return true jika efek masih aktif.
+     * Mengurangi durasi efek.
      */
-    public boolean decreaseDuration() {
+    public void decrementDuration() {
         this.duration--;
-        return this.duration > 0;
     }
 
     // Getters

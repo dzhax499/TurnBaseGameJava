@@ -45,13 +45,12 @@ public class GameWindow {
         // Setup main frame
         frame = new JFrame("Turn-Based Battle Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(820, 620);
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
 
         // Setup CardLayout
         cardLayout = new CardLayout();
         mainContainer = new JPanel(cardLayout);
+        // Set preferred size to ensure content area is exactly 820x620
+        mainContainer.setPreferredSize(new Dimension(820, 620));
 
         // Initialize panels
         initializePanels();
@@ -62,6 +61,11 @@ public class GameWindow {
         mainContainer.add(battlePanel, BATTLE_CARD);
 
         frame.add(mainContainer);
+
+        // Pack frame to fit content
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
 
         // Show menu first
         cardLayout.show(mainContainer, MENU_CARD);

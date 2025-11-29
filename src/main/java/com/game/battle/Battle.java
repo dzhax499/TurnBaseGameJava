@@ -212,11 +212,11 @@ public class Battle {
         BaseCharacter attacker = getCurrentPlayer();
         BaseCharacter defender = getOpponentPlayer();
 
-        // ✅ FIX: Process status effects FIRST (at start of turn)
-        System.out.println("\n⚡ Memproses Status Effects...");
-        attacker.updateStatusEffects();
+        // 1. Process Start Turn Effects (DoT, etc.)
+        System.out.println("\n⚡ Memproses Status Effects (Start Turn)...");
+        attacker.applyStartTurnEffects();
 
-        // ✅ FIX: Check if can move (Freeze check)
+        // 2. Check if can move (Freeze check)
         if (!attacker.canMove()) {
             System.out.println("❄️ " + attacker.getName() + " terkena Freeze! Skip turn!");
 
@@ -230,6 +230,8 @@ public class Battle {
             battleLog.addAction(freezeAction);
             battleLog.displayLastAction();
 
+            // End turn effects (duration decrement)
+            attacker.applyEndTurnEffects();
             return true; // Turn berhasil tapi tidak bisa action
         }
 
@@ -243,8 +245,11 @@ public class Battle {
 
         Skill selectedSkill = skills.get(skillIndex - 1);
 
-        // Note: FP check dan deduction dilakukan di dalam skill.use()
-        // Ini memastikan consistency dan skills punya kontrol penuh atas FP usage
+        // 3. Check FP BEFORE execution
+        if (attacker.getFocusPoints() < selectedSkill.getFpCost()) {
+            System.out.println("❌ FP tidak cukup! Pilih skill lain.");
+            return false; // Return false to allow re-selection
+        }
 
         // Log aksi
         BattleAction action = new BattleAction(
@@ -253,7 +258,7 @@ public class Battle {
                 selectedSkill.getName(),
                 defender.getName());
 
-        // ✅ FIX: Simpan HP attacker DAN defender untuk tracking healing
+        // Simpan HP attacker DAN defender untuk tracking healing & damage
         int defenderHpBefore = defender.getHealthPoints();
         int attackerHpBefore = attacker.getHealthPoints();
 
@@ -262,14 +267,16 @@ public class Battle {
         selectedSkill.use(attacker, defender);
         System.out.println();
 
-        // ✅ FIX: Hitung damage DAN healing dengan benar
+        // Hitung damage DAN healing
         int damageDealt = defenderHpBefore - defender.getHealthPoints();
         int healingDone = attacker.getHealthPoints() - attackerHpBefore;
 
+        // Record BOTH if applicable (e.g. Drain skill)
+        if (damageDealt > 0) {
+            action.setDamageDealt(damageDealt);
+        }
         if (healingDone > 0) {
             action.setHealingDone(healingDone);
-        } else if (damageDealt > 0) {
-            action.setDamageDealt(damageDealt);
         }
 
         // Set deskripsi
@@ -278,9 +285,10 @@ public class Battle {
         }
 
         battleLog.addAction(action);
-
-        // ✅ FIX: Display battle log action immediately
         battleLog.displayLastAction();
+
+        // 4. Process End Turn Effects (Duration decrement)
+        attacker.applyEndTurnEffects();
 
         return true;
     }

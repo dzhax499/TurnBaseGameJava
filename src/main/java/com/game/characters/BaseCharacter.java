@@ -225,15 +225,25 @@ public abstract class BaseCharacter {
     }
 
     /**
-     * Memproses semua efek aktif. Dipanggil setiap awal giliran.
+     * Memproses efek di AWAL giliran (DoT, Stat changes).
      */
-    public void processEffects() {
+    public void applyStartTurnEffects() {
+        for (StatusEffect effect : activeEffects) {
+            effect.tick(this);
+        }
+    }
+
+    /**
+     * Memproses efek di AKHIR giliran (Duration decrement, Removal).
+     */
+    public void applyEndTurnEffects() {
         Iterator<StatusEffect> iterator = activeEffects.iterator();
         while (iterator.hasNext()) {
             StatusEffect effect = iterator.next();
-            effect.tick(this);
 
-            if (!effect.decreaseDuration()) {
+            effect.decrementDuration();
+
+            if (effect.isExpired()) {
                 effect.remove(this);
                 iterator.remove();
             }
@@ -274,14 +284,12 @@ public abstract class BaseCharacter {
     /**
      * Update status effects (alias untuk processEffects).
      * Digunakan untuk memproses semua efek aktif setiap turn.
+     * 
+     * @deprecated Use applyStartTurnEffects and applyEndTurnEffects instead
      */
     public void updateStatusEffects() {
-        processEffects();
-    }
-
-    // Cek Status
-    public boolean isAlive() {
-        return this.healthPoints > 0;
+        applyStartTurnEffects();
+        applyEndTurnEffects();
     }
 
     // Helper untuk menambahkan skill (dipanggil dari initializeSkills() subclass)
