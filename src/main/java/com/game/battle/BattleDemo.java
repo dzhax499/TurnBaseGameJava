@@ -44,24 +44,18 @@ public class BattleDemo {
         while (!battle.isBattleFinished() && turn < maxTurns) {
             battle.displayStatus();
 
-            // Cek apakah pemain bisa bergerak
-            if (!battle.getCurrentPlayer().canMove()) {
-                LOGGER.info("❄️  " + battle.getCurrentPlayerName() + " terkena Freeze! Skip turn.\n");
+            boolean isFrozen = !battle.getCurrentPlayer().canMove();
+            if (isFrozen) {
+                LOGGER.info("❄️  " + battle.getCurrentPlayerName() + " terkena Freeze! Skip turn.");
                 battle.endTurn();
-                turn++;
-                continue;
-            }
-
-            // Pilih skill secara otomatis (demo purposes)
-            int skillChoice = selectAutomaticSkill(battle);
-            
-            if (battle.executePlayerAction(skillChoice)) {
-                if (battle.isBattleFinished()) {
-                    break;
+            } else {
+                // Pilih skill secara otomatis (demo purposes)
+                int skillChoice = selectAutomaticSkill(battle);
+                if (battle.executePlayerAction(skillChoice)) {
+                    battle.endTurn();
                 }
-                battle.endTurn();
-                turn++;
             }
+            turn++;
         }
     }
 
@@ -75,7 +69,6 @@ public class BattleDemo {
      */
     private static int selectAutomaticSkill(Battle battle) {
         BaseCharacter current = battle.getCurrentPlayer();
-        BaseCharacter opponent = battle.getOpponentPlayer();
 
         // Cek HP current player
         int hpPercent = (current.getHealthPoints() * 100) / current.getMaxHealthPoints();
@@ -125,15 +118,17 @@ public class BattleDemo {
             char1.getElementType()
         );
         
-        LOGGER.info("\n⚡ Elemental Advantage:");
-        LOGGER.info("  - " + char2.getName() + " vs " + char1.getName() + ": " + multiplier + "x damage");
+        String advantageInfo = String.format("  - %s vs %s: %.1fx damage", char2.getName(), char1.getName(), multiplier);
+        LOGGER.info("%n⚡ Elemental Advantage:");
+        LOGGER.info(advantageInfo);
         
         String message = com.game.characters.ElementalAdvantage.getEffectivenessMessage(
             char2.getElementType(),
             char1.getElementType()
         );
         if (!message.isEmpty()) {
-            LOGGER.info("  - " + message);
+            String messageInfo = String.format("  - %s", message);
+            LOGGER.info(messageInfo);
         }
     }
 }
