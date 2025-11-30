@@ -1,18 +1,20 @@
 package com.game.battle;
 
 import com.game.characters.*;
+import java.util.logging.Logger;
 
 /**
  * Demo class untuk menjalankan battle secara otomatis (untuk testing).
  * Ini menunjukkan bagaimana sistem battle bekerja tanpa interaksi user.
  */
 public class BattleDemo {
+    private static final Logger LOGGER = Logger.getLogger(BattleDemo.class.getName());
     
     public static void main(String[] args) {
-        System.out.println("\n╔════════════════════════════════════════════════════════╗");
-        System.out.println("║         TURN-BASED BATTLE SYSTEM DEMO                  ║");
-        System.out.println("║     Fire vs Water - Menunjukkan Elemental Advantage   ║");
-        System.out.println("╚════════════════════════════════════════════════════════╝\n");
+        LOGGER.info("\n╔════════════════════════════════════════════════════════╗");
+        LOGGER.info("║         TURN-BASED BATTLE SYSTEM DEMO                  ║");
+        LOGGER.info("║     Fire vs Water - Menunjukkan Elemental Advantage   ║");
+        LOGGER.info("╚════════════════════════════════════════════════════════╝\n");
 
         // Buat karakter: Fire vs Water (Water memiliki keuntungan)
         BaseCharacter fireCharacter = new FireCharacter("Pyro");
@@ -28,7 +30,7 @@ public class BattleDemo {
         // Tampilkan hasil
         battle.displayBattleResult();
         
-        System.out.println("\n📊 ANALISIS PERTARUNGAN:");
+        LOGGER.info("\n📊 ANALISIS PERTARUNGAN:");
         analyzeCharacterMatchup(fireCharacter, waterCharacter);
     }
 
@@ -44,7 +46,7 @@ public class BattleDemo {
 
             // Cek apakah pemain bisa bergerak
             if (!battle.getCurrentPlayer().canMove()) {
-                System.out.println("❄️  " + battle.getCurrentPlayerName() + " terkena Freeze! Skip turn.\n");
+                LOGGER.info("❄️  " + battle.getCurrentPlayerName() + " terkena Freeze! Skip turn.\n");
                 battle.endTurn();
                 turn++;
                 continue;
@@ -105,17 +107,17 @@ public class BattleDemo {
      * Analisis matchup karakter.
      */
     private static void analyzeCharacterMatchup(BaseCharacter char1, BaseCharacter char2) {
-        System.out.println("\n" + char1.getName() + " (" + char1.getElementType() + "):");
-        System.out.println("  - HP: " + char1.getMaxHealthPoints());
-        System.out.println("  - Attack: " + char1.getAttackPower());
-        System.out.println("  - Defense: " + char1.getDefense());
-        System.out.println("  - Speed: " + char1.getSpeed());
+        LOGGER.info("\n" + char1.getName() + " (" + char1.getElementType() + "):");
+        LOGGER.info("  - HP: " + char1.getMaxHealthPoints());
+        LOGGER.info("  - Attack: " + char1.getAttackPower());
+        LOGGER.info("  - Defense: " + char1.getDefense());
+        LOGGER.info("  - Speed: " + char1.getSpeed());
 
-        System.out.println("\n" + char2.getName() + " (" + char2.getElementType() + "):");
-        System.out.println("  - HP: " + char2.getMaxHealthPoints());
-        System.out.println("  - Attack: " + char2.getAttackPower());
-        System.out.println("  - Defense: " + char2.getDefense());
-        System.out.println("  - Speed: " + char2.getSpeed());
+        LOGGER.info("\n" + char2.getName() + " (" + char2.getElementType() + "):");
+        LOGGER.info("  - HP: " + char2.getMaxHealthPoints());
+        LOGGER.info("  - Attack: " + char2.getAttackPower());
+        LOGGER.info("  - Defense: " + char2.getDefense());
+        LOGGER.info("  - Speed: " + char2.getSpeed());
 
         // Elemental advantage
         double multiplier = com.game.characters.ElementalAdvantage.getMultiplier(
@@ -123,15 +125,15 @@ public class BattleDemo {
             char1.getElementType()
         );
         
-        System.out.println("\n⚡ Elemental Advantage:");
-        System.out.println("  - " + char2.getName() + " vs " + char1.getName() + ": " + multiplier + "x damage");
+        LOGGER.info("\n⚡ Elemental Advantage:");
+        LOGGER.info("  - " + char2.getName() + " vs " + char1.getName() + ": " + multiplier + "x damage");
         
         String message = com.game.characters.ElementalAdvantage.getEffectivenessMessage(
             char2.getElementType(),
             char1.getElementType()
         );
         if (!message.isEmpty()) {
-            System.out.println("  - " + message);
+            LOGGER.info("  - " + message);
         }
     }
 }

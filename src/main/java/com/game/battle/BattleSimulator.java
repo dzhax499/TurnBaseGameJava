@@ -2,13 +2,14 @@ package com.game.battle;
 
 import com.game.characters.*;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /**
  * Class untuk menjalankan pertarungan dalam mode interaktif.
  * Pemain 1 dan Pemain 2 dapat memilih karakter dan mengambil keputusan strategis.
  */
 public class BattleSimulator {
-
+    private static final Logger LOGGER = Logger.getLogger(BattleSimulator.class.getName());
     private static Scanner scanner = new Scanner(System.in);
     private Battle battle;
 
@@ -24,9 +25,9 @@ public class BattleSimulator {
      * Menjalankan flow pertarungan interaktif.
      */
     public void run() {
-        System.out.println("\n╔════════════════════════════════════╗");
-        System.out.println("║   TURN-BASED BATTLE SIMULATOR      ║");
-        System.out.println("╚════════════════════════════════════╝\n");
+        LOGGER.info("\n╔════════════════════════════════════╗");
+        LOGGER.info("║   TURN-BASED BATTLE SIMULATOR      ║");
+        LOGGER.info("╚════════════════════════════════════╝\n");
 
         // Pemain memilih karakter
         BaseCharacter player1Character = selectCharacter("Pemain 1");
@@ -57,7 +58,7 @@ public class BattleSimulator {
 
             // Cek apakah pemain saat ini bisa bergerak (tidak freeze)
             if (!battle.getCurrentPlayer().canMove()) {
-                System.out.println("❄️  " + battle.getCurrentPlayerName() + " terkena Freeze! Tidak bisa bergerak!\n");
+                LOGGER.info("❄️  " + battle.getCurrentPlayerName() + " terkena Freeze! Tidak bisa bergerak!\n");
                 battle.endTurn();
                 continue;
             }
@@ -82,7 +83,7 @@ public class BattleSimulator {
                     battle.endTurn();
                 } else {
                     // Aksi gagal, pemain harus memilih lagi
-                    System.out.println();
+                    LOGGER.fine("");
                 }
             }
         }
@@ -114,11 +115,11 @@ public class BattleSimulator {
      * @return Karakter pilihan pemain
      */
     private BaseCharacter selectCharacter(String playerName) {
-        System.out.println("\n" + playerName + ", pilih karaktermu:");
-        System.out.println("1. Fire Character  - High Attack, Low Defense");
-        System.out.println("2. Water Character - Balanced, Good Defense");
-        System.out.println("3. Earth Character - High Defense, Low Speed");
-        System.out.println("4. Wind Character  - High Speed, Low Defense");
+        LOGGER.info("\n" + playerName + ", pilih karaktermu:");
+        LOGGER.info("1. Fire Character  - High Attack, Low Defense");
+        LOGGER.info("2. Water Character - Balanced, Good Defense");
+        LOGGER.info("3. Earth Character - High Defense, Low Speed");
+        LOGGER.info("4. Wind Character  - High Speed, Low Defense");
         
         System.out.print("\nPilihan (1-4): ");
         
@@ -128,7 +129,7 @@ public class BattleSimulator {
             scanner.nextLine(); // Clear newline
         } catch (Exception e) {
             scanner.nextLine();
-            System.out.println("Input tidak valid, memilih Fire Character...");
+            LOGGER.warning("Input tidak valid, memilih Fire Character...");
             return new FireCharacter(playerName);
         }
 
@@ -150,7 +151,7 @@ public class BattleSimulator {
             case 4:
                 return new WindCharacter(characterName);
             default:
-                System.out.println("Pilihan tidak valid, memilih Fire Character...");
+                LOGGER.warning("Pilihan tidak valid, memilih Fire Character...");
                 return new FireCharacter(characterName);
         }
     }
@@ -165,7 +166,7 @@ public class BattleSimulator {
         if (input.equals("y") || input.equals("yes")) {
             run();
         } else {
-            System.out.println("\n👋 Terima kasih telah bermain! Sampai jumpa!\n");
+            LOGGER.info("\n👋 Terima kasih telah bermain! Sampai jumpa!\n");
             scanner.close();
         }
     }

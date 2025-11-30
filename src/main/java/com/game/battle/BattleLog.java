@@ -3,12 +3,14 @@ package com.game.battle;
 import com.utils.Constants;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Class untuk mencatat setiap aksi yang terjadi dalam pertarungan.
  * Digunakan untuk menampilkan battle yang terlihat hidup dan interaktif.
  */
 public class BattleLog {
+    private static final Logger LOGGER = Logger.getLogger(BattleLog.class.getName());
     private List<BattleAction> actions;
     private static final int MAX_LOG_SIZE = Constants.MAX_BATTLE_LOG_ENTRIES;
 
@@ -41,7 +43,7 @@ public class BattleLog {
     public void displayLastAction() {
         if (!actions.isEmpty()) {
             BattleAction lastAction = actions.get(actions.size() - 1);
-            System.out.println(lastAction);
+            LOGGER.info(lastAction.toString());
         }
     }
 
@@ -49,23 +51,23 @@ public class BattleLog {
      * Menampilkan N aksi terakhir.
      */
     public void displayLastActions(int count) {
-        System.out.println("\n========== BATTLE RECAP ==========");
+        LOGGER.info("\n========== BATTLE RECAP ==========");
         List<BattleAction> lastActions = getLastActions(count);
         for (BattleAction action : lastActions) {
-            System.out.println(action);
+            LOGGER.info(action.toString());
         }
-        System.out.println("==================================\n");
+        LOGGER.info("==================================\n");
     }
 
     /**
      * Menampilkan seluruh log pertarungan.
      */
     public void displayFullLog() {
-        System.out.println("\n========== FULL BATTLE LOG ==========");
+        LOGGER.info("\n========== FULL BATTLE LOG ==========");
         for (BattleAction action : actions) {
-            System.out.println(action);
+            LOGGER.info(action.toString());
         }
-        System.out.println("====================================\n");
+        LOGGER.info("====================================\n");
     }
 
     /**
