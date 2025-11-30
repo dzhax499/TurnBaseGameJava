@@ -2,6 +2,7 @@ package com.game.gui;
 
 import com.game.battle.Battle;
 import com.game.battle.BattleAction;
+import com.game.battle.PokemonBattleTextFormatter;
 import com.game.characters.*;
 import javax.swing.*;
 import java.awt.*;
@@ -179,41 +180,40 @@ public class GameWindow {
 
         if (!success) {
             // Action failed (e.g. not enough FP), stay on skill screen
+            // Show error message with Pokemon style
+            String currentPlayerName = currentBattle.getCurrentPlayer().getName();
+            String message = PokemonBattleTextFormatter.formatInsufficientFP(currentPlayerName);
+            battlePanel.showBattleTextWithTypewriter(message);
             return;
         }
 
         // Update UI (HP/FP changes)
         updateBattleUI();
 
-        // Get the last action log to display
+        // Get the last action log to display with Pokemon-style formatting
         List<BattleAction> actions = currentBattle.getBattleLog().getLastActions(1);
         if (!actions.isEmpty()) {
             BattleAction lastAction = actions.get(0);
-            String message = formatBattleMessage(lastAction);
-            battlePanel.showBattleText(message);
+            String message = formatBattleMessagePokemonStyle(lastAction);
+            battlePanel.showBattleTextWithTypewriter(message);
         } else {
             // Fallback
-            battlePanel.showBattleText("Action executed.");
+            battlePanel.showBattleTextWithTypewriter("Action executed.");
         }
     }
 
-    private String formatBattleMessage(BattleAction action) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(action.getActor()).append(" used ").append(action.getActionName()).append("!\n");
-
-        if (action.getDamageDealt() > 0) {
-            sb.append(action.getTarget()).append(" took ").append(action.getDamageDealt()).append(" damage!\n");
-        }
-
-        if (action.getHealingDone() > 0) {
-            sb.append(action.getActor()).append(" recovered ").append(action.getHealingDone()).append(" HP!\n");
-        }
-
-        if (action.getDescription() != null && !action.getDescription().isEmpty()) {
-            sb.append(action.getDescription());
-        }
-
-        return sb.toString();
+    private String formatBattleMessagePokemonStyle(BattleAction action) {
+        // Format dengan Pokemon Fire Red style (Complete Version)
+        return PokemonBattleTextFormatter.formatBattleAction(
+                action.getActor(),
+                action.getActionName(),
+                action.getTarget(),
+                action.getDamageDealt(),
+                action.getHealingDone(),
+                action.isCritical(),
+                action.isDodged(),
+                action.getEffectiveness(),
+                action.getStatusEffect());
     }
 
     private void handleContinueAction() {

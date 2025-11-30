@@ -110,26 +110,49 @@ public abstract class BaseCharacter {
     public void takeDamage(int rawDamage) {
         int finalDamage = Math.max(0, rawDamage - this.defense);
         this.healthPoints -= finalDamage;
-        if (this.healthPoints < 0) {
-            this.healthPoints = 0;
-        }
+
         System.out.println(this.name + " menerima " + finalDamage + " kerusakan.");
+    }
+
+    // Store last damage details for battle log
+    private DamageDetails lastDamageDetails;
+
+    public static class DamageDetails {
+        public boolean isCritical;
+        public boolean isDodged;
+        public double effectiveness;
+        public int damageTaken;
+
+        public DamageDetails() {
+            this.isCritical = false;
+            this.isDodged = false;
+            this.effectiveness = 1.0;
+            this.damageTaken = 0;
+        }
+    }
+
+    public DamageDetails getLastDamageDetails() {
+        return lastDamageDetails;
     }
 
     /**
      * Versi takeDamage dengan mekanik Dodge, Critical Hit, dan Elemental Advantage.
      */
     public void takeDamageWithMechanics(int rawDamage, BaseCharacter attacker) {
+        lastDamageDetails = new DamageDetails();
+
         // 1. Cek Dodge (using ThreadLocalRandom for thread safety)
         double dodgeChance = calculateDodgeChance(attacker);
         if (ThreadLocalRandom.current().nextDouble() * 100 < dodgeChance) {
             System.out.println(this.name + " menghindari serangan! (Dodge)");
+            lastDamageDetails.isDodged = true;
             return;
         }
 
         // 2. Cek Critical Hit (using ThreadLocalRandom for thread safety)
         double critChance = attacker.calculateCritChance();
         boolean isCrit = ThreadLocalRandom.current().nextDouble() * 100 < critChance;
+        lastDamageDetails.isCritical = isCrit;
 
         int finalDamage = rawDamage;
         if (isCrit) {
@@ -141,6 +164,8 @@ public abstract class BaseCharacter {
         double elementalMultiplier = ElementalAdvantage.getMultiplier(
                 attacker.getElementType(),
                 this.getElementType());
+        lastDamageDetails.effectiveness = elementalMultiplier;
+
         finalDamage = (int) (finalDamage * elementalMultiplier);
 
         // Display effectiveness message
@@ -157,6 +182,8 @@ public abstract class BaseCharacter {
         if (this.healthPoints < 0) {
             this.healthPoints = 0;
         }
+
+        lastDamageDetails.damageTaken = finalDamage;
 
         System.out.println(this.name + " menerima " + finalDamage + " kerusakan." + (isCrit ? " (CRIT!)" : ""));
     }

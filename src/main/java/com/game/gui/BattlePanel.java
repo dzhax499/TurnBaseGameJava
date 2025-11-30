@@ -44,6 +44,13 @@ public class BattlePanel extends JPanel {
     private JTextArea battleTextArea;
     private JButton continueButton;
 
+    // Typewriter Effect
+    private Timer typewriterTimer;
+    private String fullText;
+    private int currentCharIndex;
+    private boolean isAnimating;
+    private static final int TYPEWRITER_DELAY_MS = 30; // Delay per karakter
+
     // Constants
     private static final String CARD_SKILLS = "SKILLS";
     private static final String CARD_TEXT = "TEXT";
@@ -155,6 +162,18 @@ public class BattlePanel extends JPanel {
         battleTextArea.setLineWrap(true);
         battleTextArea.setWrapStyleWord(true);
         battleTextArea.setBounds(30, 20, 650, 130);
+        battleTextArea.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        // Click to skip typewriter animation
+        final BattlePanel self = this;
+        battleTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (self.isAnimating) {
+                    self.skipTypewriterAnimation();
+                }
+            }
+        });
+
         textPanel.add(battleTextArea);
 
         // Continue Button
@@ -224,6 +243,73 @@ public class BattlePanel extends JPanel {
     public void showBattleText(String text) {
         battleTextArea.setText(text);
         bottomCardLayout.show(bottomPanel, CARD_TEXT);
+    }
+
+    /**
+     * Menampilkan battle text dengan typewriter effect (Pokemon-style).
+     */
+    public void showBattleTextWithTypewriter(String text) {
+        // Stop any existing animation
+        if (typewriterTimer != null && typewriterTimer.isRunning()) {
+            typewriterTimer.stop();
+        }
+
+        // Setup
+        this.fullText = text;
+        this.currentCharIndex = 0;
+        this.isAnimating = true;
+
+        // Clear text area
+        battleTextArea.setText("");
+
+        // Disable continue button during animation
+        continueButton.setEnabled(false);
+
+        // Show text panel
+        bottomCardLayout.show(bottomPanel, CARD_TEXT);
+
+        // Start typewriter animation
+        typewriterTimer = new Timer(TYPEWRITER_DELAY_MS, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentCharIndex < fullText.length()) {
+                    // Add next character
+                    battleTextArea.append(String.valueOf(fullText.charAt(currentCharIndex)));
+                    currentCharIndex++;
+                } else {
+                    // Animation complete
+                    finishTypewriterAnimation();
+                }
+            }
+        });
+
+        typewriterTimer.start();
+    }
+
+    /**
+     * Skip typewriter animation dan langsung tampilkan semua text.
+     */
+    private void skipTypewriterAnimation() {
+        if (typewriterTimer != null && typewriterTimer.isRunning()) {
+            typewriterTimer.stop();
+        }
+
+        if (fullText != null) {
+            battleTextArea.setText(fullText);
+        }
+        finishTypewriterAnimation();
+    }
+
+    /**
+     * Finish typewriter animation.
+     */
+    private void finishTypewriterAnimation() {
+        if (typewriterTimer != null) {
+            typewriterTimer.stop();
+        }
+
+        isAnimating = false;
+        continueButton.setEnabled(true);
     }
 
     public void setContinueButtonListener(ActionListener listener) {

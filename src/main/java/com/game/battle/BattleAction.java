@@ -12,6 +12,10 @@ public class BattleAction {
     private String description; // Deskripsi detail apa yang terjadi
     private int damageDealt; // Damage yang diberikan (jika ada)
     private int healingDone; // Healing yang dilakukan (jika ada)
+    private boolean isCritical; // Apakah serangan critical
+    private boolean isDodged; // Apakah serangan di-dodge
+    private double effectiveness; // Multiplier effectiveness (0.5, 1.0, 2.0, etc)
+    private String statusEffect; // Status effect yang diberikan (jika ada)
     private long timestamp; // Waktu aksi (untuk urutan)
 
     public BattleAction(String actor, String actionType, String actionName, String target) {
@@ -22,6 +26,10 @@ public class BattleAction {
         this.description = "";
         this.damageDealt = 0;
         this.healingDone = 0;
+        this.isCritical = false;
+        this.isDodged = false;
+        this.effectiveness = 1.0;
+        this.statusEffect = "";
         this.timestamp = System.currentTimeMillis();
     }
 
@@ -36,6 +44,22 @@ public class BattleAction {
 
     public void setHealingDone(int healing) {
         this.healingDone = healing;
+    }
+
+    public void setCritical(boolean critical) {
+        this.isCritical = critical;
+    }
+
+    public void setDodged(boolean dodged) {
+        this.isDodged = dodged;
+    }
+
+    public void setEffectiveness(double effectiveness) {
+        this.effectiveness = effectiveness;
+    }
+
+    public void setStatusEffect(String statusEffect) {
+        this.statusEffect = statusEffect;
     }
 
     // Getters
@@ -65,6 +89,22 @@ public class BattleAction {
 
     public int getHealingDone() {
         return healingDone;
+    }
+
+    public boolean isCritical() {
+        return isCritical;
+    }
+
+    public boolean isDodged() {
+        return isDodged;
+    }
+
+    public double getEffectiveness() {
+        return effectiveness;
+    }
+
+    public String getStatusEffect() {
+        return statusEffect;
     }
 
     public long getTimestamp() {

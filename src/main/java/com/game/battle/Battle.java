@@ -262,10 +262,22 @@ public class Battle {
         int defenderHpBefore = defender.getHealthPoints();
         int attackerHpBefore = attacker.getHealthPoints();
 
+        // Capture active effects before skill
+        List<String> effectsBefore = defender.getActiveEffectNames();
+
         // Eksekusi skill
         System.out.println();
         selectedSkill.use(attacker, defender);
         System.out.println();
+
+        // Capture active effects after skill to see if new one applied
+        List<String> effectsAfter = defender.getActiveEffectNames();
+        for (String effect : effectsAfter) {
+            if (!effectsBefore.contains(effect)) {
+                action.setStatusEffect(effect);
+                break; // Assume only 1 effect applied per turn
+            }
+        }
 
         // Hitung damage DAN healing
         int damageDealt = defenderHpBefore - defender.getHealthPoints();
@@ -277,6 +289,16 @@ public class Battle {
         }
         if (healingDone > 0) {
             action.setHealingDone(healingDone);
+        }
+
+        // Capture battle mechanics details (Critical, Dodge, Effectiveness)
+        BaseCharacter.DamageDetails details = defender.getLastDamageDetails();
+        if (details != null) {
+            action.setCritical(details.isCritical);
+            action.setDodged(details.isDodged);
+            action.setEffectiveness(details.effectiveness);
+            // Note: status effect is handled separately via addEffect,
+            // but we can try to capture it if we track active effects change
         }
 
         // Set deskripsi
