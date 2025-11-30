@@ -55,36 +55,27 @@ public class BattleSimulator {
     private void battleLoop() {
         while (!battle.isBattleFinished()) {
             battle.displayStatus();
+            processPlayerTurn();
+        }
+    }
 
-            // Cek apakah pemain saat ini bisa bergerak (tidak freeze)
-            if (!battle.getCurrentPlayer().canMove()) {
-                LOGGER.info("❄️  " + battle.getCurrentPlayerName() + " terkena Freeze! Tidak bisa bergerak!\n");
-                battle.endTurn();
-                continue;
-            }
-
+    /**
+     * Proses turn pemain saat ini.
+     */
+    private void processPlayerTurn() {
+        BaseCharacter currentPlayer = battle.getCurrentPlayer();
+        if (!currentPlayer.canMove()) {
+            String freezeMsg = String.format("%n❄️  %s terkena Freeze! Tidak bisa bergerak!%n", battle.getCurrentPlayerName());
+            LOGGER.info(freezeMsg);
+            battle.endTurn();
+        } else {
             battle.displayAvailableSkills();
-
-            // Input dari pemain
             int choice = getPlayerChoice();
-
-            // Proses aksi
+            
             if (choice == -1) {
-                // Surrender
                 battle.surrender();
-                break;
-            } else {
-                // Eksekusi skill
-                if (battle.executePlayerAction(choice)) {
-                    // Aksi berhasil, cek apakah pertarungan selesai
-                    if (battle.isBattleFinished()) {
-                        break;
-                    }
-                    battle.endTurn();
-                } else {
-                    // Aksi gagal, pemain harus memilih lagi
-                    LOGGER.fine("");
-                }
+            } else if (battle.executePlayerAction(choice) && !battle.isBattleFinished()) {
+                battle.endTurn();
             }
         }
     }
@@ -95,13 +86,11 @@ public class BattleSimulator {
      * @return Index skill (1-based), atau -1 untuk surrender
      */
     private int getPlayerChoice() {
-        System.out.print("\n👉 " + battle.getCurrentPlayerName() + ", pilih skill (1-4) atau 0 untuk menyerah: ");
+        String prompt = String.format("%n👉 %s, pilih skill (1-4) atau 0 untuk menyerah: ", battle.getCurrentPlayerName());
+        LOGGER.info(prompt);
         try {
             int choice = scanner.nextInt();
-            if (choice == 0) {
-                return -1; // Surrender
-            }
-            return choice;
+            return choice == 0 ? -1 : choice;
         } catch (Exception e) {
             scanner.nextLine(); // Clear invalid input
             return -999; // Invalid
@@ -115,13 +104,14 @@ public class BattleSimulator {
      * @return Karakter pilihan pemain
      */
     private BaseCharacter selectCharacter(String playerName) {
-        LOGGER.info("\n" + playerName + ", pilih karaktermu:");
+        String header = String.format("%n%s, pilih karaktermu:", playerName);
+        LOGGER.info(header);
         LOGGER.info("1. Fire Character  - High Attack, Low Defense");
         LOGGER.info("2. Water Character - Balanced, Good Defense");
         LOGGER.info("3. Earth Character - High Defense, Low Speed");
         LOGGER.info("4. Wind Character  - High Speed, Low Defense");
         
-        System.out.print("\nPilihan (1-4): ");
+        LOGGER.info("\nPilihan (1-4): ");
         
         int choice;
         try {
@@ -134,13 +124,20 @@ public class BattleSimulator {
         }
 
         // Input nama karakter
-        System.out.print("Masukkan nama karaktermu: ");
+        LOGGER.info("Masukkan nama karaktermu: ");
         String characterName = scanner.nextLine();
         if (characterName.trim().isEmpty()) {
             characterName = playerName + " Character";
         }
 
         // Buat karakter berdasarkan pilihan
+        return createCharacterByChoice(choice, characterName);
+    }
+
+    /**
+     * Buat karakter berdasarkan pilihan nomor.
+     */
+    private BaseCharacter createCharacterByChoice(int choice, String characterName) {
         switch (choice) {
             case 1:
                 return new FireCharacter(characterName);
@@ -160,13 +157,14 @@ public class BattleSimulator {
      * Tanyakan apakah pemain ingin bermain lagi.
      */
     private void askPlayAgain() {
-        System.out.print("\nBermain lagi? (y/n): ");
+        LOGGER.info("\nBermain lagi? (y/n): ");
         String input = scanner.nextLine().trim().toLowerCase();
         
         if (input.equals("y") || input.equals("yes")) {
             run();
         } else {
-            LOGGER.info("\n👋 Terima kasih telah bermain! Sampai jumpa!\n");
+            String farewell = String.format("%n👋 Terima kasih telah bermain! Sampai jumpa!%n");
+            LOGGER.info(farewell);
             scanner.close();
         }
     }

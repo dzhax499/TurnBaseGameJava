@@ -2,6 +2,7 @@ package com.game.gui;
 
 import com.game.battle.Battle;
 import com.game.battle.BattleAction;
+import com.game.battle.BattleActionInfo;
 import com.game.battle.PokemonBattleTextFormatter;
 import com.game.characters.*;
 import javax.swing.*;
@@ -204,16 +205,18 @@ public class GameWindow {
 
     private String formatBattleMessagePokemonStyle(BattleAction action) {
         // Format dengan Pokemon Fire Red style (Complete Version)
-        return PokemonBattleTextFormatter.formatBattleAction(
+        BattleActionInfo info = new BattleActionInfo(
                 action.getActor(),
                 action.getActionName(),
-                action.getTarget(),
-                action.getDamageDealt(),
-                action.getHealingDone(),
-                action.isCritical(),
-                action.isDodged(),
-                action.getEffectiveness(),
-                action.getStatusEffect());
+                action.getTarget())
+            .withDamage(action.getDamageDealt())
+            .withHealing(action.getHealingDone())
+            .withCritical(action.isCritical())
+            .withDodged(action.isDodged())
+            .withEffectiveness(action.getEffectiveness())
+            .withStatusEffect(action.getStatusEffect());
+        
+        return PokemonBattleTextFormatter.formatBattleAction(info);
     }
 
     private void handleContinueAction() {

@@ -112,8 +112,10 @@ public class Battle {
      */
     public void displayStatus() {
         String divider = "═══════════════════════════════════════════";
-        LOGGER.info("\n" + divider);
-        LOGGER.info("TURN " + turnCount + " - " + getCurrentPlayerName() + " GILIRAN");
+        String dividerWithNewline = String.format("%n%s", divider);
+        LOGGER.info(dividerWithNewline);
+        String turnInfo = String.format("TURN %d - %s GILIRAN", turnCount, getCurrentPlayerName());
+        LOGGER.info(turnInfo);
         LOGGER.info(divider);
 
         // Status Player 1
@@ -122,7 +124,8 @@ public class Battle {
 
         // Status Player 2
         displayCharacterStatus(player2, "🛡️  PLAYER 2");
-        LOGGER.info(divider + "\n");
+        String dividerEndNewline = String.format("%s%n", divider);
+        LOGGER.info(dividerEndNewline);
     }
 
     /**
@@ -138,7 +141,8 @@ public class Battle {
         sb.append(label).append(" ").append(character.getName()).append(" │ ");
         sb.append(formatHpBar(currentHp, maxHp));
         sb.append(" ").append(currentHp).append("/").append(maxHp).append(" HP");
-        LOGGER.info(sb.toString());
+        String hpStatus = sb.toString();
+        LOGGER.info(hpStatus);
 
         // FP Bar
         int maxFp = character.getMaxFocusPoints();
@@ -146,8 +150,8 @@ public class Battle {
         StringBuilder fpSb = new StringBuilder("           │ FP: ");
         fpSb.append(formatFpBar(currentFp, maxFp));
         fpSb.append(" ").append(currentFp).append("/").append(maxFp);
-        LOGGER.info(fpSb.toString());
-
+        String fpStatus = fpSb.toString();
+        LOGGER.info(fpStatus);
         // Status Effects
         List<String> effects = character.getActiveEffectNames();
         if (!effects.isEmpty()) {
@@ -155,7 +159,8 @@ public class Battle {
             for (String effect : effects) {
                 effectSb.append("[").append(effect).append("] ");
             }
-            LOGGER.info(effectSb.toString());
+            String effectStatus = effectSb.toString();
+            LOGGER.info(effectStatus);
         }
     }
 
@@ -205,7 +210,8 @@ public class Battle {
         LOGGER.info("\n📋 Skill tersedia untuk " + currentPlayer.getName() + ":");
         for (int i = 0; i < skills.size(); i++) {
             Skill skill = skills.get(i);
-            LOGGER.info((i + 1) + ". " + skill.getName() + " (FP Cost: " + skill.getFpCost() + ")");
+            String infoSkill = (i + 1) + ". " + skill.getName() + " (FP Cost: " + skill.getFpCost() + ")" ;
+            LOGGER.info(infoSkill);
         }
     }
 
@@ -351,15 +357,7 @@ public class Battle {
      * 2. Salah satu menyerah
      */
     public boolean isBattleFinished() {
-        if (currentState == BattleState.FINISHED) {
-            return true;
-        }
-
-        if (player1.getHealthPoints() <= 0 || player2.getHealthPoints() <= 0) {
-            return true;
-        }
-
-        return false;
+        return (currentState == BattleState.FINISHED) || (player1.getHealthPoints() <= 0 || player2.getHealthPoints() <= 0);
     }
 
     /**
@@ -385,19 +383,23 @@ public class Battle {
      * Menampilkan hasil akhir pertarungan.
      */
     public void displayBattleResult() {
-        BaseCharacter winner = getWinner();
+        BaseCharacter battleWinner = getWinner();
 
         LOGGER.info("\n╔════════════════════════════════════╗");
         LOGGER.info("║       PERTARUNGAN SELESAI!         ║");
         LOGGER.info("╚════════════════════════════════════╝\n");
 
-        if (winner != null) {
-            LOGGER.info("🎉 PEMENANG: " + winner.getName() + " 🎉");
-            LOGGER.info("   HP Tersisa: " + winner.getHealthPoints() + "/" + winner.getMaxHealthPoints());
+        if (battleWinner != null) {
+            String winnerInfo = String.format("🎉 PEMENANG: %s 🎉", battleWinner.getName());
+            LOGGER.info(winnerInfo);
+            String hpInfo = String.format("   HP Tersisa: %d/%d", battleWinner.getHealthPoints(), battleWinner.getMaxHealthPoints());
+            LOGGER.info(hpInfo);
         }
 
-        LOGGER.info("\nTotal Turn: " + turnCount);
-        LOGGER.info("Total Aksi: " + battleLog.getActionCount());
+        String totalTurn = "\nTotal Turn: " + turnCount; 
+        LOGGER.info(totalTurn);
+        String totalAksi = "Total Aksi: " + battleLog.getActionCount(); 
+        LOGGER.info(totalAksi);
     }
 
     /**

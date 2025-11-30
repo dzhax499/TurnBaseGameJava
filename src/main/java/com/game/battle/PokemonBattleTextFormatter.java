@@ -1,24 +1,15 @@
 package com.game.battle;
 
-/**
- * Formatter untuk battle text dengan gaya Pokemon Fire Red.
- * Menghasilkan text yang formatted dengan kapitalisasi dan line breaks yang
- * tepat.
- */
 public class PokemonBattleTextFormatter {
+    static final String CRITICAL_HIT = "CRITICAL HIT!";
+    private PokemonBattleTextFormatter() {
+        // Private constructor to prevent instantiation
+    }
 
-    private static final int TYPEWRITER_DELAY_MS = 30; // Kecepatan text (ms per char)
-
-    /**
-     * Format attack message (skill usage).
-     */
     public static String formatAttackMessage(String attackerName, String skillName) {
         return attackerName.toUpperCase() + " menggunakan\n" + skillName.toUpperCase() + "!";
     }
 
-    /**
-     * Format damage message.
-     */
     public static String formatDamageMessage(int damage) {
         if (damage > 0) {
             return "Memberikan " + damage + " damage!";
@@ -67,13 +58,7 @@ public class PokemonBattleTextFormatter {
         return "";
     }
 
-    /**
-     * Format critical hit message.
-     */
-    public static String formatCriticalHit() {
-        return "CRITICAL HIT!";
-    }
-
+    
     /**
      * Format dodge message.
      */
@@ -138,63 +123,52 @@ public class PokemonBattleTextFormatter {
 
     /**
      * Format complete battle action dengan semua detail.
+     * Menggunakan BattleActionInfo untuk menghindari terlalu banyak parameter.
      */
-    public static String formatBattleAction(
-            String attackerName,
-            String skillName,
-            String defenderName,
-            int damage,
-            int healing,
-            boolean isCritical,
-            boolean isDodged,
-            double effectiveness,
-            String statusEffect) {
+    public static String formatBattleAction(BattleActionInfo info) {
 
         StringBuilder sb = new StringBuilder();
 
         // Attack message
-        sb.append(formatAttackMessage(attackerName, skillName));
+        sb.append(formatAttackMessage(info.attackerName, info.skillName));
         sb.append("\n\n");
 
         // Dodge check
-        if (isDodged) {
-            sb.append(formatDodge(defenderName));
+        if (info.isDodged) {
+            sb.append(formatDodge(info.defenderName));
             return sb.toString();
         }
 
         // Critical hit
-        if (isCritical) {
-            sb.append(formatCriticalHit());
+        if (info.isCritical) {
+            sb.append(CRITICAL_HIT);
             sb.append("\n\n");
         }
 
         // Damage
-        if (damage > 0) {
-            sb.append(formatDamageMessage(damage));
+        if (info.damage > 0) {
+            sb.append(formatDamageMessage(info.damage));
             sb.append("\n\n");
         }
 
         // Effectiveness
-        String effMsg = formatEffectiveness(effectiveness);
+        String effMsg = formatEffectiveness(info.effectiveness);
         if (!effMsg.isEmpty()) {
             sb.append(effMsg);
             sb.append("\n\n");
         }
 
         // Healing
-        if (healing > 0) {
-            sb.append(formatHealingMessage(attackerName, healing));
+        if (info.healing > 0) {
+            sb.append(formatHealingMessage(info.attackerName, info.healing));
             sb.append("\n\n");
         }
 
         // Status effect
-        if (statusEffect != null && !statusEffect.isEmpty()) {
-            sb.append(formatStatusEffectApplied(defenderName, statusEffect));
+        if (info.statusEffect != null && !info.statusEffect.isEmpty()) {
+            sb.append(formatStatusEffectApplied(info.defenderName, info.statusEffect));
         }
-
-        // Remove trailing newlines
-        String result = sb.toString().trim();
-        return result;
+        return sb.toString().trim();
     }
 
 }

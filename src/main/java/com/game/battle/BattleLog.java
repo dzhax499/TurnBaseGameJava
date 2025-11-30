@@ -43,7 +43,8 @@ public class BattleLog {
     public void displayLastAction() {
         if (!actions.isEmpty()) {
             BattleAction lastAction = actions.get(actions.size() - 1);
-            LOGGER.info(lastAction.toString());
+            String actionStr = lastAction.toString();
+            LOGGER.info(actionStr);
         }
     }
 
@@ -54,7 +55,8 @@ public class BattleLog {
         LOGGER.info("\n========== BATTLE RECAP ==========");
         List<BattleAction> lastActions = getLastActions(count);
         for (BattleAction action : lastActions) {
-            LOGGER.info(action.toString());
+            String actionStr = action.toString();
+            LOGGER.info(actionStr);
         }
         LOGGER.info("==================================\n");
     }
@@ -65,7 +67,8 @@ public class BattleLog {
     public void displayFullLog() {
         LOGGER.info("\n========== FULL BATTLE LOG ==========");
         for (BattleAction action : actions) {
-            LOGGER.info(action.toString());
+            String actionStr = action.toString();
+            LOGGER.info(actionStr);
         }
         LOGGER.info("====================================\n");
     }

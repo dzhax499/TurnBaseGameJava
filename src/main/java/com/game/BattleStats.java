@@ -1,12 +1,14 @@
 package com.game;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Class untuk menyimpan statistik pertarungan.
  * Tracks win/loss records dan menghasilkan leaderboard.
  */
 public class BattleStats {
+    private static final Logger LOGGER = Logger.getLogger(BattleStats.class.getName());
     private Map<String, Integer> wins;
     private Map<String, Integer> losses;
     private int totalBattles;
@@ -58,7 +60,7 @@ public class BattleStats {
      */
     public void displayTopWinners() {
         if (wins.isEmpty()) {
-            System.out.println("  Belum ada kemenangan.");
+            LOGGER.info("  Belum ada kemenangan.");
             return;
         }
 
@@ -79,8 +81,9 @@ public class BattleStats {
             else if (rank == 3) medal = "🥉";
             else medal = "  ";
 
-            System.out.printf("  %s #%d %-20s | W: %3d | L: %3d | Win Rate: %.1f%%\n", 
+            String output = String.format("  %s #%d %-20s | W: %3d | L: %3d | Win Rate: %.1f%%", 
                 medal, rank, name, winCount, lossCount, winRate);
+            LOGGER.info(output);
             rank++;
         }
     }
