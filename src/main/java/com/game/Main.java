@@ -158,10 +158,10 @@ public class Main {
         LOGGER.info("│    Keahlian: Air Slash (High Speed)                         │");
         LOGGER.info("└─────────────────────────────────────────────────────────────┘\n");
 
-        System.out.print("Pilihan Karakter (1-4): ");
+        LOGGER.info("Pilihan Karakter (1-4): ");
         int choice = getIntInput(1, 4);
 
-        System.out.print("Masukkan nama karaktermu: ");
+        LOGGER.info("Masukkan nama karaktermu: ");
         scanner.nextLine(); // Clear buffer
         String characterName = scanner.nextLine().trim();
         if (characterName.isEmpty()) {
