@@ -3,6 +3,7 @@ package com.game;
 import com.game.battle.Battle;
 import com.game.characters.*;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 /**
  * Main Application Class untuk Turn-Based Battle Game.
@@ -17,6 +18,7 @@ import java.util.Scanner;
  */
 public class Main {
 
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
     private static Scanner scanner = new Scanner(System.in);
     private static BattleStats battleStats = new BattleStats();
     private static Battle lastBattle = null;
@@ -35,15 +37,15 @@ public class Main {
      */
     private static void displayWelcome() {
         clearScreen();
-        System.out.println("\n");
-        System.out.println("╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                                                              ║");
-        System.out.println("║         🎮 SELAMAT DATANG DI TURN-BASED BATTLE GAME 🎮       ║");
-        System.out.println("║                                                              ║");
-        System.out.println("║  Sistem Pertarungan 1 vs 1 dengan Elemental Advantage        ║");
-        System.out.println("║                                                              ║");
-        System.out.println("╚══════════════════════════════════════════════════════════════╝");
-        System.out.println();
+        LOGGER.info("\n");
+        LOGGER.info("╔══════════════════════════════════════════════════════════════╗");
+        LOGGER.info("║                                                              ║");
+        LOGGER.info("║         🎮 SELAMAT DATANG DI TURN-BASED BATTLE GAME 🎮       ║");
+        LOGGER.info("║                                                              ║");
+        LOGGER.info("║  Sistem Pertarungan 1 vs 1 dengan Elemental Advantage        ║");
+        LOGGER.info("║                                                              ║");
+        LOGGER.info("╚══════════════════════════════════════════════════════════════╝");
+        LOGGER.info("");
         pause("Tekan ENTER untuk melanjutkan...");
     }
 
@@ -55,16 +57,16 @@ public class Main {
 
         while (running) {
             clearScreen();
-            System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-            System.out.println("║                      MENU UTAMA                             ║");
-            System.out.println("╚══════════════════════════════════════════════════════════════╝\n");
+            LOGGER.info("\n╔══════════════════════════════════════════════════════════════╗");
+            LOGGER.info("║                      MENU UTAMA                             ║");
+            LOGGER.info("╚══════════════════════════════════════════════════════════════╝\n");
 
-            System.out.println("1. 🎮 Mulai Pertarungan Baru");
-            System.out.println("2. 📊 Lihat Statistik Pertarungan");
-            System.out.println("3. ℹ️  Panduan Karakter & Elemen");
-            System.out.println("4. 🎲 Lihat Elemental Matchup Chart");
-            System.out.println("5. 🏆 Leaderboard");
-            System.out.println("6. ❌ Keluar\n");
+            LOGGER.info("1. 🎮 Mulai Pertarungan Baru");
+            LOGGER.info("2. 📊 Lihat Statistik Pertarungan");
+            LOGGER.info("3. ℹ️  Panduan Karakter & Elemen");
+            LOGGER.info("4. 🎲 Lihat Elemental Matchup Chart");
+            LOGGER.info("5. 🏆 Leaderboard");
+            LOGGER.info("6. ❌ Keluar\n");
 
             System.out.print("Pilihan (1-6): ");
             int choice = getIntInput(1, 6);
@@ -98,16 +100,16 @@ public class Main {
      */
     private static void startNewBattle() {
         clearScreen();
-        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                 PERSIAPAN PERTARUNGAN                         ║");
-        System.out.println("╚══════════════════════════════════════════════════════════════╝\n");
+        LOGGER.info("\n╔══════════════════════════════════════════════════════════════╗");
+        LOGGER.info("║                 PERSIAPAN PERTARUNGAN                         ║");
+        LOGGER.info("╚══════════════════════════════════════════════════════════════╝\n");
 
         // Pemain 1 memilih karakter
-        System.out.println("⚔️  PEMAIN 1 - PILIH KARAKTER MU");
+        LOGGER.info("⚔️  PEMAIN 1 - PILIH KARAKTER MU");
         BaseCharacter player1 = selectCharacter("Pemain 1");
 
         // Pemain 2 memilih karakter
-        System.out.println("\n⚔️  PEMAIN 2 - PILIH KARAKTER MU");
+        LOGGER.info("\n⚔️  PEMAIN 2 - PILIH KARAKTER MU");
         BaseCharacter player2 = selectCharacter("Pemain 2");
 
         // Buat battle baru
@@ -136,25 +138,25 @@ public class Main {
      */
     private static BaseCharacter selectCharacter(String playerName) {
         clearScreen();
-        System.out.println("\n" + playerName + ", PILIH KARAKTERMU:\n");
+        LOGGER.info("\n" + playerName + ", PILIH KARAKTERMU:\n");
 
-        System.out.println("┌─────────────────────────────────────────────────────────────┐");
-        System.out.println("│ 1. 🔥 FIRE CHARACTER (Penyerang)                             │");
-        System.out.println("│    HP: 100 | ATK: 35⭐ | DEF: 15 | SPD: 30                   │");
-        System.out.println("│    Keahlian: Fireball (Burn Effect)                         │");
-        System.out.println("├─────────────────────────────────────────────────────────────┤");
-        System.out.println("│ 2. 💧 WATER CHARACTER (Seimbang)                            │");
-        System.out.println("│    HP: 120⭐| ATK: 25 | DEF: 25⭐| SPD: 10                    │");
-        System.out.println("│    Keahlian: Ice Blast (Freeze Effect)                      │");
-        System.out.println("├─────────────────────────────────────────────────────────────┤");
-        System.out.println("│ 3. 🌍 EARTH CHARACTER (Tangki)                              │");
-        System.out.println("│    HP: 140⭐| ATK: 25 | DEF: 30⭐| SPD: 5                     │");
-        System.out.println("│    Keahlian: Rock Throw (Solid Damage)                      │");
-        System.out.println("├─────────────────────────────────────────────────────────────┤");
-        System.out.println("│ 4. 💨 WIND CHARACTER (Cepat)                                │");
-        System.out.println("│    HP: 90 | ATK: 30 | DEF: 10 | SPD: 50⭐                    │");
-        System.out.println("│    Keahlian: Air Slash (High Speed)                         │");
-        System.out.println("└─────────────────────────────────────────────────────────────┘\n");
+        LOGGER.info("┌─────────────────────────────────────────────────────────────┐");
+        LOGGER.info("│ 1. 🔥 FIRE CHARACTER (Penyerang)                             │");
+        LOGGER.info("│    HP: 100 | ATK: 35⭐ | DEF: 15 | SPD: 30                   │");
+        LOGGER.info("│    Keahlian: Fireball (Burn Effect)                         │");
+        LOGGER.info("├─────────────────────────────────────────────────────────────┤");
+        LOGGER.info("│ 2. 💧 WATER CHARACTER (Seimbang)                            │");
+        LOGGER.info("│    HP: 120⭐| ATK: 25 | DEF: 25⭐| SPD: 10                    │");
+        LOGGER.info("│    Keahlian: Ice Blast (Freeze Effect)                      │");
+        LOGGER.info("├─────────────────────────────────────────────────────────────┤");
+        LOGGER.info("│ 3. 🌍 EARTH CHARACTER (Tangki)                              │");
+        LOGGER.info("│    HP: 140⭐| ATK: 25 | DEF: 30⭐| SPD: 5                     │");
+        LOGGER.info("│    Keahlian: Rock Throw (Solid Damage)                      │");
+        LOGGER.info("├─────────────────────────────────────────────────────────────┤");
+        LOGGER.info("│ 4. 💨 WIND CHARACTER (Cepat)                                │");
+        LOGGER.info("│    HP: 90 | ATK: 30 | DEF: 10 | SPD: 50⭐                    │");
+        LOGGER.info("│    Keahlian: Air Slash (High Speed)                         │");
+        LOGGER.info("└─────────────────────────────────────────────────────────────┘\n");
 
         System.out.print("Pilihan Karakter (1-4): ");
         int choice = getIntInput(1, 4);
@@ -169,7 +171,7 @@ public class Main {
         BaseCharacter character = createCharacter(choice, characterName);
 
         clearScreen();
-        System.out.println("\n✅ " + playerName + " memilih " + character.getName() + "!");
+        LOGGER.info("\n✅ " + playerName + " memilih " + character.getName() + "!");
         pause("Tekan ENTER untuk melanjutkan...");
 
         return character;
@@ -208,8 +210,8 @@ public class Main {
 
             // Cek apakah pemain saat ini bisa bergerak
             if (!battle.getCurrentPlayer().canMove()) {
-                System.out.println("❄️  " + battle.getCurrentPlayerName() + " terkena Freeze!");
-                System.out.println("    Tidak bisa bergerak turn ini!\n");
+                LOGGER.info("❄️  " + battle.getCurrentPlayerName() + " terkena Freeze!");
+                LOGGER.info("    Tidak bisa bergerak turn ini!\n");
                 pause("Tekan ENTER untuk skip turn...");
                 battle.endTurn();
                 continue;
@@ -224,7 +226,7 @@ public class Main {
             if (choice == 0) {
                 // Surrender
                 clearScreen();
-                System.out.println("\n⚠️  Konfirmasi Surrender!");
+                LOGGER.info("\n⚠️  Konfirmasi Surrender!");
                 System.out.print("Apakah " + battle.getCurrentPlayerName() + " benar-benar ingin menyerah? (y/n): ");
                 String confirm = scanner.nextLine().toLowerCase();
 
@@ -266,23 +268,23 @@ public class Main {
      */
     private static void displayBattleResult(Battle battle) {
         clearScreen();
-        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                  PERTARUNGAN SELESAI!                        ║");
-        System.out.println("╚══════════════════════════════════════════════════════════════╝\n");
+        LOGGER.info("\n╔══════════════════════════════════════════════════════════════╗");
+        LOGGER.info("║                  PERTARUNGAN SELESAI!                        ║");
+        LOGGER.info("╚══════════════════════════════════════════════════════════════╝\n");
 
         BaseCharacter winner = battle.getWinner();
         if (winner != null) {
-            System.out.println("🎉 PEMENANG: " + winner.getName() + " 🎉\n");
-            System.out.println("📊 Statistik Pemenang:");
-            System.out.println("   HP Tersisa: " + winner.getHealthPoints() + "/" + winner.getMaxHealthPoints());
-            System.out.println("   FP Tersisa: " + winner.getFocusPoints() + "/" + winner.getMaxFocusPoints());
-            System.out.println();
+            LOGGER.info("🎉 PEMENANG: " + winner.getName() + " 🎉\n");
+            LOGGER.info("📊 Statistik Pemenang:");
+            LOGGER.info("   HP Tersisa: " + winner.getHealthPoints() + "/" + winner.getMaxHealthPoints());
+            LOGGER.info("   FP Tersisa: " + winner.getFocusPoints() + "/" + winner.getMaxFocusPoints());
+            LOGGER.info("");
         }
 
-        System.out.println("📈 Detail Pertarungan:");
-        System.out.println("   Total Turn: " + battle.getTurnCount());
-        System.out.println("   Total Aksi: " + battle.getBattleLog().getActionCount());
-        System.out.println();
+        LOGGER.info("📈 Detail Pertarungan:");
+        LOGGER.info("   Total Turn: " + battle.getTurnCount());
+        LOGGER.info("   Total Aksi: " + battle.getBattleLog().getActionCount());
+        LOGGER.info("");
 
         System.out.print("Ingin melihat battle log lengkap? (y/n): ");
         String input = scanner.nextLine().toLowerCase();
@@ -298,9 +300,9 @@ public class Main {
      */
     private static void displayBattleLog(Battle battle) {
         clearScreen();
-        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                    BATTLE LOG LENGKAP                        ║");
-        System.out.println("╚══════════════════════════════════════════════════════════════╝\n");
+        LOGGER.info("\n╔══════════════════════════════════════════════════════════════╗");
+        LOGGER.info("║                    BATTLE LOG LENGKAP                        ║");
+        LOGGER.info("╚══════════════════════════════════════════════════════════════╝\n");
         battle.displayBattleLog();
         pause("Tekan ENTER untuk kembali...");
     }
@@ -310,18 +312,18 @@ public class Main {
      */
     private static void displayBattleStats() {
         clearScreen();
-        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                  STATISTIK PERTARUNGAN                       ║");
-        System.out.println("╚══════════════════════════════════════════════════════════════╝\n");
+        LOGGER.info("\n╔══════════════════════════════════════════════════════════════╗");
+        LOGGER.info("║                  STATISTIK PERTARUNGAN                       ║");
+        LOGGER.info("╚══════════════════════════════════════════════════════════════╝\n");
 
         if (battleStats.getTotalBattles() == 0) {
-            System.out.println("Belum ada pertarungan yang dimainkan.\n");
+            LOGGER.info("Belum ada pertarungan yang dimainkan.\n");
         } else {
-            System.out.println("📊 Total Pertarungan: " + battleStats.getTotalBattles());
-            System.out.println();
-            System.out.println("🏆 Pemenang Terbanyak:");
+            LOGGER.info("📊 Total Pertarungan: " + battleStats.getTotalBattles());
+            LOGGER.info("");
+            LOGGER.info("🏆 Pemenang Terbanyak:");
             battleStats.displayTopWinners();
-            System.out.println();
+            LOGGER.info("");
         }
 
         pause("Tekan ENTER untuk kembali ke menu utama...");
@@ -332,37 +334,37 @@ public class Main {
      */
     private static void displayCharacterGuide() {
         clearScreen();
-        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                  PANDUAN KARAKTER & ELEMEN                   ║");
-        System.out.println("╚══════════════════════════════════════════════════════════════╝\n");
+        LOGGER.info("\n╔══════════════════════════════════════════════════════════════╗");
+        LOGGER.info("║                  PANDUAN KARAKTER & ELEMEN                   ║");
+        LOGGER.info("╚══════════════════════════════════════════════════════════════╝\n");
 
-        System.out.println("🔥 FIRE CHARACTER - Penyerang Agresif");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.println("  • Kekuatan: Attack Power tertinggi (35)");
-        System.out.println("  • Kelemahan: Defense rendah");
-        System.out.println("  • Skill Spesial: Fireball - Burn effect (5 damage/turn)");
-        System.out.println("  • Strategi: Main agresif, serang pertama\n");
+        LOGGER.info("🔥 FIRE CHARACTER - Penyerang Agresif");
+        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        LOGGER.info("  • Kekuatan: Attack Power tertinggi (35)");
+        LOGGER.info("  • Kelemahan: Defense rendah");
+        LOGGER.info("  • Skill Spesial: Fireball - Burn effect (5 damage/turn)");
+        LOGGER.info("  • Strategi: Main agresif, serang pertama\n");
 
-        System.out.println("💧 WATER CHARACTER - Karakter Seimbang");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.println("  • Kekuatan: HP & Defense seimbang, Freeze ability");
-        System.out.println("  • Kelemahan: Speed rendah");
-        System.out.println("  • Skill Spesial: Ice Blast - Freeze effect (skip turn)");
-        System.out.println("  • Strategi: Control game dengan freeze, defensive play\n");
+        LOGGER.info("💧 WATER CHARACTER - Karakter Seimbang");
+        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        LOGGER.info("  • Kekuatan: HP & Defense seimbang, Freeze ability");
+        LOGGER.info("  • Kelemahan: Speed rendah");
+        LOGGER.info("  • Skill Spesial: Ice Blast - Freeze effect (skip turn)");
+        LOGGER.info("  • Strategi: Control game dengan freeze, defensive play\n");
 
-        System.out.println("🌍 EARTH CHARACTER - Tank Pertahanan");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.println("  • Kekuatan: HP tertinggi (140), Defense tertinggi (30)");
-        System.out.println("  • Kelemahan: Speed sangat rendah");
-        System.out.println("  • Skill Spesial: Rock Throw - Solid damage");
-        System.out.println("  • Strategi: Bertahan lama, guard heavy\n");
+        LOGGER.info("🌍 EARTH CHARACTER - Tank Pertahanan");
+        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        LOGGER.info("  • Kekuatan: HP tertinggi (140), Defense tertinggi (30)");
+        LOGGER.info("  • Kelemahan: Speed sangat rendah");
+        LOGGER.info("  • Skill Spesial: Rock Throw - Solid damage");
+        LOGGER.info("  • Strategi: Bertahan lama, guard heavy\n");
 
-        System.out.println("💨 WIND CHARACTER - Speedster");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.println("  • Kekuatan: Speed tertinggi (50), jalan duluan");
-        System.out.println("  • Kelemahan: HP & Defense terendah");
-        System.out.println("  • Skill Spesial: Air Slash - High speed combo");
-        System.out.println("  • Strategi: Hit and run, manfaatkan kecepatan\n");
+        LOGGER.info("💨 WIND CHARACTER - Speedster");
+        LOGGER.info("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        LOGGER.info("  • Kekuatan: Speed tertinggi (50), jalan duluan");
+        LOGGER.info("  • Kelemahan: HP & Defense terendah");
+        LOGGER.info("  • Skill Spesial: Air Slash - High speed combo");
+        LOGGER.info("  • Strategi: Hit and run, manfaatkan kecepatan\n");
 
         pause("Tekan ENTER untuk kembali ke menu utama...");
     }
@@ -372,40 +374,40 @@ public class Main {
      */
     private static void displayElementalChart() {
         clearScreen();
-        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║               ELEMENTAL ADVANTAGE CHART                      ║");
-        System.out.println("╚══════════════════════════════════════════════════════════════╝\n");
+        LOGGER.info("\n╔══════════════════════════════════════════════════════════════╗");
+        LOGGER.info("║               ELEMENTAL ADVANTAGE CHART                      ║");
+        LOGGER.info("╚══════════════════════════════════════════════════════════════╝\n");
 
-        System.out.println("ELEMENTAL CYCLE:");
-        System.out.println("━━━━━━━━━━━━━━━━━\n");
+        LOGGER.info("ELEMENTAL CYCLE:");
+        LOGGER.info("━━━━━━━━━━━━━━━━━\n");
 
-        System.out.println("  🔥 FIRE");
-        System.out.println("    ↓ Strong vs ↓       ↓ Weak vs ↓");
-        System.out.println("  💨 WIND              💧 WATER\n");
+        LOGGER.info("  🔥 FIRE");
+        LOGGER.info("    ↓ Strong vs ↓       ↓ Weak vs ↓");
+        LOGGER.info("  💨 WIND              💧 WATER\n");
 
-        System.out.println("  💨 WIND");
-        System.out.println("    ↓ Strong vs ↓       ↓ Weak vs ↓");
-        System.out.println("  🌍 EARTH             🔥 FIRE\n");
+        LOGGER.info("  💨 WIND");
+        LOGGER.info("    ↓ Strong vs ↓       ↓ Weak vs ↓");
+        LOGGER.info("  🌍 EARTH             🔥 FIRE\n");
 
-        System.out.println("  🌍 EARTH");
-        System.out.println("    ↓ Strong vs ↓       ↓ Weak vs ↓");
-        System.out.println("  💧 WATER             💨 WIND\n");
+        LOGGER.info("  🌍 EARTH");
+        LOGGER.info("    ↓ Strong vs ↓       ↓ Weak vs ↓");
+        LOGGER.info("  💧 WATER             💨 WIND\n");
 
-        System.out.println("  💧 WATER");
-        System.out.println("    ↓ Strong vs ↓       ↓ Weak vs ↓");
-        System.out.println("  🔥 FIRE              🌍 EARTH\n");
+        LOGGER.info("  💧 WATER");
+        LOGGER.info("    ↓ Strong vs ↓       ↓ Weak vs ↓");
+        LOGGER.info("  🔥 FIRE              🌍 EARTH\n");
 
-        System.out.println("DAMAGE MULTIPLIER:");
-        System.out.println("━━━━━━━━━━━━━━━━━━━");
-        System.out.println("  ✅ Advantage (Strong vs): 1.5x damage");
-        System.out.println("  ⚖️  Neutral: 1.0x damage");
-        System.out.println("  ❌ Disadvantage (Weak vs): 0.75x damage\n");
+        LOGGER.info("DAMAGE MULTIPLIER:");
+        LOGGER.info("━━━━━━━━━━━━━━━━━━━");
+        LOGGER.info("  ✅ Advantage (Strong vs): 1.5x damage");
+        LOGGER.info("  ⚖️  Neutral: 1.0x damage");
+        LOGGER.info("  ❌ Disadvantage (Weak vs): 0.75x damage\n");
 
-        System.out.println("CONTOH:");
-        System.out.println("━━━━━━━");
-        System.out.println("  Water vs Fire: Sangat efektif! (1.5x) 💧 > 🔥");
-        System.out.println("  Fire vs Water: Kurang efektif... (0.75x) 🔥 < 💧");
-        System.out.println("  Fire vs Wind: Sangat efektif! (1.5x) 🔥 > 💨\n");
+        LOGGER.info("CONTOH:");
+        LOGGER.info("━━━━━━━");
+        LOGGER.info("  Water vs Fire: Sangat efektif! (1.5x) 💧 > 🔥");
+        LOGGER.info("  Fire vs Water: Kurang efektif... (0.75x) 🔥 < 💧");
+        LOGGER.info("  Fire vs Wind: Sangat efektif! (1.5x) 🔥 > 💨\n");
 
         pause("Tekan ENTER untuk kembali ke menu utama...");
     }
@@ -415,16 +417,16 @@ public class Main {
      */
     private static void displayLeaderboard() {
         clearScreen();
-        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                   🏆 LEADERBOARD 🏆                         ║");
-        System.out.println("╚══════════════════════════════════════════════════════════════╝\n");
+        LOGGER.info("\n╔══════════════════════════════════════════════════════════════╗");
+        LOGGER.info("║                   🏆 LEADERBOARD 🏆                         ║");
+        LOGGER.info("╚══════════════════════════════════════════════════════════════╝\n");
 
         if (battleStats.getTotalBattles() == 0) {
-            System.out.println("Belum ada pertarungan yang dimainkan.\n");
+            LOGGER.info("Belum ada pertarungan yang dimainkan.\n");
         } else {
-            System.out.println("📊 TOP PEMENANG:\n");
+            LOGGER.info("📊 TOP PEMENANG:\n");
             battleStats.displayTopWinners();
-            System.out.println();
+            LOGGER.info("");
         }
 
         pause("Tekan ENTER untuk kembali ke menu utama...");
@@ -435,14 +437,14 @@ public class Main {
      */
     private static void displayGoodbye() {
         clearScreen();
-        System.out.println("\n╔══════════════════════════════════════════════════════════════╗");
-        System.out.println("║                                                              ║");
-        System.out.println("║         👋 TERIMA KASIH TELAH BERMAIN! SAMPAI JUMPA! 👋      ║");
-        System.out.println("║                                                              ║");
-        System.out.println(
-                "║              Total Pertarungan: " + String.format("%-32d", battleStats.getTotalBattles()) + "║");
-        System.out.println("║                                                              ║");
-        System.out.println("╚══════════════════════════════════════════════════════════════╝\n");
+        LOGGER.info("\n╔══════════════════════════════════════════════════════════════╗");
+        LOGGER.info("║                                                              ║");
+        LOGGER.info("║         👋 TERIMA KASIH TELAH BERMAIN! SAMPAI JUMPA! 👋      ║");
+        LOGGER.info("║                                                              ║");
+        String totalBattles = String.format("║              Total Pertarungan: %-32d║", battleStats.getTotalBattles());
+        LOGGER.info(totalBattles);
+        LOGGER.info("║                                                              ║");
+        LOGGER.info("╚══════════════════════════════════════════════════════════════╝\n");
     }
 
     /**
