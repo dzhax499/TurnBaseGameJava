@@ -25,7 +25,6 @@ public class BattlePanel extends JPanel {
     // Battle State
     private BaseCharacter player1;
     private BaseCharacter player2;
-    private String currentTurn = "Player1";
 
     // Bottom Panel Components
     private JPanel bottomPanel;
@@ -531,36 +530,4 @@ public class BattlePanel extends JPanel {
             return "🛡️";
         return "⚡";
     }
-
-    // Helper methods for GameWindow to update specific fields if needed
-    // But updateCharacters() is preferred
-    public void updatePlayerHP(int hp, int max) {
-        repaint();
-    }
-
-    public void updateEnemyHP(int hp, int max) {
-        repaint();
-    }
-
-    public void updatePlayerFP(int fp, int max) {
-        repaint();
-    }
-
-    public void updateEnemyFP(int fp, int max) {
-        repaint();
-    }
-
-    public void updateplayer1Name(String name) {
-        repaint();
-    }
-
-    public void updateplayer2Name(String name) {
-        repaint();
-    }
-
-    public void clearBattleLog() {
-        /* No op as log is transient now */ }
-
-    public void addBattleLogMessage(String msg) {
-        /* No op */ }
 }

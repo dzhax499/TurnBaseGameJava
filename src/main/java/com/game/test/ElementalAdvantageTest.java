@@ -77,10 +77,10 @@ public class ElementalAdvantageTest {
 
     private static void testAllMatchups() {
         BaseCharacter[] characters = {
-                new FireCharacter("Fire"),
-                new WaterCharacter("Water"),
-                new EarthCharacter("Earth"),
-                new WindCharacter("Wind")
+                CharacterFactory.createCharacter("FIRE", "Fire"),
+                CharacterFactory.createCharacter("WATER", "Water"),
+                CharacterFactory.createCharacter("EARTH", "Earth"),
+                CharacterFactory.createCharacter("WIND", "Wind")
         };
 
         System.out.println("\nMatchup Chart:");

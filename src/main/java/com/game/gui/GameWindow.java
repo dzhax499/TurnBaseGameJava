@@ -111,7 +111,7 @@ public class GameWindow {
     }
 
     private void handleCharacterSelection(String characterType, String characterName) {
-        BaseCharacter character = createCharacter(characterType, characterName);
+        BaseCharacter character = CharacterFactory.createCharacter(characterType, characterName);
 
         if (playerSelectionStep == 0) {
             // Player 1 selected
@@ -122,21 +122,6 @@ public class GameWindow {
             // Player 2 selected
             player2 = character;
             startBattle();
-        }
-    }
-
-    private BaseCharacter createCharacter(String type, String name) {
-        switch (type.toUpperCase()) {
-            case "FIRE":
-                return new FireCharacter(name);
-            case "WATER":
-                return new WaterCharacter(name);
-            case "EARTH":
-                return new EarthCharacter(name);
-            case "WIND":
-                return new WindCharacter(name);
-            default:
-                return new FireCharacter(name);
         }
     }
 
@@ -209,13 +194,13 @@ public class GameWindow {
                 action.getActor(),
                 action.getActionName(),
                 action.getTarget())
-            .withDamage(action.getDamageDealt())
-            .withHealing(action.getHealingDone())
-            .withCritical(action.isCritical())
-            .withDodged(action.isDodged())
-            .withEffectiveness(action.getEffectiveness())
-            .withStatusEffect(action.getStatusEffect());
-        
+                .withDamage(action.getDamageDealt())
+                .withHealing(action.getHealingDone())
+                .withCritical(action.isCritical())
+                .withDodged(action.isDodged())
+                .withEffectiveness(action.getEffectiveness())
+                .withStatusEffect(action.getStatusEffect());
+
         return PokemonBattleTextFormatter.formatBattleAction(info);
     }
 

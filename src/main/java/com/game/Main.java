@@ -168,31 +168,13 @@ public class Main {
             characterName = playerName + "'s Character";
         }
 
-        BaseCharacter character = createCharacter(choice, characterName);
+        BaseCharacter character = CharacterFactory.createCharacter(choice, characterName);
 
         clearScreen();
         LOGGER.info("\n✅ " + playerName + " memilih " + character.getName() + "!");
         pause("Tekan ENTER untuk melanjutkan...");
 
         return character;
-    }
-
-    /**
-     * Membuat karakter berdasarkan pilihan.
-     */
-    private static BaseCharacter createCharacter(int choice, String name) {
-        switch (choice) {
-            case 1:
-                return new FireCharacter(name);
-            case 2:
-                return new WaterCharacter(name);
-            case 3:
-                return new EarthCharacter(name);
-            case 4:
-                return new WindCharacter(name);
-            default:
-                return new FireCharacter(name);
-        }
     }
 
     /**
