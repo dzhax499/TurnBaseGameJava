@@ -1,0 +1,104 @@
+package com.game.battle.subsystems;
+
+import com.game.battle.BattleAction;
+import com.game.battle.BattleLog;
+import com.game.characters.BaseCharacter;
+import com.game.skills.Skill;
+import com.game.utils.GameStrings;
+import java.util.List;
+import java.util.logging.Logger;
+
+/**
+ * Subsystem untuk mengeksekusi combat actions.
+ */
+public class CombatResolver {
+
+    public boolean executeAction(BaseCharacter attacker, BaseCharacter defender,
+            int skillIndex, BattleLog battleLog, Logger logger) {
+        // 1. Process Start Turn Effects (DoT, etc.)
+        logger.info("\n⚡ Memproses Status Effects (Start Turn)...");
+        attacker.applyStartTurnEffects();
+
+        // 2. Check if can move (Freeze check)
+        if (!attacker.canMove()) {
+            // Log freeze action
+            BattleAction freezeAction = new BattleAction(
+                    attacker.getName(),
+                    "FROZEN",
+                    "Terkena Freeze",
+                    "");
+            freezeAction.setDescription("Tidak bisa bergerak karena terkena efek Freeze!");
+            battleLog.addAction(freezeAction);
+            battleLog.displayLastAction();
+
+            // End turn effects (duration decrement)
+            attacker.applyEndTurnEffects();
+            return true; // Turn berhasil tapi tidak bisa action
+        }
+
+        List<Skill> skills = attacker.getSkills();
+
+        // Validasi index
+        if (skillIndex < 1 || skillIndex > skills.size()) {
+            logger.info(GameStrings.MSG_INVALID_SKILL);
+            return false;
+        }
+
+        Skill selectedSkill = skills.get(skillIndex - 1);
+
+        // 3. Check FP BEFORE execution
+        if (attacker.getFocusPoints() < selectedSkill.getFpCost()) {
+            logger.info(GameStrings.MSG_INSUFFICIENT_FP);
+            return false; // Return false to allow re-selection
+        }
+
+        // Log aksi
+        BattleAction action = new BattleAction(
+                attacker.getName(),
+                "SKILL",
+                selectedSkill.getName(),
+                defender.getName());
+
+        // Simpan HP attacker DAN defender untuk tracking healing & damage
+        int defenderHpBefore = defender.getHealthPoints();
+        int attackerHpBefore = attacker.getHealthPoints();
+
+        // Eksekusi skill
+        logger.fine("");
+        selectedSkill.use(attacker, defender);
+        logger.fine("");
+
+        // Hitung damage DAN healing
+        int damageDealt = defenderHpBefore - defender.getHealthPoints();
+        int healingDone = attacker.getHealthPoints() - attackerHpBefore;
+
+        // Record BOTH if applicable (e.g. Drain skill)
+        if (damageDealt > 0) {
+            action.setDamageDealt(damageDealt);
+        }
+        if (healingDone > 0) {
+            action.setHealingDone(healingDone);
+        }
+
+        // Retrieve detailed mechanics from defender
+        BaseCharacter.DamageDetails details = defender.getLastDamageDetails();
+        if (details != null) {
+            action.setCritical(details.isCritical);
+            action.setDodged(details.isDodged);
+            action.setEffectiveness(details.effectiveness);
+        }
+
+        // Set deskripsi
+        if (selectedSkill.getFpCost() > 0) {
+            action.setDescription("FP digunakan: " + selectedSkill.getFpCost());
+        }
+
+        battleLog.addAction(action);
+        battleLog.displayLastAction();
+
+        // 4. Process End Turn Effects (Duration decrement)
+        attacker.applyEndTurnEffects();
+
+        return true;
+    }
+}
