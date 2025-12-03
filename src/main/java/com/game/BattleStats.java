@@ -1,11 +1,14 @@
 package com.game;
 
+import com.game.utils.StatTracker;
 import java.util.*;
 import java.util.logging.Logger;
 
 /**
  * Class untuk menyimpan statistik pertarungan.
  * Tracks win/loss records dan menghasilkan leaderboard.
+ * 
+ * GENERIC PROGRAMMING: Menggunakan StatTracker<T> untuk track damage & healing.
  */
 public class BattleStats {
     private static final Logger LOGGER = Logger.getLogger(BattleStats.class.getName());
@@ -13,10 +16,20 @@ public class BattleStats {
     private Map<String, Integer> losses;
     private int totalBattles;
 
+    // GENERIC PROGRAMMING: StatTracker dengan type parameter Integer
+    private StatTracker<Integer> totalDamageDealt;
+    private StatTracker<Integer> totalHealingDone;
+    private StatTracker<Integer> battleDurationTracker; // Track battle turns
+
     public BattleStats() {
         this.wins = new HashMap<>();
         this.losses = new HashMap<>();
         this.totalBattles = 0;
+
+        // Initialize generic StatTrackers
+        this.totalDamageDealt = new StatTracker<>("Total Damage");
+        this.totalHealingDone = new StatTracker<>("Total Healing");
+        this.battleDurationTracker = new StatTracker<>("Battle Duration");
     }
 
     /**
@@ -76,13 +89,17 @@ public class BattleStats {
             double winRate = (double) winCount / (winCount + lossCount) * 100;
 
             String medal = "";
-            if (rank == 1) medal = "🥇";
-            else if (rank == 2) medal = "🥈";
-            else if (rank == 3) medal = "🥉";
-            else medal = "  ";
+            if (rank == 1)
+                medal = "🥇";
+            else if (rank == 2)
+                medal = "🥈";
+            else if (rank == 3)
+                medal = "🥉";
+            else
+                medal = "  ";
 
-            String output = String.format("  %s #%d %-20s | W: %3d | L: %3d | Win Rate: %.1f%%", 
-                medal, rank, name, winCount, lossCount, winRate);
+            String output = String.format("  %s #%d %-20s | W: %3d | L: %3d | Win Rate: %.1f%%",
+                    medal, rank, name, winCount, lossCount, winRate);
             LOGGER.info(output);
             rank++;
         }
@@ -95,5 +112,64 @@ public class BattleStats {
         Set<String> all = new HashSet<>(wins.keySet());
         all.addAll(losses.keySet());
         return all;
+    }
+
+    // ========================================================================
+    // GENERIC PROGRAMMING METHODS - Using StatTracker<T>
+    // ========================================================================
+
+    /**
+     * Record damage dealt dalam pertarungan (uses Generic StatTracker<Integer>).
+     */
+    public void recordDamage(int damage) {
+        totalDamageDealt.record(damage);
+    }
+
+    /**
+     * Record healing done dalam pertarungan (uses Generic StatTracker<Integer>).
+     */
+    public void recordHealing(int healing) {
+        totalHealingDone.record(healing);
+    }
+
+    /**
+     * Record battle duration dalam turns (uses Generic StatTracker<Integer>).
+     */
+    public void recordBattleDuration(int turns) {
+        battleDurationTracker.record(turns);
+    }
+
+    /**
+     * Display advanced statistics menggunakan Generic StatTracker.
+     */
+    public void displayAdvancedStats() {
+        LOGGER.info("\n╔════════════════════════════════════════════════╗");
+        LOGGER.info("║      STATISTIK LANJUTAN (Generic Stats)        ║");
+        LOGGER.info("╚════════════════════════════════════════════════╝");
+
+        // Damage Stats (using Generic StatTracker<Integer>)
+        LOGGER.info("\n📊 " + totalDamageDealt.toString());
+
+        // Healing Stats (using Generic StatTracker<Integer>)
+        LOGGER.info("💚 " + totalHealingDone.toString());
+
+        // Battle Duration Stats (using Generic StatTracker<Integer>)
+        LOGGER.info("⏱️  " + battleDurationTracker.toString());
+
+        LOGGER.info("");
+    }
+
+    /**
+     * Get damage tracker (demonstrates returning generic type).
+     */
+    public StatTracker<Integer> getDamageTracker() {
+        return totalDamageDealt;
+    }
+
+    /**
+     * Get healing tracker (demonstrates returning generic type).
+     */
+    public StatTracker<Integer> getHealingTracker() {
+        return totalHealingDone;
     }
 }
