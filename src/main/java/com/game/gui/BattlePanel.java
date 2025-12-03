@@ -74,15 +74,17 @@ public class BattlePanel extends JPanel {
     private void initializeComponents() {
         // Turn Indicator (Top Center)
         JLabel turnLabel = new JLabel("BATTLE START", SwingConstants.CENTER);
-        turnLabel.setFont(new Font("Arial", Font.BOLD, 22));
-        turnLabel.setForeground(Color.YELLOW);
-        turnLabel.setBounds(280, 15, 260, 30);
+        turnLabel.setFont(new Font("Arial", Font.BOLD, UIConstants.TURN_LABEL_FONT_SIZE));
+        turnLabel.setForeground(UIConstants.COLOR_YELLOW);
+        turnLabel.setBounds(UIConstants.TURN_LABEL_X, UIConstants.TURN_LABEL_Y,
+                UIConstants.TURN_LABEL_WIDTH, UIConstants.TURN_LABEL_HEIGHT);
         add(turnLabel);
 
         // Initialize Bottom Panel (CardLayout)
         bottomCardLayout = new CardLayout();
         bottomPanel = new JPanel(bottomCardLayout);
-        bottomPanel.setBounds(0, 450, 820, 170);
+        bottomPanel.setBounds(0, UIConstants.BOTTOM_PANEL_Y,
+                UIConstants.WINDOW_WIDTH, UIConstants.BOTTOM_PANEL_HEIGHT);
         bottomPanel.setOpaque(false);
         add(bottomPanel);
 
@@ -100,48 +102,51 @@ public class BattlePanel extends JPanel {
 
     private void createSkillPanel() {
         skillPanel = new JPanel(null);
-        skillPanel.setBackground(new Color(30, 30, 50));
-        skillPanel.setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, Color.WHITE));
+        skillPanel.setBackground(UIConstants.PANEL_BG_COLOR);
+        skillPanel.setBorder(BorderFactory.createMatteBorder(UIConstants.SKILL_PANEL_BORDER_THICKNESS, 0, 0, 0,
+                UIConstants.COLOR_WHITE));
 
-        int btnWidth = 260;
-        int btnHeight = 60;
-        int startX = 20;
-        int startY = 20;
-        int gapX = 20;
-        int gapY = 15;
+        int btnWidth = UIConstants.SKILL_BTN_WIDTH;
+        int btnHeight = UIConstants.SKILL_BTN_HEIGHT;
+        int startX = UIConstants.SKILL_BTN_START_X;
+        int startY = UIConstants.SKILL_BTN_START_Y;
+        int gapX = UIConstants.SKILL_BTN_GAP_X;
+        int gapY = UIConstants.SKILL_BTN_GAP_Y;
 
         // Skill 1 (Top Left)
-        skill1Button = createSkillButton("Skill 1", "Basic", new Color(220, 50, 50),
+        skill1Button = createSkillButton("Skill 1", "Basic", UIConstants.SKILL_1_COLOR,
                 startX, startY, btnWidth, btnHeight);
         skill1Button.addActionListener(e -> useSkill(0));
         skillPanel.add(skill1Button);
 
         // Skill 2 (Top Right)
-        skill2Button = createSkillButton("Skill 2", "Special", new Color(255, 165, 0),
+        skill2Button = createSkillButton("Skill 2", "Special", UIConstants.SKILL_2_COLOR,
                 startX + btnWidth + gapX, startY, btnWidth, btnHeight);
         skill2Button.addActionListener(e -> useSkill(1));
         skillPanel.add(skill2Button);
 
         // Skill 3 (Bottom Left)
-        skill3Button = createSkillButton("Skill 3", "Support", new Color(50, 200, 50),
+        skill3Button = createSkillButton("Skill 3", "Support", UIConstants.SKILL_3_COLOR,
                 startX, startY + btnHeight + gapY, btnWidth, btnHeight);
         skill3Button.addActionListener(e -> useSkill(2));
         skillPanel.add(skill3Button);
 
         // Skill 4 (Bottom Right)
-        skill4Button = createSkillButton("Skill 4", "Ultimate", new Color(150, 50, 200),
+        skill4Button = createSkillButton("Skill 4", "Ultimate", UIConstants.SKILL_4_COLOR,
                 startX + btnWidth + gapX, startY + btnHeight + gapY, btnWidth, btnHeight);
         skill4Button.addActionListener(e -> useSkill(3));
         skillPanel.add(skill4Button);
 
         // Surrender Button (Far Right)
         surrenderButton = new JButton("SURRENDER");
-        surrenderButton.setFont(new Font("Arial", Font.BOLD, 14));
-        surrenderButton.setBackground(new Color(100, 100, 100));
-        surrenderButton.setForeground(Color.WHITE);
+        surrenderButton.setFont(new Font("Arial", Font.BOLD, UIConstants.SURRENDER_BTN_FONT_SIZE));
+        surrenderButton.setBackground(UIConstants.SURRENDER_BTN_COLOR);
+        surrenderButton.setForeground(UIConstants.COLOR_WHITE);
         surrenderButton.setFocusPainted(false);
-        surrenderButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-        surrenderButton.setBounds(620, 45, 160, 80);
+        surrenderButton.setBorder(
+                BorderFactory.createLineBorder(UIConstants.COLOR_WHITE, UIConstants.SURRENDER_BORDER_THICKNESS));
+        surrenderButton.setBounds(UIConstants.SURRENDER_BTN_X, UIConstants.SURRENDER_BTN_Y,
+                UIConstants.SURRENDER_BTN_WIDTH, UIConstants.SURRENDER_BTN_HEIGHT);
         surrenderButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         surrenderButton.addActionListener(e -> surrender());
         skillPanel.add(surrenderButton);
@@ -149,18 +154,20 @@ public class BattlePanel extends JPanel {
 
     private void createTextPanel() {
         textPanel = new JPanel(null);
-        textPanel.setBackground(new Color(20, 20, 20));
-        textPanel.setBorder(BorderFactory.createMatteBorder(2, 0, 0, 0, Color.WHITE));
+        textPanel.setBackground(UIConstants.TEXT_PANEL_BG_COLOR);
+        textPanel.setBorder(BorderFactory.createMatteBorder(UIConstants.SKILL_PANEL_BORDER_THICKNESS, 0, 0, 0,
+                UIConstants.COLOR_WHITE));
 
         // Text Area
         battleTextArea = new JTextArea();
         battleTextArea.setEditable(false);
-        battleTextArea.setFont(new Font("Monospaced", Font.BOLD, 18));
-        battleTextArea.setForeground(Color.WHITE);
-        battleTextArea.setBackground(new Color(20, 20, 20));
+        battleTextArea.setFont(new Font("Monospaced", Font.BOLD, UIConstants.TEXT_AREA_FONT_SIZE));
+        battleTextArea.setForeground(UIConstants.COLOR_WHITE);
+        battleTextArea.setBackground(UIConstants.TEXT_PANEL_BG_COLOR);
         battleTextArea.setLineWrap(true);
         battleTextArea.setWrapStyleWord(true);
-        battleTextArea.setBounds(30, 20, 650, 130);
+        battleTextArea.setBounds(UIConstants.TEXT_AREA_X, UIConstants.TEXT_AREA_Y,
+                UIConstants.TEXT_AREA_WIDTH, UIConstants.TEXT_AREA_HEIGHT);
         battleTextArea.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Click to skip typewriter animation
@@ -177,12 +184,14 @@ public class BattlePanel extends JPanel {
 
         // Continue Button
         continueButton = new JButton("▼");
-        continueButton.setFont(new Font("Arial", Font.BOLD, 24));
-        continueButton.setBackground(new Color(50, 50, 200));
-        continueButton.setForeground(Color.WHITE);
+        continueButton.setFont(new Font("Arial", Font.BOLD, UIConstants.CONTINUE_BTN_FONT_SIZE));
+        continueButton.setBackground(UIConstants.CONTINUE_BTN_COLOR);
+        continueButton.setForeground(UIConstants.COLOR_WHITE);
         continueButton.setFocusPainted(false);
-        continueButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
-        continueButton.setBounds(700, 50, 80, 70);
+        continueButton.setBorder(
+                BorderFactory.createLineBorder(UIConstants.COLOR_WHITE, UIConstants.SKILL_PANEL_BORDER_THICKNESS));
+        continueButton.setBounds(UIConstants.CONTINUE_BTN_X, UIConstants.CONTINUE_BTN_Y,
+                UIConstants.CONTINUE_BTN_WIDTH, UIConstants.CONTINUE_BTN_HEIGHT);
         continueButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         continueButton.addActionListener(e -> {
             if (continueListener != null) {
@@ -197,20 +206,21 @@ public class BattlePanel extends JPanel {
         JButton button = new JButton();
         button.setBounds(x, y, width, height);
         button.setBackground(color);
-        button.setForeground(Color.WHITE);
+        button.setForeground(UIConstants.COLOR_WHITE);
         button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        button.setBorder(
+                BorderFactory.createLineBorder(UIConstants.COLOR_WHITE, UIConstants.SKILL_PANEL_BORDER_THICKNESS));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setForeground(UIConstants.COLOR_WHITE);
         button.add(titleLabel, BorderLayout.NORTH);
 
         JLabel descLabel = new JLabel(description, SwingConstants.CENTER);
         descLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-        descLabel.setForeground(Color.WHITE);
+        descLabel.setForeground(UIConstants.COLOR_WHITE);
         button.add(descLabel, BorderLayout.CENTER);
 
         // Hover effect
@@ -218,13 +228,14 @@ public class BattlePanel extends JPanel {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 if (button.isEnabled()) {
                     button.setBackground(color.brighter());
-                    button.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 3));
+                    button.setBorder(BorderFactory.createLineBorder(UIConstants.COLOR_YELLOW, 3));
                 }
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 button.setBackground(color);
-                button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+                button.setBorder(BorderFactory.createLineBorder(UIConstants.COLOR_WHITE,
+                        UIConstants.SKILL_PANEL_BORDER_THICKNESS));
             }
         });
 
@@ -335,12 +346,12 @@ public class BattlePanel extends JPanel {
 
             JLabel titleLabel = new JLabel(skillNames[i], SwingConstants.CENTER);
             titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-            titleLabel.setForeground(Color.WHITE);
+            titleLabel.setForeground(UIConstants.COLOR_WHITE);
             button.add(titleLabel, BorderLayout.NORTH);
 
             JLabel descLabel = new JLabel(skillDescriptions[i], SwingConstants.CENTER);
             descLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-            descLabel.setForeground(Color.WHITE);
+            descLabel.setForeground(UIConstants.COLOR_WHITE);
             button.add(descLabel, BorderLayout.CENTER);
 
             button.revalidate();
@@ -399,12 +410,12 @@ public class BattlePanel extends JPanel {
         if (background != null) {
             g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);
         } else {
-            g2.setColor(new Color(30, 30, 50));
+            g2.setColor(UIConstants.PANEL_BG_COLOR);
             g2.fillRect(0, 0, getWidth(), getHeight());
         }
 
         // Dark overlay
-        g2.setColor(new Color(0, 0, 0, 100));
+        g2.setColor(UIConstants.OVERLAY_COLOR);
         g2.fillRect(0, 0, getWidth(), getHeight());
 
         // Draw characters if available
@@ -416,50 +427,50 @@ public class BattlePanel extends JPanel {
     }
 
     private void drawCharacterArea(Graphics2D g2) {
-        int midY = 220;
+        int midY = UIConstants.CHAR_MID_Y;
 
         // Player 1 (Left) - Horizontal Position
-        drawCharacterSprite(g2, heroSprite, 80, midY - 60, true);
-        drawCharacterStats(g2, player1, 30, 360, true);
+        drawCharacterSprite(g2, heroSprite, UIConstants.P1_SPRITE_X, midY - UIConstants.CHAR_SPRITE_Y_OFFSET, true);
+        drawCharacterStats(g2, player1, UIConstants.P1_STATS_X, UIConstants.CHAR_STATS_Y, true);
 
         // VS Label
-        g2.setFont(new Font("Arial", Font.BOLD, 36));
-        g2.setColor(Color.RED);
+        g2.setFont(new Font("Arial", Font.BOLD, UIConstants.VS_FONT_SIZE));
+        g2.setColor(UIConstants.COLOR_RED);
         String vsText = "VS";
         int vsWidth = g2.getFontMetrics().stringWidth(vsText);
-        g2.drawString(vsText, (getWidth() - vsWidth) / 2, 240);
+        g2.drawString(vsText, (getWidth() - vsWidth) / 2, UIConstants.VS_LABEL_Y);
 
         // Player 2 (Right) - Horizontal Position
-        // Adjusted X to 500 to avoid overlap (though battle log is gone now, still good
-        // to keep safe)
-        drawCharacterSprite(g2, enemySprite, 620, midY - 60, false);
-        drawCharacterStats(g2, player2, 550, 360, false);
+        drawCharacterSprite(g2, enemySprite, UIConstants.P2_SPRITE_X, midY - UIConstants.CHAR_SPRITE_Y_OFFSET, false);
+        drawCharacterStats(g2, player2, UIConstants.P2_STATS_X, UIConstants.CHAR_STATS_Y, false);
     }
 
     private void drawCharacterSprite(Graphics2D g2, BufferedImage sprite, int x, int y, boolean isPlayer) {
         if (sprite != null) {
-            g2.drawImage(sprite, x, y, 120, 120, null);
+            g2.drawImage(sprite, x, y, UIConstants.CHAR_SPRITE_SIZE, UIConstants.CHAR_SPRITE_SIZE, null);
         } else {
-            g2.setColor(isPlayer ? new Color(100, 150, 255) : new Color(255, 100, 100));
-            g2.fillOval(x, y, 120, 120);
+            g2.setColor(isPlayer ? UIConstants.PLAYER_PLACEHOLDER_COLOR : UIConstants.ENEMY_PLACEHOLDER_COLOR);
+            g2.fillOval(x, y, UIConstants.CHAR_SPRITE_SIZE, UIConstants.CHAR_SPRITE_SIZE);
         }
     }
 
     private void drawCharacterStats(Graphics2D g2, BaseCharacter character, int x, int y, boolean isPlayer) {
         // Name
         g2.setFont(new Font("Arial", Font.BOLD, 18));
-        g2.setColor(Color.WHITE);
+        g2.setColor(UIConstants.COLOR_WHITE);
         g2.drawString(character.getName(), x, y);
 
         // HP Bar
         y += 25;
         drawStatBar(g2, "HP", character.getHealthPoints(), character.getMaxHealthPoints(),
-                x, y, 240, 25, Color.GREEN, Color.RED);
+                x, y, UIConstants.STAT_BAR_WIDTH, UIConstants.HP_BAR_HEIGHT, UIConstants.COLOR_GREEN,
+                UIConstants.COLOR_RED);
 
         // FP Bar
         y += 35;
         drawStatBar(g2, "FP", character.getFocusPoints(), character.getMaxFocusPoints(),
-                x, y, 240, 20, Color.CYAN, new Color(0, 100, 150));
+                x, y, UIConstants.STAT_BAR_WIDTH, UIConstants.FP_BAR_HEIGHT, UIConstants.COLOR_CYAN,
+                UIConstants.FP_BAR_FILL_COLOR);
 
         // Status Icons
         y += 25;
@@ -470,31 +481,31 @@ public class BattlePanel extends JPanel {
             int x, int y, int width, int height, Color goodColor, Color badColor) {
         // Label
         g2.setFont(new Font("Arial", Font.BOLD, 14));
-        g2.setColor(Color.WHITE);
+        g2.setColor(UIConstants.COLOR_WHITE);
         g2.drawString(label + ":", x, y + height - 5);
 
-        int barX = x + 35;
-        int barWidth = width - 35;
+        int barX = x + UIConstants.STAT_LABEL_OFFSET;
+        int barWidth = width - UIConstants.STAT_LABEL_OFFSET;
 
         // Background
-        g2.setColor(new Color(40, 40, 40));
+        g2.setColor(UIConstants.HP_BAR_BG_COLOR);
         g2.fillRect(barX, y, barWidth, height);
 
         // Fill
         float percent = (float) current / max;
         int fillWidth = (int) (barWidth * percent);
 
-        Color fillColor = percent > 0.5 ? goodColor : (percent > 0.2 ? Color.ORANGE : badColor);
+        Color fillColor = percent > 0.5 ? goodColor : (percent > 0.2 ? UIConstants.COLOR_ORANGE : badColor);
         g2.setColor(fillColor);
         g2.fillRect(barX, y, fillWidth, height);
 
         // Border
-        g2.setColor(Color.WHITE);
+        g2.setColor(UIConstants.COLOR_WHITE);
         g2.drawRect(barX, y, barWidth, height);
 
         // Text
         g2.setFont(new Font("Arial", Font.BOLD, 12));
-        g2.setColor(Color.WHITE);
+        g2.setColor(UIConstants.COLOR_WHITE);
         String text = current + " / " + max;
         int textWidth = g2.getFontMetrics().stringWidth(text);
         g2.drawString(text, barX + barWidth / 2 - textWidth / 2, y + height - 6);

@@ -28,28 +28,28 @@ public final class Constants {
     // ====================================================================
 
     // Fire Character - Aggressive Attacker (Total: 180)
-    public static final int FIRE_MAX_HP = 100;
-    public static final int FIRE_ATTACK = 35;
-    public static final int FIRE_DEFENSE = 15;
-    public static final int FIRE_SPEED = 30;
+    public static final int FIRE_MAX_HP = 105; // +5 (More sustain)
+    public static final int FIRE_ATTACK = 32; // -3 (Balanced aggro)
+    public static final int FIRE_DEFENSE = 18; // +3 (Better survivability)
+    public static final int FIRE_SPEED = 25; // -5 (Standard speed)
 
-    // Water Character - Defensive Controller (Total: 180)
-    public static final int WATER_MAX_HP = 115;
-    public static final int WATER_ATTACK = 28;
-    public static final int WATER_DEFENSE = 25;
-    public static final int WATER_SPEED = 12;
+    // Water Character - Defensive Controller (Total: 182)
+    public static final int WATER_MAX_HP = 115; // Unchanged
+    public static final int WATER_ATTACK = 30; // +2 (Better offense)
+    public static final int WATER_DEFENSE = 22; // -3 (Trade def for atk)
+    public static final int WATER_SPEED = 15; // +3 (Slightly faster)
 
-    // Earth Character - Ultimate Tank (Total: 180, REBALANCED)
-    public static final int EARTH_MAX_HP = 130;
-    public static final int EARTH_ATTACK = 22;
-    public static final int EARTH_DEFENSE = 28;
-    public static final int EARTH_SPEED = 0;
+    // Earth Character - Ultimate Tank (Total: 178)
+    public static final int EARTH_MAX_HP = 125; // -5 (Not too spongey)
+    public static final int EARTH_ATTACK = 24; // +2 (Threatening enough)
+    public static final int EARTH_DEFENSE = 24; // -4 (Breakable defense)
+    public static final int EARTH_SPEED = 5; // +5 (Not absolute zero)
 
-    // Wind Character - Glass Cannon (Total: 180, BUFFED)
-    public static final int WIND_MAX_HP = 95;
-    public static final int WIND_ATTACK = 32;
-    public static final int WIND_DEFENSE = 8;
-    public static final int WIND_SPEED = 45;
+    // Wind Character - Glass Cannon (Total: 182)
+    public static final int WIND_MAX_HP = 100; // +5 (Survive 2 hits)
+    public static final int WIND_ATTACK = 30; // -2 (Balanced with speed)
+    public static final int WIND_DEFENSE = 12; // +4 (Not paper thin)
+    public static final int WIND_SPEED = 40; // -5 (Still fastest)
 
     // ====================================================================
     // BATTLE MECHANICS - DODGE SYSTEM

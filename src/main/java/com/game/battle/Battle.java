@@ -2,6 +2,7 @@ package com.game.battle;
 
 import com.game.characters.BaseCharacter;
 import com.game.skills.Skill;
+import com.game.utils.GameStrings;
 import com.utils.Constants;
 import java.util.List;
 import java.util.Random;
@@ -37,6 +38,9 @@ public class Battle {
     // Logging
     private BattleLog battleLog;
 
+    // Display Delegate
+    private BattleDisplay display;
+
     // Random untuk spin/coin flip
     private static final Random random = new Random();
 
@@ -58,6 +62,7 @@ public class Battle {
         this.turnCount = 0;
         this.winner = null;
         this.battleLog = new BattleLog();
+        this.display = new BattleDisplay(this);
     }
 
     /**
@@ -66,13 +71,11 @@ public class Battle {
      * Bisa juga menggunakan coin flip jika speed sama.
      */
     public void start() {
-        LOGGER.info("\n╔════════════════════════════════════╗");
-        LOGGER.info("║   PERTARUNGAN DIMULAI!             ║");
-        LOGGER.info("╚════════════════════════════════════╝\n");
+        LOGGER.info("\n" + GameStrings.BATTLE_START_TITLE);
 
         LOGGER.info("⚔️  " + player1.getName() + " (HP: " + player1.getHealthPoints() + "/"
                 + player1.getMaxHealthPoints() + ")");
-        LOGGER.info("⚔️  vs");
+        LOGGER.info(GameStrings.BATTLE_VS);
         LOGGER.info("⚔️  " + player2.getName() + " (HP: " + player2.getHealthPoints() + "/"
                 + player2.getMaxHealthPoints() + ")\n");
 
@@ -109,110 +112,18 @@ public class Battle {
 
     /**
      * Menampilkan status pertarungan saat ini.
+     * Delegates to BattleDisplay.
      */
     public void displayStatus() {
-        String divider = "═══════════════════════════════════════════";
-        String dividerWithNewline = String.format("%n%s", divider);
-        LOGGER.info(dividerWithNewline);
-        String turnInfo = String.format("TURN %d - %s GILIRAN", turnCount, getCurrentPlayerName());
-        LOGGER.info(turnInfo);
-        LOGGER.info(divider);
-
-        // Status Player 1
-        displayCharacterStatus(player1, "⚔️ PLAYER 1");
-        LOGGER.info("");
-
-        // Status Player 2
-        displayCharacterStatus(player2, "🛡️  PLAYER 2");
-        String dividerEndNewline = String.format("%s%n", divider);
-        LOGGER.info(dividerEndNewline);
+        display.displayStatus();
     }
 
     /**
-     * Menampilkan status detail karakter (HP, FP, Effects, dll).
-     */
-    private void displayCharacterStatus(BaseCharacter character, String label) {
-        int maxHp = character.getMaxHealthPoints();
-        int currentHp = character.getHealthPoints();
-        // Removed unused hpPercent variable
-
-        // HP Bar
-        StringBuilder sb = new StringBuilder();
-        sb.append(label).append(" ").append(character.getName()).append(" │ ");
-        sb.append(formatHpBar(currentHp, maxHp));
-        sb.append(" ").append(currentHp).append("/").append(maxHp).append(" HP");
-        String hpStatus = sb.toString();
-        LOGGER.info(hpStatus);
-
-        // FP Bar
-        int maxFp = character.getMaxFocusPoints();
-        int currentFp = character.getFocusPoints();
-        StringBuilder fpSb = new StringBuilder("           │ FP: ");
-        fpSb.append(formatFpBar(currentFp, maxFp));
-        fpSb.append(" ").append(currentFp).append("/").append(maxFp);
-        String fpStatus = fpSb.toString();
-        LOGGER.info(fpStatus);
-        // Status Effects
-        List<String> effects = character.getActiveEffectNames();
-        if (!effects.isEmpty()) {
-            StringBuilder effectSb = new StringBuilder("           │ Effects: ");
-            for (String effect : effects) {
-                effectSb.append("[").append(effect).append("] ");
-            }
-            String effectStatus = effectSb.toString();
-            LOGGER.info(effectStatus);
-        }
-    }
-
-    /**
-     * Menampilkan visual HP bar.
-     */
-    private String formatHpBar(int current, int max) {
-        int barLength = 20;
-        int filledLength = (current * barLength) / max;
-        StringBuilder bar = new StringBuilder("[");
-        for (int i = 0; i < barLength; i++) {
-            if (i < filledLength) {
-                bar.append("█");
-            } else {
-                bar.append("░");
-            }
-        }
-        bar.append("]");
-        return bar.toString();
-    }
-
-    /**
-     * Menampilkan visual FP bar.
-     */
-    private String formatFpBar(int current, int max) {
-        int barLength = 10;
-        int filledLength = (current * barLength) / max;
-        StringBuilder bar = new StringBuilder("[");
-        for (int i = 0; i < barLength; i++) {
-            if (i < filledLength) {
-                bar.append("⚡");
-            } else {
-                bar.append("○");
-            }
-        }
-        bar.append("]");
-        return bar.toString();
-    }
-
-    /**
-     * Menampilkan skill yang tersedia untuk pemain saat ini.
+     * Menampilkan skill yang tersedia.
+     * Delegates to BattleDisplay.
      */
     public void displayAvailableSkills() {
-        BaseCharacter currentPlayer = getCurrentPlayer();
-        List<Skill> skills = currentPlayer.getSkills();
-
-        LOGGER.info("\n📋 Skill tersedia untuk " + currentPlayer.getName() + ":");
-        for (int i = 0; i < skills.size(); i++) {
-            Skill skill = skills.get(i);
-            String infoSkill = (i + 1) + ". " + skill.getName() + " (FP Cost: " + skill.getFpCost() + ")" ;
-            LOGGER.info(infoSkill);
-        }
+        display.displayAvailableSkills();
     }
 
     /**
@@ -231,8 +142,6 @@ public class Battle {
 
         // 2. Check if can move (Freeze check)
         if (!attacker.canMove()) {
-            LOGGER.info("❄️ " + attacker.getName() + " terkena Freeze! Skip turn!");
-
             // Log freeze action
             BattleAction freezeAction = new BattleAction(
                     attacker.getName(),
@@ -252,7 +161,7 @@ public class Battle {
 
         // Validasi index
         if (skillIndex < 1 || skillIndex > skills.size()) {
-            LOGGER.info("❌ Pilihan skill tidak valid!");
+            LOGGER.info(GameStrings.MSG_INVALID_SKILL);
             return false;
         }
 
@@ -260,7 +169,7 @@ public class Battle {
 
         // 3. Check FP BEFORE execution
         if (attacker.getFocusPoints() < selectedSkill.getFpCost()) {
-            LOGGER.info("❌ FP tidak cukup! Pilih skill lain.");
+            LOGGER.info(GameStrings.MSG_INSUFFICIENT_FP);
             return false; // Return false to allow re-selection
         }
 
@@ -292,6 +201,15 @@ public class Battle {
             action.setHealingDone(healingDone);
         }
 
+        // --- FIX: Retrieve detailed mechanics from defender ---
+        BaseCharacter.DamageDetails details = defender.getLastDamageDetails();
+        if (details != null) {
+            action.setCritical(details.isCritical);
+            action.setDodged(details.isDodged);
+            action.setEffectiveness(details.effectiveness);
+        }
+        // ------------------------------------------------------
+
         // Set deskripsi
         if (selectedSkill.getFpCost() > 0) {
             action.setDescription("FP digunakan: " + selectedSkill.getFpCost());
@@ -313,8 +231,8 @@ public class Battle {
         BaseCharacter surrenderer = getCurrentPlayer();
         this.winner = getOpponentPlayer(); // Simpan pemenang sebelum state berubah
 
-        LOGGER.info("\n💔 " + surrenderer.getName() + " menyerah!");
-        LOGGER.info("🎉 " + this.winner.getName() + " MENANG!\n");
+        LOGGER.info(String.format("\n" + GameStrings.MSG_SURRENDERED, surrenderer.getName()));
+        LOGGER.info(String.format(GameStrings.MSG_WINNER, this.winner.getName()) + "\n");
 
         BattleAction action = new BattleAction(
                 surrenderer.getName(),
@@ -357,7 +275,8 @@ public class Battle {
      * 2. Salah satu menyerah
      */
     public boolean isBattleFinished() {
-        return (currentState == BattleState.FINISHED) || (player1.getHealthPoints() <= 0 || player2.getHealthPoints() <= 0);
+        return (currentState == BattleState.FINISHED)
+                || (player1.getHealthPoints() <= 0 || player2.getHealthPoints() <= 0);
     }
 
     /**
@@ -377,29 +296,6 @@ public class Battle {
         }
 
         return null;
-    }
-
-    /**
-     * Menampilkan hasil akhir pertarungan.
-     */
-    public void displayBattleResult() {
-        BaseCharacter battleWinner = getWinner();
-
-        LOGGER.info("\n╔════════════════════════════════════╗");
-        LOGGER.info("║       PERTARUNGAN SELESAI!         ║");
-        LOGGER.info("╚════════════════════════════════════╝\n");
-
-        if (battleWinner != null) {
-            String winnerInfo = String.format("🎉 PEMENANG: %s 🎉", battleWinner.getName());
-            LOGGER.info(winnerInfo);
-            String hpInfo = String.format("   HP Tersisa: %d/%d", battleWinner.getHealthPoints(), battleWinner.getMaxHealthPoints());
-            LOGGER.info(hpInfo);
-        }
-
-        String totalTurn = "\nTotal Turn: " + turnCount; 
-        LOGGER.info(totalTurn);
-        String totalAksi = "Total Aksi: " + battleLog.getActionCount(); 
-        LOGGER.info(totalAksi);
     }
 
     /**
