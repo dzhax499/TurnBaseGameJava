@@ -18,6 +18,9 @@ public class ElementalAdvantage {
      * @param defenderElement Elemen defender
      * @return Multiplier untuk damage (0.75, 1.0, atau 1.5)
      */
+    private ElementalAdvantage(){
+        
+    }
     public static double getMultiplier(ElementType attackerElement, ElementType defenderElement) {
         // Neutral element tidak punya advantage/disadvantage
         if (attackerElement == ElementType.NEUTRAL || defenderElement == ElementType.NEUTRAL) {

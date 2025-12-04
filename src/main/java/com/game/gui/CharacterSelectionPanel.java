@@ -10,19 +10,13 @@ import com.game.utils.ResourceLoader;
  * Menampilkan stats, skills, dan elemen advantage untuk setiap karakter.
  */
 public class CharacterSelectionPanel extends JPanel {
-    private BufferedImage background;
+    private transient BufferedImage backgroundBuffer;
     private JLabel titleLabel;
-    private JLabel instructionLabel;
     private JTextField nameField;
-    private JButton fireButton;
-    private JButton waterButton;
-    private JButton windButton;
-    private JButton earthButton;
-    private JButton backButton;
     private JTextArea infoArea;
-
-    private SelectionListener listener;
+    private transient SelectionListener listener;
     private int playerNumber = 1;
+    private String arialStr = "Arial";
 
     public interface SelectionListener {
         void onCharacterSelected(String characterType, String characterName);
@@ -32,34 +26,40 @@ public class CharacterSelectionPanel extends JPanel {
 
     public CharacterSelectionPanel() {
         setLayout(null);
-        background = ResourceLoader.loadImage("/images/tes_image.jpg");
+        backgroundBuffer = ResourceLoader.loadImage("/images/tes_image.jpg");
         initializeComponents();
     }
 
     private void initializeComponents() {
         // Title
+        JButton waterButton;
+        JButton windButton;
+        JButton earthButton;
+        JButton backButton;
+        JButton fireButton;
+        JLabel instructionLabel;
         titleLabel = new JLabel("PLAYER 1 - SELECT YOUR CHARACTER", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        titleLabel.setFont(new Font(arialStr, Font.BOLD, 28));
         titleLabel.setForeground(Color.YELLOW);
         titleLabel.setBounds(50, 20, 450, 40);
         add(titleLabel);
 
         // Instruction
         instructionLabel = new JLabel("Enter your name and choose a character", SwingConstants.CENTER);
-        instructionLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        instructionLabel.setFont(new Font(arialStr, Font.PLAIN, 16));
         instructionLabel.setForeground(Color.WHITE);
         instructionLabel.setBounds(50, 60, 450, 25);
         add(instructionLabel);
 
         // Name input
         JLabel nameLabel = new JLabel("Name:");
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        nameLabel.setFont(new Font(arialStr, Font.BOLD, 16));
         nameLabel.setForeground(Color.WHITE);
         nameLabel.setBounds(120, 95, 60, 30);
         add(nameLabel);
 
         nameField = new JTextField("Player 1");
-        nameField.setFont(new Font("Arial", Font.PLAIN, 16));
+        nameField.setFont(new Font(arialStr, Font.PLAIN, 16));
         nameField.setBounds(185, 95, 200, 30);
         add(nameField);
 
@@ -129,7 +129,7 @@ public class CharacterSelectionPanel extends JPanel {
 
         // Back button - MOVED TO BOTTOM LEFT
         backButton = new JButton("← Back to Menu");
-        backButton.setFont(new Font("Arial", Font.BOLD, 14));
+        backButton.setFont(new Font(arialStr, Font.BOLD, 14));
         backButton.setBackground(new Color(100, 100, 100));
         backButton.setForeground(Color.WHITE);
         backButton.setFocusPainted(false);
@@ -157,13 +157,13 @@ public class CharacterSelectionPanel extends JPanel {
 
         // Emoji/Icon label
         JLabel iconLabel = new JLabel(emoji, SwingConstants.CENTER);
-        iconLabel.setFont(new Font("Arial", Font.PLAIN, 60));
+        iconLabel.setFont(new Font(arialStr, Font.PLAIN, 60));
         iconLabel.setBounds(0, 20, width, 70);
         button.add(iconLabel);
 
         // Name label
         JLabel nameLabel = new JLabel(name, SwingConstants.CENTER);
-        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        nameLabel.setFont(new Font(arialStr, Font.BOLD, 20));
         nameLabel.setBounds(0, 100, width, 30);
         button.add(nameLabel);
 
@@ -172,7 +172,7 @@ public class CharacterSelectionPanel extends JPanel {
         int statsY = 140;
         for (String stat : stats) {
             JLabel statLabel = new JLabel(stat, SwingConstants.CENTER);
-            statLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+            statLabel.setFont(new Font(arialStr, Font.PLAIN, 11));
             statLabel.setBounds(0, statsY, width, 15);
             button.add(statLabel);
             statsY += 17;
@@ -180,12 +180,14 @@ public class CharacterSelectionPanel extends JPanel {
 
         // Hover effects
         button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 button.setBackground(color.brighter());
                 button.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 4));
                 updateInfo(name);
             }
 
+            @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 button.setBackground(color);
                 button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
@@ -289,6 +291,7 @@ public class CharacterSelectionPanel extends JPanel {
                         "  • Weak vs FIRE (0.75x damage)\n\n" +
                         "PLAYSTYLE: Hit and run, glass cannon";
                 break;
+                default:
         }
 
         infoArea.setText(info);
@@ -350,9 +353,9 @@ public class CharacterSelectionPanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
 
-        // Draw background
-        if (background != null) {
-            g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        // Draw backgroundBuffer
+        if (backgroundBuffer != null) {
+            g2.drawImage(backgroundBuffer, 0, 0, getWidth(), getHeight(), null);
         } else {
             g2.setColor(new Color(20, 20, 40));
             g2.fillRect(0, 0, getWidth(), getHeight());

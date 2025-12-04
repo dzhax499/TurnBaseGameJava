@@ -1,12 +1,12 @@
 package com.game.skills.effects;
 
 import com.game.characters.BaseCharacter;
-
+import java.util.logging.Logger;
 /**
  * Efek Burn: Memberikan damage setiap giliran.
  */
 public class BurnEffect extends StatusEffect {
-
+    Logger logger = Logger.getLogger(getClass().getName());
     private int damagePerTurn;
 
     public BurnEffect(int duration, int damagePerTurn) {
@@ -16,17 +16,18 @@ public class BurnEffect extends StatusEffect {
 
     @Override
     public void apply(BaseCharacter target) {
-        System.out.println(target.getName() + " terbakar! (Burn)");
+        logger.info(target.getName() + " terbakar! (Burn)");
     }
 
     @Override
     public void tick(BaseCharacter target) {
         target.takeDamage(damagePerTurn);
-        System.out.println(target.getName() + " menerima " + damagePerTurn + " damage dari Burn!");
+        String gainBurnStr = target.getName() + " menerima " + damagePerTurn + " damage dari Burn!";
+        logger.info(gainBurnStr);
     }
 
     @Override
     public void remove(BaseCharacter target) {
-        System.out.println(target.getName() + " tidak lagi terbakar.");
+        logger.info(target.getName() + " tidak lagi terbakar.");
     }
 }

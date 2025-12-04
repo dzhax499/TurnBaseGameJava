@@ -1,5 +1,5 @@
 package com.game.characters;
-
+import java.util.logging.Logger;
 import com.game.skills.Skill;
 import com.game.skills.effects.StatusEffect;
 import com.game.skills.effects.FreezeEffect;
@@ -34,11 +34,13 @@ public abstract class BaseCharacter {
     // Daftar efek status aktif pada karakter
     private final List<StatusEffect> activeEffects;
 
+    Logger logger = Logger.getLogger(getClass().getName());
+
     // ====================================================================
     // 2. KONSTRUKTOR
     // ====================================================================
 
-    public BaseCharacter(String name, int maxHp, int attack, int defense, int speed) {
+    protected BaseCharacter(String name, int maxHp, int attack, int defense, int speed) {
         // Input validation
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Nama karakter tidak boleh kosong");
@@ -111,23 +113,40 @@ public abstract class BaseCharacter {
         int finalDamage = Math.max(0, rawDamage - this.defense);
         this.healthPoints -= finalDamage;
 
-        System.out.println(this.name + " menerima " + finalDamage + " kerusakan.");
+        String damage = this.name + " menerima " + finalDamage + " kerusakan.";
+        logger.info(damage);
     }
 
     // Store last damage details for battle log
     private DamageDetails lastDamageDetails;
 
     public static class DamageDetails {
-        public boolean isCritical;
-        public boolean isDodged;
-        public double effectiveness;
-        public int damageTaken;
+        private boolean isCritical;
+        private boolean isDodged;
+        private double effectiveness;
+        private int damageTaken;
 
         public DamageDetails() {
             this.isCritical = false;
             this.isDodged = false;
             this.effectiveness = 1.0;
             this.damageTaken = 0;
+        }
+
+        public boolean getisCritical() {
+            return this.isCritical;
+        }
+
+        public boolean getisDodged() {
+            return this.isDodged;
+        }   
+
+        public double getEffectiveness() {
+            return this.effectiveness;
+        }
+
+        public int getDamageTaken() {
+            return this.damageTaken;
         }
     }
 
@@ -144,7 +163,8 @@ public abstract class BaseCharacter {
         // 1. Cek Dodge (using ThreadLocalRandom for thread safety)
         double dodgeChance = calculateDodgeChance(attacker);
         if (ThreadLocalRandom.current().nextDouble() * 100 < dodgeChance) {
-            System.out.println(this.name + " menghindari serangan! (Dodge)");
+            String dodge = this.name + " menghindari serangan! (Dodge)"; 
+            logger.info(dodge);
             lastDamageDetails.isDodged = true;
             return;
         }
@@ -157,7 +177,7 @@ public abstract class BaseCharacter {
         int finalDamage = rawDamage;
         if (isCrit) {
             finalDamage = (int) (rawDamage * Constants.CRIT_DAMAGE_MULTIPLIER);
-            System.out.println(attacker.getName() + " melakukan Critical Hit!");
+            logger.info(attacker.getName() + " melakukan Critical Hit!");
         }
 
         // 3. Apply Elemental Advantage
@@ -173,7 +193,7 @@ public abstract class BaseCharacter {
                 attacker.getElementType(),
                 this.getElementType());
         if (!effectivenessMsg.isEmpty()) {
-            System.out.println(effectivenessMsg);
+            logger.info(effectivenessMsg);
         }
 
         // 4. Apply Defense
@@ -185,7 +205,8 @@ public abstract class BaseCharacter {
 
         lastDamageDetails.damageTaken = finalDamage;
 
-        System.out.println(this.name + " menerima " + finalDamage + " kerusakan." + (isCrit ? " (CRIT!)" : ""));
+        String receiveDamage = this.name + " menerima " + finalDamage + " kerusakan." + (isCrit ? " (CRIT!)" : "");
+        logger.info(receiveDamage);
     }
 
     /**
@@ -193,7 +214,7 @@ public abstract class BaseCharacter {
      * BALANCED: Reduced speed impact untuk gameplay yang lebih fair.
      */
     private double calculateDodgeChance(BaseCharacter attacker) {
-        double speedDiff = this.speed - attacker.getSpeed();
+        double speedDiff = (double)this.speed - attacker.getSpeed();
         double chance = speedDiff / Constants.DODGE_SPEED_DIVISOR * 100;
         return Math.min(Constants.MAX_DODGE_CHANCE, Math.max(0, chance));
     }
@@ -217,7 +238,9 @@ public abstract class BaseCharacter {
         if (this.healthPoints > this.maxHealthPoints) {
             this.healthPoints = this.maxHealthPoints;
         }
-        System.out.println(this.name + " menyembuhkan diri sebesar " + healAmount + " HP.");
+
+        String healInfo = this.name + " menyembuhkan diri sebesar " + healAmount + " HP.";
+        logger.info(healInfo);
     }
 
     /**
@@ -229,7 +252,9 @@ public abstract class BaseCharacter {
             this.focusPoints -= amount;
             return true;
         }
-        System.out.println(this.name + " tidak cukup FP!");
+
+        String insufficientFp = this.name + " tidak cukup FP!"; 
+        logger.info(insufficientFp);
         return false;
     }
 
@@ -314,6 +339,7 @@ public abstract class BaseCharacter {
      * 
      * @deprecated Use applyStartTurnEffects and applyEndTurnEffects instead
      */
+    @Deprecated (since = "1", forRemoval = false)
     public void updateStatusEffects() {
         applyStartTurnEffects();
         applyEndTurnEffects();

@@ -1,11 +1,11 @@
 package com.game.skills.common;
-
+import java.util.logging.Logger;
 import com.game.characters.BaseCharacter;
 import com.game.skills.Skill;
 import com.utils.Constants;
 
 public class AttackSkill implements Skill {
-
+    Logger logger = Logger.getLogger(getClass().getName());
     @Override
     public String getName() {
         return "Basic Attack";
@@ -20,7 +20,7 @@ public class AttackSkill implements Skill {
     public void use(BaseCharacter user, BaseCharacter target) {
         // Consistent dengan skill lain - call useFocusPoints meskipun cost 0
         if (user.useFocusPoints(getFpCost())) {
-            System.out.println(user.getName() + " menyerang " + target.getName() + "!");
+            logger.info(user.getName() + " menyerang " + target.getName() + "!");
             int damage = user.getAttackPower();
             target.takeDamageWithMechanics(damage, user);
         }

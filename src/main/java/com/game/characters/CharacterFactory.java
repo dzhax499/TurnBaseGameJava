@@ -2,6 +2,10 @@ package com.game.characters;
 
 public class CharacterFactory {
 
+    private CharacterFactory() {
+        // Private constructor to prevent instantiation
+    }
+
     public static BaseCharacter createCharacter(int choice, String name) {
         switch (choice) {
             case 1:

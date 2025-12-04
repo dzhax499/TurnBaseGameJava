@@ -1,7 +1,6 @@
 package com.game.gui;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -18,13 +17,13 @@ import com.game.utils.ResourceLoader;
  * - Clean layout
  */
 public class BattlePanel extends JPanel {
-    private BufferedImage background;
-    private BufferedImage heroSprite;
-    private BufferedImage enemySprite;
+    private transient BufferedImage backgroundIMG;
+    private transient BufferedImage heroSprite;
+    private transient BufferedImage enemySprite;
 
     // Battle State
-    private BaseCharacter player1;
-    private BaseCharacter player2;
+    private transient BaseCharacter player1;
+    private transient BaseCharacter player2;
 
     // Bottom Panel Components
     private JPanel bottomPanel;
@@ -55,18 +54,20 @@ public class BattlePanel extends JPanel {
     private static final String CARD_TEXT = "TEXT";
 
     // Listeners
-    private SkillActionListener skillListener;
-    private ActionListener continueListener;
+    private transient SkillActionListener skillListener;
+    private transient ActionListener continueListener;
 
+    private String arial = "Arial";
+    private String testImage = "/images/tes_image.jpg";
     public interface SkillActionListener {
         void onSkillUsed(int skillIndex);
     }
 
     public BattlePanel() {
         setLayout(null);
-        background = ResourceLoader.loadImage("/images/tes_image.jpg");
-        heroSprite = ResourceLoader.loadImage("/images/tes_image.jpg");
-        enemySprite = ResourceLoader.loadImage("/images/tes_image.jpg");
+        backgroundIMG = ResourceLoader.loadImage(testImage);
+        heroSprite = ResourceLoader.loadImage(testImage);
+        enemySprite = ResourceLoader.loadImage(testImage);
 
         initializeComponents();
     }
@@ -74,7 +75,7 @@ public class BattlePanel extends JPanel {
     private void initializeComponents() {
         // Turn Indicator (Top Center)
         JLabel turnLabel = new JLabel("BATTLE START", SwingConstants.CENTER);
-        turnLabel.setFont(new Font("Arial", Font.BOLD, UIConstants.TURN_LABEL_FONT_SIZE));
+        turnLabel.setFont(new Font(arial, Font.BOLD, UIConstants.TURN_LABEL_FONT_SIZE));
         turnLabel.setForeground(UIConstants.COLOR_YELLOW);
         turnLabel.setBounds(UIConstants.TURN_LABEL_X, UIConstants.TURN_LABEL_Y,
                 UIConstants.TURN_LABEL_WIDTH, UIConstants.TURN_LABEL_HEIGHT);
@@ -139,7 +140,7 @@ public class BattlePanel extends JPanel {
 
         // Surrender Button (Far Right)
         surrenderButton = new JButton("SURRENDER");
-        surrenderButton.setFont(new Font("Arial", Font.BOLD, UIConstants.SURRENDER_BTN_FONT_SIZE));
+        surrenderButton.setFont(new Font(arial, Font.BOLD, UIConstants.SURRENDER_BTN_FONT_SIZE));
         surrenderButton.setBackground(UIConstants.SURRENDER_BTN_COLOR);
         surrenderButton.setForeground(UIConstants.COLOR_WHITE);
         surrenderButton.setFocusPainted(false);
@@ -171,8 +172,11 @@ public class BattlePanel extends JPanel {
         battleTextArea.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Click to skip typewriter animation
+       
         final BattlePanel self = this;
+    
         battleTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (self.isAnimating) {
                     self.skipTypewriterAnimation();
@@ -184,7 +188,7 @@ public class BattlePanel extends JPanel {
 
         // Continue Button
         continueButton = new JButton("▼");
-        continueButton.setFont(new Font("Arial", Font.BOLD, UIConstants.CONTINUE_BTN_FONT_SIZE));
+        continueButton.setFont(new Font(arial, Font.BOLD, UIConstants.CONTINUE_BTN_FONT_SIZE));
         continueButton.setBackground(UIConstants.CONTINUE_BTN_COLOR);
         continueButton.setForeground(UIConstants.COLOR_WHITE);
         continueButton.setFocusPainted(false);
@@ -214,17 +218,18 @@ public class BattlePanel extends JPanel {
         button.setLayout(new BorderLayout());
 
         JLabel titleLabel = new JLabel(title, SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        titleLabel.setFont(new Font(arial, Font.BOLD, 16));
         titleLabel.setForeground(UIConstants.COLOR_WHITE);
         button.add(titleLabel, BorderLayout.NORTH);
 
         JLabel descLabel = new JLabel(description, SwingConstants.CENTER);
-        descLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        descLabel.setFont(new Font(arial, Font.PLAIN, 12));
         descLabel.setForeground(UIConstants.COLOR_WHITE);
         button.add(descLabel, BorderLayout.CENTER);
 
         // Hover effect
         button.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 if (button.isEnabled()) {
                     button.setBackground(color.brighter());
@@ -232,6 +237,7 @@ public class BattlePanel extends JPanel {
                 }
             }
 
+            @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 button.setBackground(color);
                 button.setBorder(BorderFactory.createLineBorder(UIConstants.COLOR_WHITE,
@@ -279,19 +285,17 @@ public class BattlePanel extends JPanel {
         bottomCardLayout.show(bottomPanel, CARD_TEXT);
 
         // Start typewriter animation
-        typewriterTimer = new Timer(TYPEWRITER_DELAY_MS, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (currentCharIndex < fullText.length()) {
-                    // Add next character
-                    battleTextArea.append(String.valueOf(fullText.charAt(currentCharIndex)));
-                    currentCharIndex++;
-                } else {
-                    // Animation complete
-                    finishTypewriterAnimation();
-                }
+        typewriterTimer = new Timer(TYPEWRITER_DELAY_MS, e -> {
+            if (currentCharIndex < fullText.length()) {
+                // Add next character
+                battleTextArea.append(String.valueOf(fullText.charAt(currentCharIndex)));
+                currentCharIndex++;
+            } else {
+                // Animation complete
+                finishTypewriterAnimation();
             }
         });
+
 
         typewriterTimer.start();
     }
@@ -345,12 +349,12 @@ public class BattlePanel extends JPanel {
             button.setLayout(new BorderLayout());
 
             JLabel titleLabel = new JLabel(skillNames[i], SwingConstants.CENTER);
-            titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            titleLabel.setFont(new Font(arial, Font.BOLD, 16));
             titleLabel.setForeground(UIConstants.COLOR_WHITE);
             button.add(titleLabel, BorderLayout.NORTH);
 
             JLabel descLabel = new JLabel(skillDescriptions[i], SwingConstants.CENTER);
-            descLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+            descLabel.setFont(new Font(arial, Font.PLAIN, 12));
             descLabel.setForeground(UIConstants.COLOR_WHITE);
             button.add(descLabel, BorderLayout.CENTER);
 
@@ -381,14 +385,12 @@ public class BattlePanel extends JPanel {
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
 
-        if (choice == JOptionPane.YES_OPTION) {
+        if (choice == JOptionPane.YES_OPTION && skillListener != null) {
             // Trigger surrender logic through listener (handled by GameWindow via skill
             // index -1 or separate method)
             // For simplicity, we can use a special index or add a surrender listener
             // Using skill index -1 for surrender
-            if (skillListener != null) {
-                skillListener.onSkillUsed(-1);
-            }
+            skillListener.onSkillUsed(-1);
         }
     }
 
@@ -407,8 +409,8 @@ public class BattlePanel extends JPanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Draw background
-        if (background != null) {
-            g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        if (backgroundIMG != null) {
+            g2.drawImage(backgroundIMG, 0, 0, getWidth(), getHeight(), null);
         } else {
             g2.setColor(UIConstants.PANEL_BG_COLOR);
             g2.fillRect(0, 0, getWidth(), getHeight());
@@ -431,10 +433,10 @@ public class BattlePanel extends JPanel {
 
         // Player 1 (Left) - Horizontal Position
         drawCharacterSprite(g2, heroSprite, UIConstants.P1_SPRITE_X, midY - UIConstants.CHAR_SPRITE_Y_OFFSET, true);
-        drawCharacterStats(g2, player1, UIConstants.P1_STATS_X, UIConstants.CHAR_STATS_Y, true);
+        drawCharacterStats(g2, player1, UIConstants.P1_STATS_X, UIConstants.CHAR_STATS_Y);
 
         // VS Label
-        g2.setFont(new Font("Arial", Font.BOLD, UIConstants.VS_FONT_SIZE));
+        g2.setFont(new Font(arial, Font.BOLD, UIConstants.VS_FONT_SIZE));
         g2.setColor(UIConstants.COLOR_RED);
         String vsText = "VS";
         int vsWidth = g2.getFontMetrics().stringWidth(vsText);
@@ -442,7 +444,7 @@ public class BattlePanel extends JPanel {
 
         // Player 2 (Right) - Horizontal Position
         drawCharacterSprite(g2, enemySprite, UIConstants.P2_SPRITE_X, midY - UIConstants.CHAR_SPRITE_Y_OFFSET, false);
-        drawCharacterStats(g2, player2, UIConstants.P2_STATS_X, UIConstants.CHAR_STATS_Y, false);
+        drawCharacterStats(g2, player2, UIConstants.P2_STATS_X, UIConstants.CHAR_STATS_Y);
     }
 
     private void drawCharacterSprite(Graphics2D g2, BufferedImage sprite, int x, int y, boolean isPlayer) {
@@ -454,9 +456,9 @@ public class BattlePanel extends JPanel {
         }
     }
 
-    private void drawCharacterStats(Graphics2D g2, BaseCharacter character, int x, int y, boolean isPlayer) {
+    private void drawCharacterStats(Graphics2D g2, BaseCharacter character, int x, int y) {
         // Name
-        g2.setFont(new Font("Arial", Font.BOLD, 18));
+        g2.setFont(new Font(arial, Font.BOLD, 18));
         g2.setColor(UIConstants.COLOR_WHITE);
         g2.drawString(character.getName(), x, y);
 
@@ -480,7 +482,7 @@ public class BattlePanel extends JPanel {
     private void drawStatBar(Graphics2D g2, String label, int current, int max,
             int x, int y, int width, int height, Color goodColor, Color badColor) {
         // Label
-        g2.setFont(new Font("Arial", Font.BOLD, 14));
+        g2.setFont(new Font(arial, Font.BOLD, 14));
         g2.setColor(UIConstants.COLOR_WHITE);
         g2.drawString(label + ":", x, y + height - 5);
 
@@ -495,7 +497,16 @@ public class BattlePanel extends JPanel {
         float percent = (float) current / max;
         int fillWidth = (int) (barWidth * percent);
 
-        Color fillColor = percent > 0.5 ? goodColor : (percent > 0.2 ? UIConstants.COLOR_ORANGE : badColor);
+        Color fillColor;
+
+        if (percent > 0.5) {
+            fillColor = goodColor;
+        } else if (percent > 0.2) {
+            fillColor = UIConstants.COLOR_ORANGE;
+        } else {
+            fillColor = badColor;
+        }
+
         g2.setColor(fillColor);
         g2.fillRect(barX, y, fillWidth, height);
 
@@ -504,7 +515,7 @@ public class BattlePanel extends JPanel {
         g2.drawRect(barX, y, barWidth, height);
 
         // Text
-        g2.setFont(new Font("Arial", Font.BOLD, 12));
+        g2.setFont(new Font(arial, Font.BOLD, 12));
         g2.setColor(UIConstants.COLOR_WHITE);
         String text = current + " / " + max;
         int textWidth = g2.getFontMetrics().stringWidth(text);
@@ -524,7 +535,7 @@ public class BattlePanel extends JPanel {
             g2.drawString(icon, iconX, y);
 
             // Draw text label small
-            g2.setFont(new Font("Arial", Font.PLAIN, 10));
+            g2.setFont(new Font(arial, Font.PLAIN, 10));
             g2.drawString(effect, iconX + 25, y - 5);
             g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 20)); // Reset font
 

@@ -2,6 +2,7 @@ package com.game.battle;
 
 public class PokemonBattleTextFormatter {
     static final String CRITICAL_HIT = "CRITICAL HIT!";
+
     private PokemonBattleTextFormatter() {
         // Private constructor to prevent instantiation
     }
@@ -58,7 +59,6 @@ public class PokemonBattleTextFormatter {
         return "";
     }
 
-    
     /**
      * Format dodge message.
      */
@@ -125,48 +125,46 @@ public class PokemonBattleTextFormatter {
      * Format complete battle action dengan semua detail.
      * Menggunakan BattleActionInfo untuk menghindari terlalu banyak parameter.
      */
-    public static String formatBattleAction(BattleActionInfo info) {
+    public static String formatBattleAction(BattleActionInfo<?> info) {
 
-        StringBuilder sb = new StringBuilder();
 
         // Attack message
-        sb.append(formatAttackMessage(info.attackerName, info.skillName));
-        sb.append("\n\n");
+        StringBuilder sb = new StringBuilder(formatAttackMessage(info.getAttackerName(), info.getSkillName()) + "\n\n");
 
         // Dodge check
-        if (info.isDodged) {
-            sb.append(formatDodge(info.defenderName));
+        if (info.getisDodged()) {
+            sb.append(formatDodge(info.getDefenderName()));
             return sb.toString();
         }
 
         // Critical hit
-        if (info.isCritical) {
+        if (info.getisCritical()) {
             sb.append(CRITICAL_HIT);
             sb.append("\n\n");
         }
 
         // Damage
-        if (info.damage > 0) {
-            sb.append(formatDamageMessage(info.damage));
+        if (info.getDamage() > 0) {
+            sb.append(formatDamageMessage(info.getDamage()));
             sb.append("\n\n");
         }
 
         // Effectiveness
-        String effMsg = formatEffectiveness(info.effectiveness);
+        String effMsg = formatEffectiveness(info.getEffectiveness());
         if (!effMsg.isEmpty()) {
             sb.append(effMsg);
             sb.append("\n\n");
         }
 
         // Healing
-        if (info.healing > 0) {
-            sb.append(formatHealingMessage(info.attackerName, info.healing));
+        if (info.getHealing() > 0) {
+            sb.append(formatHealingMessage(info.getAttackerName(), info.getHealing()));
             sb.append("\n\n");
         }
 
         // Status effect
-        if (info.statusEffect != null && !info.statusEffect.isEmpty()) {
-            sb.append(formatStatusEffectApplied(info.defenderName, info.statusEffect));
+        if (info.getStatusEffect() != null && !info.getStatusEffect().isEmpty()) {
+            sb.append(formatStatusEffectApplied(info.getDefenderName(), info.getStatusEffect()));
         }
         return sb.toString().trim();
     }

@@ -14,15 +14,16 @@ import com.game.utils.ResourceLoader;
  * It loads images from `src/main/src/java/resources/images/` using ResourceLoader.
  */
 public class StatusPanel extends JPanel {
-    private BufferedImage background;
-    private BufferedImage hero;
-    private BufferedImage enemy;
+    private transient BufferedImage backgroundImage;
+    private transient BufferedImage hero;
+    private transient BufferedImage enemy;
+    private String imageTest = "/images/tes_image.jpg";
 
     public StatusPanel() {
         // Try to load common images. Use leading slash for classpath resource.
-        background = ResourceLoader.loadImage("/images/tes_image.jpg");
-        hero = ResourceLoader.loadImage("/images/tes_image.jpg");
-        enemy = ResourceLoader.loadImage("/images/tes_image.jpg");
+        backgroundImage = ResourceLoader.loadImage(imageTest);
+        hero = ResourceLoader.loadImage(imageTest);
+        enemy = ResourceLoader.loadImage(imageTest);
         setDoubleBuffered(true);
     }
 
@@ -31,8 +32,8 @@ public class StatusPanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
         // draw background if available
-        if (background != null) {
-            g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        if (backgroundImage != null) {
+            g2.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
         } else {
             // fallback
             g2.setColor(new Color(30, 30, 30));
@@ -44,7 +45,6 @@ public class StatusPanel extends JPanel {
         // draw hero and enemy sprites with simple positioning
         int midY = getHeight() / 2;
         if (hero != null) {
-            int hw = hero.getWidth();
             int hh = hero.getHeight();
             g2.drawImage(hero, 100, midY - hh / 2, null);
         } else {
@@ -55,7 +55,6 @@ public class StatusPanel extends JPanel {
         }
 
         if (enemy != null) {
-            int ew = enemy.getWidth();
             int eh = enemy.getHeight();
             g2.drawImage(enemy, getWidth() - 160, midY - eh / 2, null);
         } else {

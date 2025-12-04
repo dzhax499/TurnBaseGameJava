@@ -21,7 +21,6 @@ public class Battle {
     private CombatResolver combatResolver;
     private VictoryConditionChecker victoryChecker;
     private BattleLog battleLog;
-    private BattleDisplay display; // Display delegate (dari temanmu)
 
     public Battle(BaseCharacter player1, BaseCharacter player2) {
         // Validation
@@ -37,7 +36,6 @@ public class Battle {
         this.combatResolver = new CombatResolver();
         this.victoryChecker = new VictoryConditionChecker();
         this.battleLog = new BattleLog();
-        this.display = new BattleDisplay(this); // BattleDisplay butuh reference ke Battle
     }
 
     // ====================================================================
@@ -58,15 +56,6 @@ public class Battle {
         turnManager.displayTurnOrderInfo(player1, player2, LOGGER);
     }
 
-    public void displayStatus() {
-        // Delegate to BattleDisplay
-        display.displayStatus();
-    }
-
-    public void displayAvailableSkills() {
-        // Delegate to BattleDisplay
-        display.displayAvailableSkills();
-    }
 
     public boolean executePlayerAction(int skillIndex) {
         BaseCharacter attacker = getCurrentPlayer();

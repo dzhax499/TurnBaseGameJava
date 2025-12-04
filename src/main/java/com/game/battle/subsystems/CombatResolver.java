@@ -53,11 +53,12 @@ public class CombatResolver {
         }
 
         // Log aksi
+        String targetName = selectedSkill.isSelfTargeting() ? attacker.getName() : defender.getName();
         BattleAction action = new BattleAction(
                 attacker.getName(),
                 "SKILL",
                 selectedSkill.getName(),
-                defender.getName());
+                targetName);
 
         // Simpan HP attacker DAN defender untuk tracking healing & damage
         int defenderHpBefore = defender.getHealthPoints();
@@ -83,9 +84,9 @@ public class CombatResolver {
         // Retrieve detailed mechanics from defender
         BaseCharacter.DamageDetails details = defender.getLastDamageDetails();
         if (details != null) {
-            action.setCritical(details.isCritical);
-            action.setDodged(details.isDodged);
-            action.setEffectiveness(details.effectiveness);
+            action.setCritical(details.getisCritical());
+            action.setDodged(details.getisDodged());
+            action.setEffectiveness(details.getEffectiveness());
         }
 
         // Set deskripsi

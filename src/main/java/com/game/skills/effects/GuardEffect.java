@@ -1,6 +1,7 @@
 package com.game.skills.effects;
 
 import com.game.characters.BaseCharacter;
+import java.util.logging.Logger;
 
 /**
  * Efek Guard yang meningkatkan defense karakter.
@@ -8,6 +9,7 @@ import com.game.characters.BaseCharacter;
  */
 public class GuardEffect extends StatusEffect {
 
+    Logger logger = Logger.getLogger(getClass().getName());
     private int defenseBoost; // Berapa defense yang ditambahkan
 
     public GuardEffect() {
@@ -22,8 +24,8 @@ public class GuardEffect extends StatusEffect {
         
         // Tingkatkan defense target
         target.setDefense(target.getDefense() + defenseBoost);
-        
-        System.out.println("🛡️  " + target.getName() + " meningkatkan defense sebesar +" + defenseBoost + "!");
+        String targetName = "🛡️  " + target.getName() + " meningkatkan defense sebesar +" + defenseBoost + "!";
+        logger.info(targetName);
     }
 
     @Override
@@ -36,6 +38,6 @@ public class GuardEffect extends StatusEffect {
     public void remove(BaseCharacter target) {
         // Hapus defense boost saat effect berakhir
         target.setDefense(target.getDefense() - defenseBoost);
-        System.out.println("⚠️  " + target.getName() + " defense kembali normal!");
+        logger.info("⚠️  " + target.getName() + " defense kembali normal!");
     }
 }

@@ -24,10 +24,10 @@ public class TurnManager {
 
     public void displayBattleIntro(BaseCharacter player1, BaseCharacter player2, Logger logger) {
         logger.info("\n" + GameStrings.BATTLE_START_TITLE);
-        logger.info("⚔️  " + player1.getName() + " (HP: " + player1.getHealthPoints() + "/"
+        logger.info(player1.getName() + " (HP: " + player1.getHealthPoints() + "/"
                 + player1.getMaxHealthPoints() + ")");
         logger.info(GameStrings.BATTLE_VS);
-        logger.info("⚔️  " + player2.getName() + " (HP: " + player2.getHealthPoints() + "/"
+        logger.info(player2.getName() + " (HP: " + player2.getHealthPoints() + "/"
                 + player2.getMaxHealthPoints() + ")\n");
     }
 
@@ -48,7 +48,7 @@ public class TurnManager {
     }
 
     public void displayTurnOrderInfo(BaseCharacter player1, BaseCharacter player2, Logger logger) {
-        logger.info("🎲 Penentuan Giliran:");
+        logger.info("Penentuan Giliran:");
         if (player1.getSpeed() > player2.getSpeed()) {
             logger.info("   " + player1.getName() + " memiliki speed lebih tinggi! Jalan duluan!\n");
         } else if (player2.getSpeed() > player1.getSpeed()) {

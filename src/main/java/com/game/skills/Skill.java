@@ -7,14 +7,23 @@ import com.game.characters.BaseCharacter;
  * Mengimplementasikan prinsip Polimorfisme.
  */
 public interface Skill {
-    
+
     String getName();
+
     int getFpCost();
 
     /**
      * Metode utama untuk mengeksekusi skill.
-     * Polimorfisme terjadi di sini: setiap skill (Attack, Heal, Buff) 
+     * Polimorfisme terjadi di sini: setiap skill (Attack, Heal, Buff)
      * akan memiliki implementasi metode use() yang berbeda.
      */
     void use(BaseCharacter user, BaseCharacter target);
+
+    /**
+     * Menentukan apakah skill ini menargetkan diri sendiri.
+     * Default: false (menargetkan musuh).
+     */
+    default boolean isSelfTargeting() {
+        return false;
+    }
 }

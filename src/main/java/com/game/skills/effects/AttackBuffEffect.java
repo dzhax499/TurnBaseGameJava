@@ -1,5 +1,6 @@
 package com.game.skills.effects;
 
+import java.util.logging.Logger;
 import com.game.characters.BaseCharacter;
 
 /**
@@ -8,7 +9,7 @@ import com.game.characters.BaseCharacter;
 public class AttackBuffEffect extends StatusEffect {
 
     private int attackBonus;
-
+    Logger logger = Logger.getLogger(getClass().getName());
     public AttackBuffEffect(int duration, int attackBonus) {
         super("Attack Buff", duration, EffectType.BUFF);
         this.attackBonus = attackBonus;
@@ -17,7 +18,8 @@ public class AttackBuffEffect extends StatusEffect {
     @Override
     public void apply(BaseCharacter target) {
         target.setAttackPower(target.getAttackPower() + attackBonus);
-        System.out.println(target.getName() + " mendapat Attack Buff! (+" + attackBonus + " Attack)");
+        String gainAttackBuffStr = target.getName() + " mendapat Attack Buff! (+" + attackBonus + " Attack)"; 
+        logger.info(gainAttackBuffStr);
     }
 
     @Override
@@ -28,6 +30,6 @@ public class AttackBuffEffect extends StatusEffect {
     @Override
     public void remove(BaseCharacter target) {
         target.setAttackPower(target.getAttackPower() - attackBonus);
-        System.out.println(target.getName() + " kehilangan Attack Buff.");
+        logger.info(target.getName() + " kehilangan Attack Buff.");
     }
 }

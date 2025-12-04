@@ -1,12 +1,12 @@
 package com.game.skills.elemental;
-
+import java.util.logging.Logger;
 import com.game.characters.BaseCharacter;
 import com.game.skills.Skill;
 import com.game.skills.effects.FreezeEffect;
 import com.utils.Constants;
 
 public class IceBlastSkill implements Skill {
-
+    Logger logger = Logger.getLogger(getClass().getName());
     @Override
     public String getName() {
         return "Ice Blast";
@@ -23,7 +23,7 @@ public class IceBlastSkill implements Skill {
         int damage = (int) (user.getAttackPower() * Constants.ICE_BLAST_DAMAGE_MULTIPLIER);
 
         if (user.useFocusPoints(getFpCost())) {
-            System.out.println(user.getName() + " membekukan " + target.getName() + " dengan Ice Blast!");
+            logger.info(user.getName() + " membekukan " + target.getName() + " dengan Ice Blast!");
             target.takeDamageWithMechanics(damage, user);
 
             // Tambahkan efek Freeze (1 giliran)

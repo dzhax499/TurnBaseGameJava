@@ -2,18 +2,24 @@ package com.game.battle;
 
 /**
  * Data class untuk menyimpan informasi battle action.
- * Menggunakan builder pattern untuk menghindari method dengan terlalu banyak parameter.
+ * Menggunakan builder pattern untuk menghindari method dengan terlalu banyak
+ * parameter.
+ * 
+ * @param <T> Tipe data payload tambahan (Generic Programming)
  */
-public class BattleActionInfo {
-    public String attackerName;
-    public String skillName;
-    public String defenderName;
-    public int damage;
-    public int healing;
-    public boolean isCritical;
-    public boolean isDodged;
-    public double effectiveness;
-    public String statusEffect;
+public class BattleActionInfo<T> {
+    private String attackerName;
+    private String skillName;
+    private String defenderName;
+    private int damage;
+    private int healing;
+    private boolean isCritical;
+    private boolean isDodged;
+    private double effectiveness;
+    private String statusEffect;
+
+    // Generic Data Payload
+    private T data;
 
     public BattleActionInfo(String attackerName, String skillName, String defenderName) {
         this.attackerName = attackerName;
@@ -27,33 +33,78 @@ public class BattleActionInfo {
         this.statusEffect = "";
     }
 
-    public BattleActionInfo withDamage(int damage) {
+    public String getAttackerName() {
+        return this.attackerName;
+    }
+
+    public String getSkillName() {
+        return this.skillName;
+    }
+
+    public String getDefenderName() {
+        return this.defenderName;
+    }
+
+    public int getDamage() {
+        return this.damage;
+    }
+
+    public int getHealing() {
+        return this.healing;
+    }
+
+    public boolean getisCritical() {
+        return this.isCritical;
+    }
+
+    public boolean getisDodged() {
+        return this.isDodged;
+    }
+
+    public double getEffectiveness() {
+        return this.effectiveness;
+    }
+
+    public String getStatusEffect() {
+        return this.statusEffect;
+    }
+
+    public T getData() {
+        return this.data;
+    }
+
+    public BattleActionInfo<T> withDamage(int damage) {
         this.damage = damage;
         return this;
     }
 
-    public BattleActionInfo withHealing(int healing) {
+    public BattleActionInfo<T> withHealing(int healing) {
         this.healing = healing;
         return this;
     }
 
-    public BattleActionInfo withCritical(boolean isCritical) {
+    public BattleActionInfo<T> withCritical(boolean isCritical) {
         this.isCritical = isCritical;
         return this;
     }
 
-    public BattleActionInfo withDodged(boolean isDodged) {
+    public BattleActionInfo<T> withDodged(boolean isDodged) {
         this.isDodged = isDodged;
         return this;
     }
 
-    public BattleActionInfo withEffectiveness(double effectiveness) {
+    public BattleActionInfo<T> withEffectiveness(double effectiveness) {
         this.effectiveness = effectiveness;
         return this;
     }
 
-    public BattleActionInfo withStatusEffect(String statusEffect) {
+    public BattleActionInfo<T> withStatusEffect(String statusEffect) {
         this.statusEffect = statusEffect;
+        return this;
+    }
+
+    public BattleActionInfo<T> withData(T data) {
+        this.data = data;
         return this;
     }
 }

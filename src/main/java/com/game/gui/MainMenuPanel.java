@@ -9,11 +9,13 @@ import com.game.utils.ResourceLoader;
  * Enhanced Main Menu Panel dengan animasi dan visual yang lebih baik.
  */
 public class MainMenuPanel extends JPanel {
-    private BufferedImage background;
-    private JButton startButton;
-    private JButton howToPlayButton;
-    private JButton exitButton;
-    private CharacterSelectionListener listener;
+    private transient BufferedImage backgroundIMG;
+    
+    
+    
+    private transient CharacterSelectionListener listener;
+    private String arial = "Arial";
+
 
     public interface CharacterSelectionListener {
         void onCharacterSelected(String characterType);
@@ -21,21 +23,24 @@ public class MainMenuPanel extends JPanel {
 
     public MainMenuPanel() {
         setLayout(null);
-        background = ResourceLoader.loadImage("/images/tes_image.jpg");
+        backgroundIMG = ResourceLoader.loadImage("/images/tes_image.jpg");
         initializeComponents();
     }
 
     private void initializeComponents() {
+        JButton howToPlayButton;
+        JButton exitButton;
+        JButton startButton;
         // Game Title
         JLabel titleLabel = new JLabel("TURN-BASED BATTLE", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 48));
+        titleLabel.setFont(new Font(arial, Font.BOLD, 48));
         titleLabel.setForeground(Color.YELLOW);
         titleLabel.setBounds(150, 80, 520, 60);
         add(titleLabel);
 
         // Subtitle
         JLabel subtitleLabel = new JLabel("Elemental Warriors Arena", SwingConstants.CENTER);
-        subtitleLabel.setFont(new Font("Arial", Font.ITALIC, 24));
+        subtitleLabel.setFont(new Font(arial, Font.ITALIC, 24));
         subtitleLabel.setForeground(Color.WHITE);
         subtitleLabel.setBounds(150, 145, 520, 35);
         add(subtitleLabel);
@@ -80,21 +85,21 @@ public class MainMenuPanel extends JPanel {
 
         // Version/Credits
         JLabel creditsLabel = new JLabel("v1.0 | Made with Java Swing", SwingConstants.CENTER);
-        creditsLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        creditsLabel.setFont(new Font(arial, Font.PLAIN, 12));
         creditsLabel.setForeground(new Color(200, 200, 200));
         creditsLabel.setBounds(250, 520, 320, 20);
         add(creditsLabel);
 
         // Elemental Icons Display
         JLabel elementsLabel = new JLabel("🔥 💧 🌍 💨", SwingConstants.CENTER);
-        elementsLabel.setFont(new Font("Arial", Font.PLAIN, 40));
+        elementsLabel.setFont(new Font(arial, Font.PLAIN, 40));
         elementsLabel.setBounds(250, 190, 320, 50);
         add(elementsLabel);
     }
 
     private JButton createMenuButton(String text, Color color) {
         JButton button = new JButton(text);
-        button.setFont(new Font("Arial", Font.BOLD, 20));
+        button.setFont(new Font(arial, Font.BOLD, 20));
         button.setBackground(color);
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
@@ -106,11 +111,13 @@ public class MainMenuPanel extends JPanel {
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             Color originalColor = color;
 
+            @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 button.setBackground(color.brighter());
                 button.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 4));
             }
 
+            @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 button.setBackground(originalColor);
                 button.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
@@ -171,8 +178,8 @@ public class MainMenuPanel extends JPanel {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Draw background
-        if (background != null) {
-            g2.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        if (backgroundIMG != null) {
+            g2.drawImage(backgroundIMG, 0, 0, getWidth(), getHeight(), null);
         } else {
             // Gradient background
             GradientPaint gradient = new GradientPaint(

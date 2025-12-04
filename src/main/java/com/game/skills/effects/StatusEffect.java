@@ -11,7 +11,7 @@ public abstract class StatusEffect {
     private int duration; // Dalam giliran
     private EffectType type;
 
-    public StatusEffect(String name, int duration, EffectType type) {
+    protected StatusEffect(String name, int duration, EffectType type) {
         this.name = name;
         this.duration = duration;
         this.type = type;

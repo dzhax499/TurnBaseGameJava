@@ -46,7 +46,7 @@ public class GameWindow {
     private void initialize() {
         // Setup main frame
         frame = new JFrame("Turn-Based Battle Game");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         // Setup CardLayout
         cardLayout = new CardLayout();
@@ -96,7 +96,8 @@ public class GameWindow {
 
         // Battle Panel
         battlePanel = new BattlePanel();
-        battlePanel.setSkillActionListener(skillIndex -> handleSkillAction(skillIndex));
+        battlePanel.setSkillActionListener(this::handleSkillAction);
+        
 
         // Setup Continue Button Listener
         battlePanel.setContinueButtonListener(e -> handleContinueAction());
@@ -190,7 +191,7 @@ public class GameWindow {
 
     private String formatBattleMessagePokemonStyle(BattleAction action) {
         // Format dengan Pokemon Fire Red style (Complete Version)
-        BattleActionInfo info = new BattleActionInfo(
+        BattleActionInfo<Object> info = new BattleActionInfo<>(
                 action.getActor(),
                 action.getActionName(),
                 action.getTarget())
@@ -301,6 +302,6 @@ public class GameWindow {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GameWindow());
+        SwingUtilities.invokeLater(GameWindow::new);
     }
 }

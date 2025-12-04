@@ -3,9 +3,9 @@ package com.game.skills.elemental;
 import com.game.characters.BaseCharacter;
 import com.game.skills.Skill;
 import com.utils.Constants;
-
+import java.util.logging.Logger;
 public class AirSlashSkill implements Skill {
-
+    Logger logger = Logger.getLogger(getClass().getName());
     @Override
     public String getName() {
         return "Air Slash";
@@ -22,7 +22,7 @@ public class AirSlashSkill implements Skill {
         int damage = (int) (user.getAttackPower() * Constants.AIR_SLASH_DAMAGE_MULTIPLIER);
 
         if (user.useFocusPoints(getFpCost())) {
-            System.out.println(user.getName() + " menyayat " + target.getName() + " dengan angin!");
+            logger.info(user.getName() + " menyayat " + target.getName() + " dengan angin!");
             target.takeDamageWithMechanics(damage, user);
         }
     }

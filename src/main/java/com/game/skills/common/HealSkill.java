@@ -2,9 +2,11 @@ package com.game.skills.common;
 
 import com.game.characters.BaseCharacter;
 import com.game.skills.Skill;
+import java.util.logging.Logger;
 import com.utils.Constants;
 
 public class HealSkill implements Skill {
+    Logger logger = Logger.getLogger(getClass().getName());
 
     @Override
     public String getName() {
@@ -17,12 +19,17 @@ public class HealSkill implements Skill {
     }
 
     @Override
+    public boolean isSelfTargeting() {
+        return true;
+    }
+
+    @Override
     public void use(BaseCharacter user, BaseCharacter target) {
         // REBALANCED: Fixed heal amount
         int healAmount = Constants.HEAL_SKILL_AMOUNT;
 
         if (user.useFocusPoints(getFpCost())) {
-            System.out.println(user.getName() + " menggunakan Heal pada dirinya sendiri!");
+            logger.info(user.getName() + " menggunakan Heal pada dirinya sendiri!");
             user.heal(healAmount);
         }
     }
