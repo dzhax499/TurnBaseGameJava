@@ -7,19 +7,45 @@ import java.util.logging.Logger;
 
 /**
  * Class untuk mencatat setiap aksi yang terjadi dalam pertarungan.
- * Digunakan untuk menampilkan battle yang terlihat hidup dan interaktif.
+ * 
+ * BattleLog menyimpan semua BattleAction yang terjadi selama battle
+ * dan menyediakan berbagai cara untuk menampilkan log tersebut.
+ * Digunakan untuk membuat battle terlihat hidup dan interaktif.
+ * 
+ * Fitur:
+ * - Menyimpan semua aksi battle
+ * - Batasan ukuran log (MAX_BATTLE_LOG_ENTRIES)
+ * - Display aksi terakhir (live feedback)
+ * - Display N aksi terakhir (recap)
+ * - Display full log
+ * 
+ * @author TurnBaseGameJava Team
+ * @version 1.2
+ * @see BattleAction
  */
 public class BattleLog {
+
     private static final Logger LOGGER = Logger.getLogger(BattleLog.class.getName());
+
+    /** List semua aksi yang terjadi */
     private List<BattleAction> actions;
+
+    /** Maksimal ukuran log untuk mencegah memory overflow */
     private static final int MAX_LOG_SIZE = Constants.MAX_BATTLE_LOG_ENTRIES;
 
+    /**
+     * Konstruktor untuk membuat battle log baru.
+     * Inisialisasi dengan list kosong.
+     */
     public BattleLog() {
         this.actions = new ArrayList<>();
     }
 
     /**
      * Menambahkan aksi ke log.
+     * Jika ukuran log melebihi MAX_LOG_SIZE, aksi terlama akan dihapus.
+     * 
+     * @param action Aksi yang akan ditambahkan
      */
     public void addAction(BattleAction action) {
         actions.add(action);
@@ -30,7 +56,10 @@ public class BattleLog {
     }
 
     /**
-     * Mendapatkan aksi terakhir N buah.
+     * Mendapatkan N aksi terakhir dari log.
+     * 
+     * @param count Jumlah aksi yang ingin diambil
+     * @return List berisi N aksi terakhir
      */
     public List<BattleAction> getLastActions(int count) {
         int startIdx = Math.max(0, actions.size() - count);
@@ -38,7 +67,8 @@ public class BattleLog {
     }
 
     /**
-     * Menampilkan aksi terakhir yang terjadi (untuk live feedback).
+     * Menampilkan aksi terakhir yang terjadi.
+     * Digunakan untuk live feedback setelah setiap action.
      */
     public void displayLastAction() {
         if (!actions.isEmpty()) {
@@ -49,7 +79,9 @@ public class BattleLog {
     }
 
     /**
-     * Menampilkan N aksi terakhir.
+     * Menampilkan N aksi terakhir dengan format recap.
+     * 
+     * @param count Jumlah aksi yang ingin ditampilkan
      */
     public void displayLastActions(int count) {
         LOGGER.info("\n========== BATTLE RECAP ==========");
@@ -62,7 +94,7 @@ public class BattleLog {
     }
 
     /**
-     * Menampilkan seluruh log pertarungan.
+     * Menampilkan seluruh log pertarungan dari awal hingga akhir.
      */
     public void displayFullLog() {
         LOGGER.info("\n========== FULL BATTLE LOG ==========");
@@ -74,7 +106,8 @@ public class BattleLog {
     }
 
     /**
-     * Menghapus semua log (untuk pertarungan baru).
+     * Menghapus semua log.
+     * Digunakan untuk pertarungan baru.
      */
     public void clear() {
         actions.clear();
@@ -82,6 +115,8 @@ public class BattleLog {
 
     /**
      * Mendapatkan jumlah aksi dalam log.
+     * 
+     * @return Jumlah aksi yang tercatat
      */
     public int getActionCount() {
         return actions.size();

@@ -9,10 +9,51 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Subsystem untuk mengeksekusi combat actions.
+ * Subsystem untuk mengeksekusi combat actions dan skill execution.
+ * 
+ * <p>
+ * CombatResolver bertanggung jawab untuk:
+ * <ul>
+ * <li>Memproses status effects di awal dan akhir turn</li>
+ * <li>Validasi skill selection dan FP requirements</li>
+ * <li>Eksekusi skill dengan tracking damage/healing</li>
+ * <li>Recording battle actions ke battle log</li>
+ * </ul>
+ * 
+ * <p>
+ * Alur eksekusi action:
+ * <ol>
+ * <li>Process start turn effects (DoT, buffs, etc.)</li>
+ * <li>Check if character can move (Freeze check)</li>
+ * <li>Validate skill selection and FP cost</li>
+ * <li>Execute skill</li>
+ * <li>Track damage/healing and combat mechanics</li>
+ * <li>Log action to battle log</li>
+ * <li>Process end turn effects (duration decrement)</li>
+ * </ol>
+ * 
+ * @author TurnBaseGameJava Team
+ * @version 1.2
+ * @see Battle
+ * @see BattleLog
+ * @see StatusEffectProcessor
  */
 public class CombatResolver {
 
+    /**
+     * Mengeksekusi action combat untuk satu turn.
+     * 
+     * <p>
+     * Method ini menangani seluruh flow combat dari start turn effects
+     * hingga end turn effects, termasuk validasi, eksekusi skill, dan logging.
+     * 
+     * @param attacker   Karakter yang melakukan action
+     * @param defender   Karakter yang menjadi target
+     * @param skillIndex Index skill yang dipilih (1-based)
+     * @param battleLog  Battle log untuk recording actions
+     * @param logger     Logger untuk output
+     * @return true jika action berhasil dieksekusi, false jika perlu re-selection
+     */
     public boolean executeAction(BaseCharacter attacker, BaseCharacter defender,
             int skillIndex, BattleLog battleLog, Logger logger) {
         // 1. Process Start Turn Effects (DoT, etc.)
