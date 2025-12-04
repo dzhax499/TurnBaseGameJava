@@ -10,11 +10,6 @@ import com.game.utils.ResourceLoader;
 
 /**
  * Enhanced Battle Panel dengan visual Pokemon-style.
- * Fitur:
- * - Toggleable bottom panel (Skills vs Battle Text)
- * - 2x2 Skill Grid
- * - Status Effect Icons
- * - Clean layout
  */
 public class BattlePanel extends JPanel {
     private transient BufferedImage backgroundIMG;
@@ -24,12 +19,16 @@ public class BattlePanel extends JPanel {
     // Battle State
     private transient BaseCharacter player1;
     private transient BaseCharacter player2;
+    private transient BaseCharacter activeCharacter; // TAMBAHAN: Menyimpan siapa yang sedang jalan
 
     // Bottom Panel Components
     private JPanel bottomPanel;
     private CardLayout bottomCardLayout;
     private JPanel skillPanel;
     private JPanel textPanel;
+
+    // UI Components (Promoted to class level)
+    private JLabel turnLabel; // TAMBAHAN: Agar bisa diakses method lain
 
     // Skill Buttons
     private JButton skill1Button;
@@ -45,9 +44,8 @@ public class BattlePanel extends JPanel {
     // Typewriter Effect
     private Timer typewriterTimer;
     private String fullText;
-    private int currentCharIndex;
     private boolean isAnimating;
-    private static final int TYPEWRITER_DELAY_MS = 30; // Delay per karakter
+    private static final int TYPEWRITER_DELAY_MS = 30;
 
     // Constants
     private static final String CARD_SKILLS = "SKILLS";
@@ -58,27 +56,31 @@ public class BattlePanel extends JPanel {
     private transient ActionListener continueListener;
 
     private String arial = "Arial";
-    private String testImage = "/images/tes_image.jpg";
+    private String bgBattle = "/images/bg.jpg"; // Pastikan path ini benar sesuai file kamu
+
     public interface SkillActionListener {
         void onSkillUsed(int skillIndex);
     }
 
     public BattlePanel() {
         setLayout(null);
-        backgroundIMG = ResourceLoader.loadImage(testImage);
-        heroSprite = ResourceLoader.loadImage(testImage);
-        enemySprite = ResourceLoader.loadImage(testImage);
-
+        backgroundIMG = ResourceLoader.loadImage(bgBattle);
         initializeComponents();
     }
 
     private void initializeComponents() {
-        // Turn Indicator (Top Center)
-        JLabel turnLabel = new JLabel("BATTLE START", SwingConstants.CENTER);
+        // Turn Indicator (Top Center) - Variabelnya sekarang class-level
+        turnLabel = new JLabel("BATTLE START", SwingConstants.CENTER);
         turnLabel.setFont(new Font(arial, Font.BOLD, UIConstants.TURN_LABEL_FONT_SIZE));
         turnLabel.setForeground(UIConstants.COLOR_YELLOW);
         turnLabel.setBounds(UIConstants.TURN_LABEL_X, UIConstants.TURN_LABEL_Y,
                 UIConstants.TURN_LABEL_WIDTH, UIConstants.TURN_LABEL_HEIGHT);
+        
+        // Tambahkan background hitam transparan di label agar tulisan terbaca jelas
+        turnLabel.setOpaque(true); 
+        turnLabel.setBackground(new Color(0, 0, 0, 150));
+        turnLabel.setBorder(BorderFactory.createLineBorder(Color.YELLOW, 1));
+        
         add(turnLabel);
 
         // Initialize Bottom Panel (CardLayout)
@@ -114,31 +116,31 @@ public class BattlePanel extends JPanel {
         int gapX = UIConstants.SKILL_BTN_GAP_X;
         int gapY = UIConstants.SKILL_BTN_GAP_Y;
 
-        // Skill 1 (Top Left)
+        // Skill 1
         skill1Button = createSkillButton("Skill 1", "Basic", UIConstants.SKILL_1_COLOR,
                 startX, startY, btnWidth, btnHeight);
         skill1Button.addActionListener(e -> useSkill(0));
         skillPanel.add(skill1Button);
 
-        // Skill 2 (Top Right)
+        // Skill 2
         skill2Button = createSkillButton("Skill 2", "Special", UIConstants.SKILL_2_COLOR,
                 startX + btnWidth + gapX, startY, btnWidth, btnHeight);
         skill2Button.addActionListener(e -> useSkill(1));
         skillPanel.add(skill2Button);
 
-        // Skill 3 (Bottom Left)
+        // Skill 3
         skill3Button = createSkillButton("Skill 3", "Support", UIConstants.SKILL_3_COLOR,
                 startX, startY + btnHeight + gapY, btnWidth, btnHeight);
         skill3Button.addActionListener(e -> useSkill(2));
         skillPanel.add(skill3Button);
 
-        // Skill 4 (Bottom Right)
+        // Skill 4
         skill4Button = createSkillButton("Skill 4", "Ultimate", UIConstants.SKILL_4_COLOR,
                 startX + btnWidth + gapX, startY + btnHeight + gapY, btnWidth, btnHeight);
         skill4Button.addActionListener(e -> useSkill(3));
         skillPanel.add(skill4Button);
 
-        // Surrender Button (Far Right)
+        // Surrender Button
         surrenderButton = new JButton("SURRENDER");
         surrenderButton.setFont(new Font(arial, Font.BOLD, UIConstants.SURRENDER_BTN_FONT_SIZE));
         surrenderButton.setBackground(UIConstants.SURRENDER_BTN_COLOR);
@@ -172,9 +174,7 @@ public class BattlePanel extends JPanel {
         battleTextArea.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Click to skip typewriter animation
-       
         final BattlePanel self = this;
-    
         battleTextArea.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -183,7 +183,6 @@ public class BattlePanel extends JPanel {
                 }
             }
         });
-
         textPanel.add(battleTextArea);
 
         // Continue Button
@@ -261,48 +260,31 @@ public class BattlePanel extends JPanel {
         bottomCardLayout.show(bottomPanel, CARD_TEXT);
     }
 
-    /**
-     * Menampilkan battle text dengan typewriter effect (Pokemon-style).
-     */
     public void showBattleTextWithTypewriter(String text) {
-        // Stop any existing animation
         if (typewriterTimer != null && typewriterTimer.isRunning()) {
             typewriterTimer.stop();
         }
 
-        // Setup
         this.fullText = text;
         this.currentCharIndex = 0;
         this.isAnimating = true;
 
-        // Clear text area
         battleTextArea.setText("");
-
-        // Disable continue button during animation
         continueButton.setEnabled(false);
-
-        // Show text panel
         bottomCardLayout.show(bottomPanel, CARD_TEXT);
 
-        // Start typewriter animation
         typewriterTimer = new Timer(TYPEWRITER_DELAY_MS, e -> {
             if (currentCharIndex < fullText.length()) {
-                // Add next character
                 battleTextArea.append(String.valueOf(fullText.charAt(currentCharIndex)));
                 currentCharIndex++;
             } else {
-                // Animation complete
                 finishTypewriterAnimation();
             }
         });
 
-
         typewriterTimer.start();
     }
 
-    /**
-     * Skip typewriter animation dan langsung tampilkan semua text.
-     */
     private void skipTypewriterAnimation() {
         if (typewriterTimer != null && typewriterTimer.isRunning()) {
             typewriterTimer.stop();
@@ -314,14 +296,10 @@ public class BattlePanel extends JPanel {
         finishTypewriterAnimation();
     }
 
-    /**
-     * Finish typewriter animation.
-     */
     private void finishTypewriterAnimation() {
         if (typewriterTimer != null) {
             typewriterTimer.stop();
         }
-
         isAnimating = false;
         continueButton.setEnabled(true);
     }
@@ -335,9 +313,64 @@ public class BattlePanel extends JPanel {
     // ==========================================
 
     public void updateCharacters(BaseCharacter p1, BaseCharacter p2) {
+        // Cek Player 1
+        if (this.player1 != p1 || this.heroSprite == null) {
+            this.player1 = p1;
+            if (p1 != null) {
+                this.heroSprite = getCharacterImage(p1);
+            }
+        }
+        
+        // Cek Player 2
+        if (this.player2 != p2 || this.enemySprite == null) {
+            this.player2 = p2;
+            if (p2 != null) {
+                this.enemySprite = getCharacterImage(p2);
+            }
+        }
+
         this.player1 = p1;
         this.player2 = p2;
-        repaint();
+
+        repaint(); 
+    }
+    
+    // --- METHOD BARU: Mengatur giliran ---
+    public void setTurn(BaseCharacter activePlayer) {
+        this.activeCharacter = activePlayer;
+        
+        // Update Label Text di atas
+        if (activePlayer != null) {
+            turnLabel.setText(activePlayer.getName().toUpperCase() + "'S TURN");
+            
+            // Ubah warna teks tergantung siapa yang jalan
+            if (activePlayer == player1) {
+                turnLabel.setForeground(new Color(100, 255, 100)); // Hijau untuk Player
+            } else {
+                turnLabel.setForeground(new Color(255, 100, 100)); // Merah untuk Musuh
+            }
+        }
+        
+        repaint(); // Repaint untuk gambar panah indikator
+    }
+
+    private BufferedImage getCharacterImage(BaseCharacter character) {
+        String path = "/images/fireskill.png";
+        if (character == null) return ResourceLoader.loadImage(path);
+
+        String typeName = character.getClass().getSimpleName().toLowerCase();
+
+        if (typeName.contains("fire")) {
+            path = "/images/fireskill.png";
+        } else if (typeName.contains("water")) {
+            path = "/images/wterskill.png";
+        } else if (typeName.contains("earth")) {
+            path = "/images/earthskill.png";
+        } else if (typeName.contains("wind")) {
+            path = "/images/windskill.png";
+        }
+
+        return ResourceLoader.loadImage(path);
     }
 
     public void updateSkillButtons(String[] skillNames, String[] skillDescriptions) {
@@ -386,10 +419,6 @@ public class BattlePanel extends JPanel {
                 JOptionPane.WARNING_MESSAGE);
 
         if (choice == JOptionPane.YES_OPTION && skillListener != null) {
-            // Trigger surrender logic through listener (handled by GameWindow via skill
-            // index -1 or separate method)
-            // For simplicity, we can use a special index or add a surrender listener
-            // Using skill index -1 for surrender
             skillListener.onSkillUsed(-1);
         }
     }
@@ -431,8 +460,8 @@ public class BattlePanel extends JPanel {
     private void drawCharacterArea(Graphics2D g2) {
         int midY = UIConstants.CHAR_MID_Y;
 
-        // Player 1 (Left) - Horizontal Position
-        drawCharacterSprite(g2, heroSprite, UIConstants.P1_SPRITE_X, midY - UIConstants.CHAR_SPRITE_Y_OFFSET, true);
+        // Player 1 (Left)
+        drawCharacterSprite(g2, heroSprite, UIConstants.P1_SPRITE_X, midY - UIConstants.CHAR_SPRITE_Y_OFFSET, true, player1 == activeCharacter);
         drawCharacterStats(g2, player1, UIConstants.P1_STATS_X, UIConstants.CHAR_STATS_Y);
 
         // VS Label
@@ -442,17 +471,47 @@ public class BattlePanel extends JPanel {
         int vsWidth = g2.getFontMetrics().stringWidth(vsText);
         g2.drawString(vsText, (getWidth() - vsWidth) / 2, UIConstants.VS_LABEL_Y);
 
-        // Player 2 (Right) - Horizontal Position
-        drawCharacterSprite(g2, enemySprite, UIConstants.P2_SPRITE_X, midY - UIConstants.CHAR_SPRITE_Y_OFFSET, false);
+        // Player 2 (Right)
+        drawCharacterSprite(g2, enemySprite, UIConstants.P2_SPRITE_X, midY - UIConstants.CHAR_SPRITE_Y_OFFSET, false, player2 == activeCharacter);
         drawCharacterStats(g2, player2, UIConstants.P2_STATS_X, UIConstants.CHAR_STATS_Y);
     }
 
-    private void drawCharacterSprite(Graphics2D g2, BufferedImage sprite, int x, int y, boolean isPlayer) {
+    // Method drawCharacterSprite diperbarui untuk menerima parameter 'isActive'
+    private void drawCharacterSprite(Graphics2D g2, BufferedImage sprite, int x, int y, boolean isPlayer, boolean isActive) {
+        // 1. Gambar Indikator Giliran (Glow/Panah) jika sedang aktif
+        if (isActive) {
+            // Draw Glow Circle di belakang
+            g2.setColor(new Color(255, 255, 0, 100)); // Kuning transparan
+            g2.fillOval(x - 10, y - 10, UIConstants.CHAR_SPRITE_SIZE + 20, UIConstants.CHAR_SPRITE_SIZE + 20);
+            
+            // Draw Panah Kuning di atas kepala (segitiga terbalik)
+            g2.setColor(Color.YELLOW);
+            int arrowX = x + (UIConstants.CHAR_SPRITE_SIZE / 2);
+            int arrowY = y - 20;
+            int[] xPoints = {arrowX - 10, arrowX + 10, arrowX};
+            int[] yPoints = {arrowY, arrowY, arrowY + 15};
+            g2.fillPolygon(xPoints, yPoints, 3);
+            
+            // Text "YOUR TURN" kecil
+            g2.setFont(new Font("Arial", Font.BOLD, 12));
+            String turnText = "ACTIVE";
+            int textW = g2.getFontMetrics().stringWidth(turnText);
+            g2.drawString(turnText, arrowX - (textW/2), arrowY - 5);
+        }
+
+        // 2. Gambar Karakter
         if (sprite != null) {
             g2.drawImage(sprite, x, y, UIConstants.CHAR_SPRITE_SIZE, UIConstants.CHAR_SPRITE_SIZE, null);
         } else {
             g2.setColor(isPlayer ? UIConstants.PLAYER_PLACEHOLDER_COLOR : UIConstants.ENEMY_PLACEHOLDER_COLOR);
             g2.fillOval(x, y, UIConstants.CHAR_SPRITE_SIZE, UIConstants.CHAR_SPRITE_SIZE);
+        }
+        
+        // 3. Gambar Border jika aktif
+        if (isActive) {
+            g2.setColor(Color.YELLOW);
+            g2.setStroke(new BasicStroke(3));
+            g2.drawRect(x - 2, y - 2, UIConstants.CHAR_SPRITE_SIZE + 4, UIConstants.CHAR_SPRITE_SIZE + 4);
         }
     }
 
@@ -475,7 +534,7 @@ public class BattlePanel extends JPanel {
                 UIConstants.FP_BAR_FILL_COLOR);
 
         // Status Icons
-        y += 25;
+        y += -35;
         drawStatusIcons(g2, character, x, y);
     }
 
@@ -498,7 +557,6 @@ public class BattlePanel extends JPanel {
         int fillWidth = (int) (barWidth * percent);
 
         Color fillColor;
-
         if (percent > 0.5) {
             fillColor = goodColor;
         } else if (percent > 0.2) {
@@ -527,29 +585,25 @@ public class BattlePanel extends JPanel {
         if (effects.isEmpty())
             return;
 
-        g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 20)); // Use font supporting emojis
+        g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 20));
         int iconX = x;
 
         for (String effect : effects) {
             String icon = getEffectIcon(effect);
             g2.drawString(icon, iconX, y);
 
-            // Draw text label small
             g2.setFont(new Font(arial, Font.PLAIN, 10));
             g2.drawString(effect, iconX + 25, y - 5);
-            g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 20)); // Reset font
+            g2.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 20));
 
             iconX += 80;
         }
     }
 
     private String getEffectIcon(String effectName) {
-        if (effectName.contains("Burn"))
-            return "🔥";
-        if (effectName.contains("Freeze"))
-            return "❄️";
-        if (effectName.contains("Guard"))
-            return "🛡️";
+        if (effectName.contains("Burn")) return "🔥";
+        if (effectName.contains("Freeze")) return "❄️";
+        if (effectName.contains("Guard")) return "🛡️";
         return "⚡";
     }
 }

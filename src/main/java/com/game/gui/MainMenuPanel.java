@@ -23,7 +23,7 @@ public class MainMenuPanel extends JPanel {
 
     public MainMenuPanel() {
         setLayout(null);
-        backgroundIMG = ResourceLoader.loadImage("/images/tes_image.jpg");
+        backgroundIMG = ResourceLoader.loadImage("/images/bg.jpg");
         initializeComponents();
     }
 
@@ -53,7 +53,7 @@ public class MainMenuPanel extends JPanel {
         int spacing = 25;
 
         // Start Game Button
-        startButton = createMenuButton("🎮 START GAME", new Color(50, 180, 80));
+        startButton = createMenuButton("START GAME", new Color(50, 180, 80));
         startButton.setBounds(startX, startY, buttonWidth, buttonHeight);
         startButton.addActionListener(e -> {
             if (listener != null) {
@@ -63,13 +63,13 @@ public class MainMenuPanel extends JPanel {
         add(startButton);
 
         // How to Play Button
-        howToPlayButton = createMenuButton("📖 HOW TO PLAY", new Color(80, 120, 200));
+        howToPlayButton = createMenuButton("HOW TO PLAY", new Color(80, 120, 200));
         howToPlayButton.setBounds(startX, startY + buttonHeight + spacing, buttonWidth, buttonHeight);
         howToPlayButton.addActionListener(e -> showHowToPlay());
         add(howToPlayButton);
 
         // Exit Button
-        exitButton = createMenuButton("🚪 EXIT", new Color(200, 80, 80));
+        exitButton = createMenuButton("EXIT", new Color(200, 80, 80));
         exitButton.setBounds(startX, startY + (buttonHeight + spacing) * 2, buttonWidth, buttonHeight);
         exitButton.addActionListener(e -> {
             int choice = JOptionPane.showConfirmDialog(
@@ -84,7 +84,7 @@ public class MainMenuPanel extends JPanel {
         add(exitButton);
 
         // Version/Credits
-        JLabel creditsLabel = new JLabel("v1.0 | Made with Java Swing", SwingConstants.CENTER);
+        JLabel creditsLabel = new JLabel("v1.0 | TUBES PBO (067 | 071 | 073)", SwingConstants.CENTER);
         creditsLabel.setFont(new Font(arial, Font.PLAIN, 12));
         creditsLabel.setForeground(new Color(200, 200, 200));
         creditsLabel.setBounds(250, 520, 320, 20);

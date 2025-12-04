@@ -226,7 +226,7 @@ public class GameWindow {
     private void updateBattleUI() {
         // Update Characters (HP, FP, Status)
         battlePanel.updateCharacters(player1, player2);
-
+        battlePanel.setTurn(currentBattle.getCurrentPlayer()); 
         // Update skill buttons for current player
         BaseCharacter currentPlayer = currentBattle.getCurrentPlayer();
         String[] skillNames = new String[4];

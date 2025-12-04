@@ -15,8 +15,7 @@ public class CharacterSelectionPanel extends JPanel {
     private JTextField nameField;
     private JTextArea infoArea;
     private transient SelectionListener listener;
-    private int playerNumber = 1;
-    private String arialStr = "Arial";
+    private static final String ARIAL_FONT = "Arial";
 
     public interface SelectionListener {
         void onCharacterSelected(String characterType, String characterName);
@@ -26,7 +25,7 @@ public class CharacterSelectionPanel extends JPanel {
 
     public CharacterSelectionPanel() {
         setLayout(null);
-        backgroundBuffer = ResourceLoader.loadImage("/images/tes_image.jpg");
+        backgroundBuffer = ResourceLoader.loadImage("/images/bg.jpg");
         initializeComponents();
     }
 
@@ -38,28 +37,30 @@ public class CharacterSelectionPanel extends JPanel {
         JButton backButton;
         JButton fireButton;
         JLabel instructionLabel;
+        // Baris sekitar 42-45
         titleLabel = new JLabel("PLAYER 1 - SELECT YOUR CHARACTER", SwingConstants.CENTER);
-        titleLabel.setFont(new Font(arialStr, Font.BOLD, 28));
+        titleLabel.setFont(new Font(ARIAL_FONT, Font.BOLD, 18));
         titleLabel.setForeground(Color.YELLOW);
+        // setBounds(posisiX, posisiY, lebar, tinggi)
         titleLabel.setBounds(50, 20, 450, 40);
         add(titleLabel);
 
         // Instruction
         instructionLabel = new JLabel("Enter your name and choose a character", SwingConstants.CENTER);
-        instructionLabel.setFont(new Font(arialStr, Font.PLAIN, 16));
+        instructionLabel.setFont(new Font(ARIAL_FONT, Font.PLAIN, 16));
         instructionLabel.setForeground(Color.WHITE);
         instructionLabel.setBounds(50, 60, 450, 25);
         add(instructionLabel);
 
         // Name input
         JLabel nameLabel = new JLabel("Name:");
-        nameLabel.setFont(new Font(arialStr, Font.BOLD, 16));
+        nameLabel.setFont(new Font(ARIAL_FONT, Font.BOLD, 16));
         nameLabel.setForeground(Color.WHITE);
         nameLabel.setBounds(120, 95, 60, 30);
         add(nameLabel);
 
         nameField = new JTextField("Player 1");
-        nameField.setFont(new Font(arialStr, Font.PLAIN, 16));
+        nameField.setFont(new Font(ARIAL_FONT, Font.PLAIN, 16));
         nameField.setBounds(185, 95, 200, 30);
         add(nameField);
 
@@ -72,23 +73,23 @@ public class CharacterSelectionPanel extends JPanel {
         int spacingY = 25;
 
         // Row 1: Fire and Water
-        fireButton = createCharacterButton("FIRE", "🔥", new Color(220, 50, 50),
+        fireButton = createCharacterButton("FIRE", "/images/fireskill.png", new Color(220, 50, 50),
                 startX, startY, buttonWidth, buttonHeight);
         fireButton.addActionListener(e -> selectCharacter("FIRE"));
         add(fireButton);
 
-        waterButton = createCharacterButton("WATER", "💧", new Color(50, 120, 220),
+        waterButton = createCharacterButton("WATER", "/images/wterskill.png", new Color(50, 120, 220),
                 startX + buttonWidth + spacingX, startY, buttonWidth, buttonHeight);
         waterButton.addActionListener(e -> selectCharacter("WATER"));
         add(waterButton);
 
         // Row 2: Wind and Earth
-        windButton = createCharacterButton("WIND", "💨", new Color(80, 200, 120),
+        windButton = createCharacterButton("WIND", "/images/windskill.png", new Color(80, 200, 120),
                 startX, startY + buttonHeight + spacingY, buttonWidth, buttonHeight);
         windButton.addActionListener(e -> selectCharacter("WIND"));
         add(windButton);
 
-        earthButton = createCharacterButton("EARTH", "🌍", new Color(139, 90, 43),
+        earthButton = createCharacterButton("EARTH", "/images/earthskill.png", new Color(139, 90, 43),
                 startX + buttonWidth + spacingX, startY + buttonHeight + spacingY, buttonWidth, buttonHeight);
         earthButton.addActionListener(e -> selectCharacter("EARTH"));
         add(earthButton);
@@ -144,7 +145,7 @@ public class CharacterSelectionPanel extends JPanel {
         add(backButton);
     }
 
-    private JButton createCharacterButton(String name, String emoji, Color color,
+    private JButton createCharacterButton(String name, String imagePath, Color color,
             int x, int y, int width, int height) {
         JButton button = new JButton();
         button.setBounds(x, y, width, height);
@@ -155,30 +156,47 @@ public class CharacterSelectionPanel extends JPanel {
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setLayout(null);
 
-        // Emoji/Icon label
-        JLabel iconLabel = new JLabel(emoji, SwingConstants.CENTER);
-        iconLabel.setFont(new Font(arialStr, Font.PLAIN, 60));
-        iconLabel.setBounds(0, 20, width, 70);
-        button.add(iconLabel);
+        // --- PERBAIKAN: MEMAKAI GAMBAR, BUKAN TEKS ---
+        JLabel iconLabel = new JLabel();
+        iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // Name label
+        // Load gambar
+        BufferedImage originalImg = ResourceLoader.loadImage(imagePath);
+        if (originalImg != null) {
+            // Resize gambar ke 80x80 pixel agar pas
+            Image scaledImg = originalImg.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+            iconLabel.setIcon(new ImageIcon(scaledImg));
+        } else {
+            // Jika gambar tidak ketemu, baru tampilkan teks tanya tanya
+            iconLabel.setText("?");
+            iconLabel.setFont(new Font("Arial", Font.BOLD, 40));
+            iconLabel.setForeground(Color.WHITE);
+        }
+
+        iconLabel.setBounds(0, 10, width, 90);
+        button.add(iconLabel);
+        // ---------------------------------------------
+
+        // Label Nama
         JLabel nameLabel = new JLabel(name, SwingConstants.CENTER);
-        nameLabel.setFont(new Font(arialStr, Font.BOLD, 20));
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        nameLabel.setForeground(Color.WHITE); // Pastikan warna putih
         nameLabel.setBounds(0, 100, width, 30);
         button.add(nameLabel);
 
-        // Stats labels
+        // Label Stats (HP, Attack, dll)
         String[] stats = getCharacterStats(name);
-        int statsY = 140;
+        int statsY = 120;
         for (String stat : stats) {
             JLabel statLabel = new JLabel(stat, SwingConstants.CENTER);
-            statLabel.setFont(new Font(arialStr, Font.PLAIN, 11));
+            statLabel.setFont(new Font("Arial", Font.PLAIN, 8));
+            statLabel.setForeground(Color.WHITE); // Pastikan warna putih
             statLabel.setBounds(0, statsY, width, 15);
             button.add(statLabel);
-            statsY += 17;
+            statsY += 10;
         }
 
-        // Hover effects
+        // Efek saat mouse diarahkan (Hover)
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -200,13 +218,13 @@ public class CharacterSelectionPanel extends JPanel {
     private String[] getCharacterStats(String type) {
         switch (type) {
             case "FIRE":
-                return new String[] { "HP: 100", "ATK: 35 ⭐", "DEF: 15", "SPD: 30" };
+                return new String[] { "HP: 100", "ATK: 35 ", "DEF: 15", "SPD: 30" };
             case "WATER":
-                return new String[] { "HP: 120 ⭐", "ATK: 25", "DEF: 25 ⭐", "SPD: 10" };
+                return new String[] { "HP: 120", "ATK: 25", "DEF: 25", "SPD: 10" };
             case "EARTH":
-                return new String[] { "HP: 140 ⭐", "ATK: 25", "DEF: 30 ⭐", "SPD: 5" };
+                return new String[] { "HP: 140", "ATK: 25", "DEF: 30", "SPD: 5" };
             case "WIND":
-                return new String[] { "HP: 90", "ATK: 30", "DEF: 10", "SPD: 50 ⭐" };
+                return new String[] { "HP: 90", "ATK: 30", "DEF: 10", "SPD: 50" };
             default:
                 return new String[] {};
         }
@@ -291,7 +309,7 @@ public class CharacterSelectionPanel extends JPanel {
                         "  • Weak vs FIRE (0.75x damage)\n\n" +
                         "PLAYSTYLE: Hit and run, glass cannon";
                 break;
-                default:
+            default:
         }
 
         infoArea.setText(info);
