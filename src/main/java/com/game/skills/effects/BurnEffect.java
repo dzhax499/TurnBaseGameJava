@@ -22,6 +22,7 @@ public class BurnEffect extends StatusEffect {
     @Override
     public void tick(BaseCharacter target) {
         target.takeDamage(damagePerTurn);
+        target.takeTrueDamage(damagePerTurn);
         String gainBurnStr = target.getName() + " menerima " + damagePerTurn + " damage dari Burn!";
         logger.info(gainBurnStr);
     }

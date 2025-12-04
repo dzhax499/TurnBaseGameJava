@@ -117,6 +117,18 @@ public abstract class BaseCharacter {
         logger.info(damage);
     }
 
+    /**
+     * Memberikan damage tanpa dikurangi defense.
+     * Digunakan untuk efek status seperti Burn atau Poison.
+     */
+    public void takeTrueDamage(int damage) {
+        this.healthPoints -= damage;
+        if (this.healthPoints < 0) {
+            this.healthPoints = 0;
+        }
+        String damageMsg = this.name + " menerima " + damage + " true damage.";
+        logger.info(damageMsg);
+    }
     // Store last damage details for battle log
     private DamageDetails lastDamageDetails;
 
