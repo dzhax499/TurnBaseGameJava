@@ -1,4 +1,5 @@
 package com.game.characters;
+
 import java.util.logging.Logger;
 import com.game.skills.Skill;
 import com.game.skills.effects.StatusEffect;
@@ -117,6 +118,19 @@ public abstract class BaseCharacter {
         logger.info(damage);
     }
 
+    /**
+     * Memberikan damage tanpa dikurangi defense.
+     * Digunakan untuk efek status seperti Burn atau Poison.
+     */
+    public void takeTrueDamage(int damage) {
+        this.healthPoints -= damage;
+        if (this.healthPoints < 0) {
+            this.healthPoints = 0;
+        }
+        String damageMsg = this.name + " menerima " + damage + " true damage.";
+        logger.info(damageMsg);
+    }
+
     // Store last damage details for battle log
     private DamageDetails lastDamageDetails;
 
@@ -139,7 +153,7 @@ public abstract class BaseCharacter {
 
         public boolean getisDodged() {
             return this.isDodged;
-        }   
+        }
 
         public double getEffectiveness() {
             return this.effectiveness;
@@ -163,7 +177,7 @@ public abstract class BaseCharacter {
         // 1. Cek Dodge (using ThreadLocalRandom for thread safety)
         double dodgeChance = calculateDodgeChance(attacker);
         if (ThreadLocalRandom.current().nextDouble() * 100 < dodgeChance) {
-            String dodge = this.name + " menghindari serangan! (Dodge)"; 
+            String dodge = this.name + " menghindari serangan! (Dodge)";
             logger.info(dodge);
             lastDamageDetails.isDodged = true;
             return;
@@ -214,7 +228,7 @@ public abstract class BaseCharacter {
      * BALANCED: Reduced speed impact untuk gameplay yang lebih fair.
      */
     private double calculateDodgeChance(BaseCharacter attacker) {
-        double speedDiff = (double)this.speed - attacker.getSpeed();
+        double speedDiff = (double) this.speed - attacker.getSpeed();
         double chance = speedDiff / Constants.DODGE_SPEED_DIVISOR * 100;
         return Math.min(Constants.MAX_DODGE_CHANCE, Math.max(0, chance));
     }
@@ -253,7 +267,7 @@ public abstract class BaseCharacter {
             return true;
         }
 
-        String insufficientFp = this.name + " tidak cukup FP!"; 
+        String insufficientFp = this.name + " tidak cukup FP!";
         logger.info(insufficientFp);
         return false;
     }
@@ -339,7 +353,7 @@ public abstract class BaseCharacter {
      * 
      * @deprecated Use applyStartTurnEffects and applyEndTurnEffects instead
      */
-    @Deprecated (since = "1", forRemoval = false)
+    @Deprecated(since = "1", forRemoval = false)
     public void updateStatusEffects() {
         applyStartTurnEffects();
         applyEndTurnEffects();

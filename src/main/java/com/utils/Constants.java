@@ -143,7 +143,7 @@ public final class Constants {
      * Burn effect damage per turn.
      * REBALANCED: Reduced untuk balance.
      */
-    public static final int BURN_DAMAGE_PER_TURN = 4;
+    public static final int BURN_DAMAGE_PER_TURN = 2;
 
     /**
      * Burn effect default duration (turns).
