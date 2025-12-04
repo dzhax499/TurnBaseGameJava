@@ -1,8 +1,24 @@
 package com.game.gui;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
-import javax.swing.*;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import com.game.utils.ResourceLoader;
 
 /**
@@ -15,6 +31,7 @@ public class CharacterSelectionPanel extends JPanel {
     private JTextField nameField;
     private JTextArea infoArea;
     private transient SelectionListener listener;
+    private int playerNumber;
     private static final String ARIAL_FONT = "Arial";
 
     public interface SelectionListener {
@@ -130,7 +147,7 @@ public class CharacterSelectionPanel extends JPanel {
 
         // Back button - MOVED TO BOTTOM LEFT
         backButton = new JButton("← Back to Menu");
-        backButton.setFont(new Font(arialStr, Font.BOLD, 14));
+        backButton.setFont(new Font(ARIAL_FONT, Font.BOLD, 14));
         backButton.setBackground(new Color(100, 100, 100));
         backButton.setForeground(Color.WHITE);
         backButton.setFocusPainted(false);

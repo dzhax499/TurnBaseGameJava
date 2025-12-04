@@ -1,10 +1,27 @@
 package com.game.gui;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import javax.swing.*;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+
 import com.game.characters.BaseCharacter;
 import com.game.utils.ResourceLoader;
 
@@ -45,6 +62,7 @@ public class BattlePanel extends JPanel {
     private Timer typewriterTimer;
     private String fullText;
     private boolean isAnimating;
+    private int currentCharIndex;
     private static final int TYPEWRITER_DELAY_MS = 30;
 
     // Constants
