@@ -519,7 +519,18 @@ public class BattlePanel extends JPanel {
 
         // 2. Gambar Karakter
         if (sprite != null) {
-            g2.drawImage(sprite, x, y, UIConstants.CHAR_SPRITE_SIZE, UIConstants.CHAR_SPRITE_SIZE, null);
+            int size = UIConstants.CHAR_SPRITE_SIZE;
+
+            // Cek apakah ini Player 1 (isPlayer == true)
+            if (isPlayer) {
+                // LOGIKA FLIP/BALIK GAMBAR:
+                // Geser posisi X sejauh lebar gambar (x + size)
+                // Ubah lebarnya menjadi negatif (-size)
+                g2.drawImage(sprite, x + size, y, -size, size, null);
+            } else {
+                // Player 2 (Musuh) digambar normal
+                g2.drawImage(sprite, x, y, size, size, null);
+            }
         } else {
             g2.setColor(isPlayer ? UIConstants.PLAYER_PLACEHOLDER_COLOR : UIConstants.ENEMY_PLACEHOLDER_COLOR);
             g2.fillOval(x, y, UIConstants.CHAR_SPRITE_SIZE, UIConstants.CHAR_SPRITE_SIZE);
