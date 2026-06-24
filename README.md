@@ -1,8 +1,8 @@
-## 🎮 TURN-BASED BATTLE SYSTEM - SUMMARY
+## TURN-BASED BATTLE SYSTEM - SUMMARY
 
 ---
 
-## FITUR YANG SUDAH DIIMPLEMENTASI
+## FITUR GAME
 
 ### 1. **Sistem Pertarungan 1 vs 1**
 - Dua pemain berbeda bermain bergantian
