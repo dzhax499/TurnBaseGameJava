@@ -312,5 +312,5 @@ Sistem battle sudah:
 ```bash
 cd C:\TurnBaseGameJava
 mvn clean compile
-java -cp target/classes com.game.battle.BattleSimulator
+java -cp target/classes com.game.gui.GameWindow
 ```
