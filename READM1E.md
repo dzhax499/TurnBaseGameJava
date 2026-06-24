@@ -1,10 +1,8 @@
 ## 🎮 TURN-BASED BATTLE SYSTEM - SUMMARY
 
-Saya telah membuat sistem pertarungan lengkap untuk turn-based game Anda dengan semua fitur yang Anda minta!
-
 ---
 
-## ✅ FITUR YANG SUDAH DIIMPLEMENTASI
+## FITUR YANG SUDAH DIIMPLEMENTASI
 
 ### 1. **Sistem Pertarungan 1 vs 1**
 - Dua pemain berbeda bermain bergantian
@@ -71,7 +69,7 @@ Setiap karakter punya 4 skill:
 
 ---
 
-## 📁 FILES YANG DIBUAT
+## FILES YANG DIBUAT
 
 ```
 src/main/java/com/game/battle/
@@ -89,7 +87,7 @@ Documentation:
 
 ---
 
-## 🎯 KARAKTERISTIK KARAKTER
+## KARAKTERISTIK KARAKTER
 
 | Karakter | HP  | ATK | DEF | SPD | Element | Keunikan |
 |----------|-----|-----|-----|-----|---------|----------|
@@ -123,7 +121,7 @@ java -cp target/classes com.game.battle.BattleDemo
 
 ---
 
-## 📊 GAME BALANCE
+## GAME BALANCE
 
 ### Elemental Rock-Paper-Scissors
 ```
@@ -147,7 +145,7 @@ Setiap karakter punya strengths & weaknesses
 
 ---
 
-## 🎬 CONTOH BATTLE OUTPUT
+## CONTOH BATTLE OUTPUT
 
 ```
 ╔════════════════════════════════════╗
@@ -171,7 +169,7 @@ TURN 1 - Pyro GILIRAN
            │ FP: [⚡⚡⚡⚡⚡⚡⚡⚡⚡⚡] 50/50
 ═══════════════════════════════════════════════════════════
 
-📋 Skill tersedia untuk Pyro:
+Skill tersedia untuk Pyro:
 1. Basic Attack (FP Cost: 0)
 2. Guard (FP Cost: 0)
 3. Heal (FP Cost: 10)
@@ -197,7 +195,7 @@ Pyro membeku! (Freeze)
 
 ---
 
-## 🔧 INTEGRASI DENGAN CODEBASE EXISTING
+## INTEGRASI DENGAN CODEBASE EXISTING
 
 ### Methods Ditambahkan ke BaseCharacter:
 ```java
@@ -218,7 +216,7 @@ public void updateStatusEffects()
 
 ---
 
-## 💡 DESIGN HIGHLIGHTS
+## DESIGN HIGHLIGHTS
 
 1. **Polimorfisme**: Skill interface dengan implementasi berbeda
 2. **Encapsulation**: Private attributes dengan public getters
@@ -231,7 +229,7 @@ public void updateStatusEffects()
 
 ---
 
-## ✨ FITUR BONUS
+## FITUR BONUS
 
 ✅ Dodge mechanic dengan speed calculation
 ✅ Critical hit system dengan speed factor  
@@ -244,7 +242,7 @@ public void updateStatusEffects()
 
 ---
 
-## 🎯 STRATEGI GAME
+## STRATEGI GAME
 
 ### Fire vs Water (Water Advantage)
 ```
@@ -267,7 +265,7 @@ Balanced matchup, depends on player skill
 
 ---
 
-## 📈 SCALABILITY
+## SCALABILITY
 
 Mudah untuk menambah:
 - Skill baru (create class extends Skill)
@@ -278,7 +276,7 @@ Mudah untuk menambah:
 
 ---
 
-## 🎓 LEARNING VALUE
+## LEARNING VALUE
 
 System ini mengajarkan:
 - OOP principles (abstraction, inheritance, encapsulation, polymorphism)
@@ -290,7 +288,7 @@ System ini mengajarkan:
 
 ---
 
-## 📝 DOKUMENTASI
+## DOKUMENTASI
 
 1. **BATTLE_SYSTEM.md** → Dokumentasi komprehensif (semua detail)
 2. **QUICK_START.md** → Quick reference untuk bermain
@@ -298,7 +296,7 @@ System ini mengajarkan:
 
 ---
 
-## ✅ STATUS: PRODUCTION READY
+## STATUS: PRODUCTION READY
 
 Sistem battle sudah:
 - ✅ Fully functional
@@ -310,20 +308,7 @@ Sistem battle sudah:
 
 ---
 
-## 🚀 NEXT STEPS (Optional)
-
-1. **GUI Integration**: Gunakan GameWindow.java yang sudah ada
-2. **Networking**: Add multiplayer over network
-3. **Item System**: Add items/equipment
-4. **Leveling**: Add character progression
-5. **Save/Load**: Persist game state
-6. **Replay System**: Rewatch battle menggunakan BattleLog
-
----
-
-**Sistem pertarungan sudah siap untuk dimainkan! Selamat bermain!** 🎮🎉
-
-Untuk mulai bermain:
+## Untuk mulai bermain:
 ```bash
 cd C:\TurnBaseGameJava
 mvn clean compile
